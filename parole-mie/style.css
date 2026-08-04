@@ -170,7 +170,7 @@
   .lv-label{
     font-family:'Baloo 2', sans-serif;
     font-weight:800;
-    font-size:12px;
+    font-size:28px;
     opacity:0.85;
     letter-spacing:0.5px;
   }
@@ -353,11 +353,6 @@
     box-shadow: 0 2px 0 #A2380F, 0 6px 10px rgba(0,0,0,0.35);
     transform: translate(-50%,-50%) scale(1.08);
   }
-  #wheelCenterLabel{
-    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
-    font-family:'Baloo 2'; font-weight:700; color: rgba(255,255,255,0.55); font-size:12px;
-    pointer-events:none; text-align:center; width:64px;
-  }
 
   /* pulsanti mescola / aiuto ai lati della ruota */
   .side-btn{
@@ -455,6 +450,14 @@
   }
 
   /* negozio aiuti */
+  .shop-balance{
+    display:inline-flex; align-items:center; gap:4px;
+    background: var(--sand-dark);
+    color: var(--navy-text);
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px;
+    padding:5px 14px; border-radius:999px;
+    margin: 2px 0 4px;
+  }
   .shop-packages{
     display:flex; flex-direction:column; gap:10px;
     padding: 4px 0 18px;

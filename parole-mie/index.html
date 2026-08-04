@@ -90,7 +90,7 @@
 
   <div class="title-wrap">
     <h1>PAROLE MIE</h1>
-    <div class="sub" id="subLabel">Trova tutte le parole</div>
+    <div class="sub" id="subLabel" data-i18n="tagline">Trova tutte le parole</div>
   </div>
 
   <div class="words-card-wrap">
@@ -103,22 +103,21 @@
   </div>
 
   <div class="info-row">
-    <button class="extra-counter" id="extraCounterBtn">✨ Extra trovate: <span id="extraCount">0</span></button>
+    <button class="extra-counter" id="extraCounterBtn">✨ <span data-i18n="extraFound">Extra trovate</span>: <span id="extraCount">0</span></button>
   </div>
 
   <div class="wheel-zone">
-    <button class="side-btn" id="shuffleBtn"><span class="circle">🔀</span>Mescola</button>
+    <button class="side-btn" id="shuffleBtn"><span class="circle">🔀</span><span data-i18n="shuffle">Mescola</span></button>
     <div id="wheelContainer">
       <svg id="wheelSvgLayer"></svg>
       <div class="life-ring"></div>
-      <div id="wheelCenterLabel"></div>
     </div>
     <button class="side-btn" id="hintBtn">
       <span class="circle-wrap">
         <span class="circle">💡</span>
         <span class="hint-badge" id="hintBadge">0</span>
       </span>
-      Aiuto
+      <span data-i18n="hint">Aiuto</span>
     </button>
   </div>
 
@@ -127,85 +126,86 @@
   <div class="overlay" id="winOverlay">
     <div class="card">
       <div class="crown-icon">👑</div>
-      <h2>Livello Completato!</h2>
-      <p id="winSub">Ottimo lavoro, isolano!</p>
+      <h2 data-i18n="levelComplete">Livello Completato!</h2>
+      <p id="winSub" data-i18n="levelCompleteSub">Ottimo lavoro, isolano!</p>
       <div class="stat-row">
-        <div class="stat" id="winCoins">+0<span>monete</span></div>
-        <div class="stat" id="winExtra">+0<span>extra</span></div>
+        <div class="stat"><span id="winCoins">+0</span><span data-i18n="coinsLabel">monete</span></div>
+        <div class="stat"><span id="winExtra">+0</span><span data-i18n="extraLabel">extra</span></div>
       </div>
-      <button class="primary-btn" id="nextLevelBtn">Continua →</button>
+      <button class="primary-btn" id="nextLevelBtn" data-i18n="continueBtn">Continua →</button>
     </div>
   </div>
 
   <div class="overlay" id="extraModalOverlay">
     <div class="card">
-      <h2>✨ Parole Extra</h2>
-      <p>Le parole bonus trovate in questo livello</p>
+      <h2 data-i18n="extraWordsTitle">✨ Parole Extra</h2>
+      <p data-i18n="extraWordsSub">Le parole bonus trovate in questo livello</p>
       <div id="extraWordsGrid" class="extra-words-grid"></div>
-      <button class="primary-btn" id="closeExtraModalBtn">Chiudi</button>
+      <button class="primary-btn" id="closeExtraModalBtn" data-i18n="close">Chiudi</button>
     </div>
   </div>
 
   <div class="overlay" id="shopOverlay">
     <div class="card">
-      <h2>🪙 Negozio Aiuti</h2>
-      <p>Scambia le monete con aiuti</p>
+      <h2 data-i18n="shopTitle">🪙 Negozio Aiuti</h2>
+      <p data-i18n="shopSub">Scambia le monete con aiuti</p>
+      <div class="shop-balance"><span data-i18n="yourBalance">Il tuo saldo</span>: 🪙 <span id="shopBalance">0</span></div>
       <div class="shop-packages">
         <div class="shop-package" data-coins="50" data-hints="1">
           <div class="shop-package-info">
             <div class="shop-package-hints">💡 x1</div>
             <div class="shop-package-cost">🪙 50</div>
           </div>
-          <button class="shop-buy-btn">Compra</button>
+          <button class="shop-buy-btn" data-i18n="buy">Compra</button>
         </div>
         <div class="shop-package" data-coins="100" data-hints="3">
           <div class="shop-package-info">
             <div class="shop-package-hints">💡 x3</div>
             <div class="shop-package-cost">🪙 100</div>
           </div>
-          <button class="shop-buy-btn">Compra</button>
+          <button class="shop-buy-btn" data-i18n="buy">Compra</button>
         </div>
         <div class="shop-package" data-coins="200" data-hints="8">
           <div class="shop-package-info">
             <div class="shop-package-hints">💡 x8</div>
             <div class="shop-package-cost">🪙 200</div>
           </div>
-          <button class="shop-buy-btn">Compra</button>
+          <button class="shop-buy-btn" data-i18n="buy">Compra</button>
         </div>
       </div>
-      <button class="secondary-btn" id="closeShopBtn">Chiudi</button>
+      <button class="secondary-btn" id="closeShopBtn" data-i18n="close">Chiudi</button>
     </div>
   </div>
 
   <div class="overlay" id="confirmPurchaseOverlay">
     <div class="card">
       <div class="crown-icon">💡</div>
-      <h2>Confermi l'acquisto?</h2>
+      <h2 data-i18n="confirmPurchaseTitle">Confermi l'acquisto?</h2>
       <p class="confirm-text" id="confirmPurchaseText"></p>
       <div class="confirm-btn-row">
-        <button class="secondary-btn" id="cancelPurchaseBtn">Annulla</button>
-        <button class="primary-btn" id="confirmPurchaseBtn">Conferma</button>
+        <button class="secondary-btn" id="cancelPurchaseBtn" data-i18n="cancel">Annulla</button>
+        <button class="primary-btn" id="confirmPurchaseBtn" data-i18n="confirm">Conferma</button>
       </div>
     </div>
   </div>
 
   <div class="overlay" id="languageOverlay">
     <div class="card">
-      <h2>🌍 Lingua</h2>
-      <p>Scegli la lingua delle parole</p>
+      <h2 data-i18n="languageTitle">🌍 Lingua</h2>
+      <p data-i18n="languageSub">Scegli la lingua delle parole</p>
       <div class="language-list" id="languageList"></div>
-      <button class="secondary-btn" id="closeLanguageBtn">Chiudi</button>
+      <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
     </div>
   </div>
 
   <div class="overlay" id="languageConfirmOverlay">
     <div class="card">
       <div class="crown-icon">🌍</div>
-      <h2>Cambiare lingua?</h2>
+      <h2 data-i18n="languageChangeTitle">Cambiare lingua?</h2>
       <p class="confirm-text" id="languageConfirmText"></p>
       <div class="confirm-btn-row">
-        <button class="secondary-btn" id="cancelLanguageBtn">Annulla</button>
-        <button class="primary-btn" id="confirmLanguageBtn">Conferma</button>
+        <button class="secondary-btn" id="cancelLanguageBtn" data-i18n="cancel">Annulla</button>
+        <button class="primary-btn" id="confirmLanguageBtn" data-i18n="confirm">Conferma</button>
       </div>
     </div>
   </div>

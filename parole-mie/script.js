@@ -8,6 +8,137 @@ const LANGUAGES = {
   en: { label: 'English', flag: '🇬🇧' },
   fr: { label: 'Français', flag: '🇫🇷' },
 };
+
+// ---------- Interfaccia: testi tradotti ----------
+// il nome "Parole Mie" resta invariato (è il nome del gioco); tutto il resto
+// dell'interfaccia si traduce quando l'utente cambia lingua.
+const UI_STRINGS = {
+  it: {
+    tagline: 'Trova tutte le parole',
+    extraFound: 'Extra trovate',
+    shuffle: 'Mescola',
+    hint: 'Aiuto',
+    levelComplete: 'Livello Completato!',
+    levelCompleteSub: 'Ottimo lavoro, isolano!',
+    coinsLabel: 'monete',
+    extraLabel: 'extra',
+    continueBtn: 'Continua →',
+    extraWordsTitle: '✨ Parole Extra',
+    extraWordsSub: 'Le parole bonus trovate in questo livello',
+    close: 'Chiudi',
+    shopTitle: '🪙 Negozio Aiuti',
+    shopSub: 'Scambia le monete con aiuti',
+    yourBalance: 'Il tuo saldo',
+    buy: 'Compra',
+    confirmPurchaseTitle: "Confermi l'acquisto?",
+    cancel: 'Annulla',
+    confirm: 'Conferma',
+    languageTitle: '🌍 Lingua',
+    languageSub: 'Scegli la lingua delle parole',
+    languageChangeTitle: 'Cambiare lingua?',
+    wordsToFind: n => `${n} parole da trovare`,
+    wordFoundToast: w => '✓ ' + w.toUpperCase(),
+    extraFoundToast: '✨ Extra! +5 🪙',
+    hintEarnedToast: '🎁 Hai guadagnato un aiuto!',
+    alreadyFound: 'Già trovata',
+    needMoreExtra: n => `Trova ${n} parole extra per un aiuto ✨`,
+    noLetterToReveal: 'Nessuna lettera da svelare',
+    letterRevealed: '💡 Lettera svelata',
+    hintsBought: n => `✓ Acquistati ${n} aiuti!`,
+    notEnoughCoins: 'Monete insufficienti',
+    dictError: 'Errore nel caricamento del dizionario',
+    purchaseConfirmText: (coins, hints) => `Vuoi spendere ${coins} 🪙 per ottenere ${hints} aiuti?`,
+    languageConfirmText: name => `Passare a ${name}? Si ricomincerà dal livello 1.`,
+    noExtraWords: 'Nessuna parola extra trovata in questo livello. Prova a scrivere altre parole valide con le lettere disponibili!',
+  },
+  en: {
+    tagline: 'Find all the words',
+    extraFound: 'Extras found',
+    shuffle: 'Shuffle',
+    hint: 'Hint',
+    levelComplete: 'Level Complete!',
+    levelCompleteSub: 'Great job, islander!',
+    coinsLabel: 'coins',
+    extraLabel: 'extra',
+    continueBtn: 'Continue →',
+    extraWordsTitle: '✨ Extra Words',
+    extraWordsSub: 'Bonus words found in this level',
+    close: 'Close',
+    shopTitle: '🪙 Hint Shop',
+    shopSub: 'Trade coins for hints',
+    yourBalance: 'Your balance',
+    buy: 'Buy',
+    confirmPurchaseTitle: 'Confirm purchase?',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    languageTitle: '🌍 Language',
+    languageSub: 'Choose the words language',
+    languageChangeTitle: 'Change language?',
+    wordsToFind: n => `${n} words to find`,
+    wordFoundToast: w => '✓ ' + w.toUpperCase(),
+    extraFoundToast: '✨ Extra! +5 🪙',
+    hintEarnedToast: '🎁 You earned a hint!',
+    alreadyFound: 'Already found',
+    needMoreExtra: n => `Find ${n} extra words for a hint ✨`,
+    noLetterToReveal: 'No letters left to reveal',
+    letterRevealed: '💡 Letter revealed',
+    hintsBought: n => `✓ Bought ${n} hints!`,
+    notEnoughCoins: 'Not enough coins',
+    dictError: 'Error loading dictionary',
+    purchaseConfirmText: (coins, hints) => `Spend ${coins} 🪙 to get ${hints} hints?`,
+    languageConfirmText: name => `Switch to ${name}? You'll restart from level 1.`,
+    noExtraWords: "No extra words found in this level yet. Try spelling other valid words with the available letters!",
+  },
+  fr: {
+    tagline: 'Trouve tous les mots',
+    extraFound: 'Extras trouvés',
+    shuffle: 'Mélanger',
+    hint: 'Indice',
+    levelComplete: 'Niveau terminé !',
+    levelCompleteSub: 'Bravo, insulaire !',
+    coinsLabel: 'pièces',
+    extraLabel: 'extras',
+    continueBtn: 'Continuer →',
+    extraWordsTitle: '✨ Mots bonus',
+    extraWordsSub: 'Les mots bonus trouvés dans ce niveau',
+    close: 'Fermer',
+    shopTitle: "🪙 Boutique d'indices",
+    shopSub: 'Échange des pièces contre des indices',
+    yourBalance: 'Ton solde',
+    buy: 'Acheter',
+    confirmPurchaseTitle: "Confirmer l'achat ?",
+    cancel: 'Annuler',
+    confirm: 'Confirmer',
+    languageTitle: '🌍 Langue',
+    languageSub: 'Choisis la langue des mots',
+    languageChangeTitle: 'Changer de langue ?',
+    wordsToFind: n => `${n} mots à trouver`,
+    wordFoundToast: w => '✓ ' + w.toUpperCase(),
+    extraFoundToast: '✨ Extra ! +5 🪙',
+    hintEarnedToast: '🎁 Tu as gagné un indice !',
+    alreadyFound: 'Déjà trouvé',
+    needMoreExtra: n => `Trouve ${n} mots extra pour un indice ✨`,
+    noLetterToReveal: 'Aucune lettre à révéler',
+    letterRevealed: '💡 Lettre révélée',
+    hintsBought: n => `✓ ${n} indices achetés !`,
+    notEnoughCoins: 'Pièces insuffisantes',
+    dictError: 'Erreur de chargement du dictionnaire',
+    purchaseConfirmText: (coins, hints) => `Dépenser ${coins} 🪙 pour obtenir ${hints} indices ?`,
+    languageConfirmText: name => `Passer à ${name} ? Tu recommenceras au niveau 1.`,
+    noExtraWords: "Aucun mot bonus trouvé dans ce niveau pour l'instant. Essaie d'écrire d'autres mots valides avec les lettres disponibles !",
+  },
+};
+function t() {
+  return UI_STRINGS[state.language] || UI_STRINGS.it;
+}
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    const val = t()[key];
+    if (typeof val === 'string') el.textContent = val;
+  });
+}
+
 let ALL_WORDS = [];
 let WORD_SET = new Set();
 let COMMON_WORDS = new Set();
@@ -185,7 +316,6 @@ const els = {
   extraCounterBtn: document.getElementById('extraCounterBtn'),
   wheelContainer: document.getElementById('wheelContainer'),
   wheelSvg: document.getElementById('wheelSvgLayer'),
-  wheelCenterLabel: document.getElementById('wheelCenterLabel'),
   composeOverlay: document.getElementById('composeOverlay'),
   composeText: document.getElementById('composeText'),
   toast: document.getElementById('toast'),
@@ -202,6 +332,7 @@ const els = {
   coinBtn: document.getElementById('coinBtn'),
   shopOverlay: document.getElementById('shopOverlay'),
   closeShopBtn: document.getElementById('closeShopBtn'),
+  shopBalance: document.getElementById('shopBalance'),
   shopPackages: Array.from(document.querySelectorAll('.shop-package')),
   confirmPurchaseOverlay: document.getElementById('confirmPurchaseOverlay'),
   confirmPurchaseText: document.getElementById('confirmPurchaseText'),
@@ -296,7 +427,6 @@ function renderWheel() {
     els.wheelContainer.appendChild(tile);
     tileEls.push({ el: tile, x, y, letter: data.letters[i] });
   }
-  els.wheelCenterLabel.textContent = n + ' lettere';
   clearSelection();
 }
 
@@ -437,7 +567,7 @@ function checkWord(word) {
     state.foundTargets.add(word);
     updateHeader();
     renderWordsList();
-    showToast('✓ ' + word.toUpperCase());
+    showToast(t().wordFoundToast(word));
     saveProgress();
     checkLevelComplete();
     return 'target';
@@ -447,16 +577,16 @@ function checkWord(word) {
     state.extraFoundTotal += 1;
     els.extraCount.textContent = state.foundExtras.size;
     updateHeader();
-    showToast('✨ Extra! +5 🪙');
+    showToast(t().extraFoundToast);
     if (state.extraFoundTotal % EXTRA_PER_HINT === 0) {
       state.hintsAvailable += 1;
       updateHintBadge(true);
-      showToast('🎁 Hai guadagnato un aiuto!');
+      showToast(t().hintEarnedToast);
     }
     saveProgress();
     return 'extra';
   } else if (state.foundTargets.has(word) || state.foundExtras.has(word)) {
-    showToast('Già trovata');
+    showToast(t().alreadyFound);
     return 'duplicate';
   } else {
     return 'invalid';
@@ -514,7 +644,7 @@ function nextLevel() {
 
 function useHint() {
   if (state.hintsAvailable <= 0) {
-    showToast(`Trova ${EXTRA_PER_HINT} parole extra per un aiuto ✨`);
+    showToast(t().needMoreExtra(EXTRA_PER_HINT));
     return;
   }
   const data = state.currentLevelData;
@@ -527,7 +657,7 @@ function useHint() {
     })
     .filter(o => o.hidden > 0)
     .sort((a, b) => b.hidden - a.hidden || a.word.length - b.word.length);
-  if (unsolved.length === 0) { showToast('Nessuna lettera da svelare'); return; }
+  if (unsolved.length === 0) { showToast(t().noLetterToReveal); return; }
 
   const target = unsolved[0].word;
   const revealed = state.revealedLetters[target] || new Set();
@@ -540,7 +670,7 @@ function useHint() {
   state.hintsAvailable -= 1;
   updateHintBadge(false);
   renderWordsList();
-  showToast('💡 Lettera svelata');
+  showToast(t().letterRevealed);
   saveProgress();
 }
 
@@ -561,7 +691,7 @@ function startLevel(level) {
   state.foundExtras = new Set();
   state.revealedLetters = {};
   els.extraCount.textContent = '0';
-  els.subLabel.textContent = `${state.currentLevelData.targets.length} parole da trovare`;
+  els.subLabel.textContent = t().wordsToFind(state.currentLevelData.targets.length);
   applyLevelBackground(level);
   updateHeader();
   updateHintBadge(false);
@@ -574,7 +704,7 @@ function openExtraModal() {
   const words = Array.from(state.foundExtras);
   els.extraWordsGrid.innerHTML = words.length
     ? words.map(w => `<span class="extra-chip">${w.toUpperCase()}</span>`).join('')
-    : '<p class="extra-empty">Nessuna parola extra trovata in questo livello. Prova a scrivere altre parole valide con le lettere disponibili!</p>';
+    : `<p class="extra-empty">${t().noExtraWords}</p>`;
   els.extraModalOverlay.classList.add('show');
 }
 function closeExtraModal() {
@@ -585,6 +715,7 @@ function closeExtraModal() {
 let pendingPurchase = null; // { coins, hints }
 
 function openShop() {
+  els.shopBalance.textContent = state.coins;
   els.shopPackages.forEach(pkg => {
     const cost = parseInt(pkg.dataset.coins, 10);
     const buyBtn = pkg.querySelector('.shop-buy-btn');
@@ -600,7 +731,7 @@ function closeShop() {
 
 function openPurchaseConfirm(coins, hints) {
   pendingPurchase = { coins, hints };
-  els.confirmPurchaseText.textContent = `Vuoi spendere ${coins} 🪙 per ottenere ${hints} aiuti?`;
+  els.confirmPurchaseText.textContent = t().purchaseConfirmText(coins, hints);
   els.shopOverlay.classList.remove('show');
   els.confirmPurchaseOverlay.classList.add('show');
 }
@@ -616,10 +747,10 @@ function confirmPurchase() {
     state.hintsAvailable += hints;
     updateHeader();
     updateHintBadge(true);
-    showToast(`✓ Acquistati ${hints} aiuti!`);
+    showToast(t().hintsBought(hints));
     saveProgress();
   } else {
-    showToast('Monete insufficienti');
+    showToast(t().notEnoughCoins);
   }
   closePurchaseConfirm();
 }
@@ -645,7 +776,7 @@ function closeLanguageModal() {
 function openLanguageConfirm(code) {
   if (code === state.language) { closeLanguageModal(); return; }
   pendingLanguage = code;
-  els.languageConfirmText.textContent = `Passare a ${LANGUAGES[code].label}? Si ricomincerà dal livello 1.`;
+  els.languageConfirmText.textContent = t().languageConfirmText(LANGUAGES[code].label);
   els.languageOverlay.classList.remove('show');
   els.languageConfirmOverlay.classList.add('show');
 }
@@ -663,9 +794,10 @@ async function confirmLanguageChange() {
     state.language = code;
     state.level = 1;
     saveProgress();
+    applyTranslations();
     startLevel(state.level);
   } catch (e) {
-    showToast('Errore nel caricamento del dizionario');
+    showToast(t().dictError);
   }
   hideLoadingScreen();
 }
@@ -684,6 +816,7 @@ function hideLoadingScreen() {
 async function init() {
   await loadProgress();
   updateHeader();
+  applyTranslations();
   await loadDictionary(state.language);
   startLevel(state.level);
 
