@@ -359,6 +359,16 @@ async function loadProgress() {
       state.coins = data.coins != null ? data.coins : 60;
       state.extraFoundTotal = data.extraFoundTotal || 0;
       state.hintsAvailable = data.hintsAvailable || 0;
+      // parole già trovate/aiuti usati nel livello in corso, per non perdere
+      // nulla in caso di refresh accidentale della pagina
+      state.foundTargets = new Set(data.foundTargets || []);
+      state.foundExtras = new Set(data.foundExtras || []);
+      state.revealedLetters = {};
+      if (data.revealedLetters) {
+        for (const word in data.revealedLetters) {
+          state.revealedLetters[word] = new Set(data.revealedLetters[word]);
+        }
+      }
     } else {
       state.coins = 60; // bonus di benvenuto per i nuovi giocatori
     }
@@ -368,12 +378,19 @@ async function loadProgress() {
 }
 async function saveProgress() {
   try {
+    const revealedLetters = {};
+    for (const word in state.revealedLetters) {
+      revealedLetters[word] = Array.from(state.revealedLetters[word]);
+    }
     localStorage.setItem('parole-mie-progress', JSON.stringify({
       language: state.language,
       level: state.level,
       coins: state.coins,
       extraFoundTotal: state.extraFoundTotal,
-      hintsAvailable: state.hintsAvailable
+      hintsAvailable: state.hintsAvailable,
+      foundTargets: Array.from(state.foundTargets),
+      foundExtras: Array.from(state.foundExtras),
+      revealedLetters
     }));
   } catch (e) { /* ignora errori di salvataggio */ }
 }
@@ -685,18 +702,29 @@ function applyLevelBackground(level) {
 }
 
 // ---------- Avvio livello ----------
-function startLevel(level) {
+// "resume" true = si sta ripristinando lo stato dopo un refresh della pagina:
+// non si azzerano le parole già trovate/gli aiuti già usati nel livello.
+function startLevel(level, resume) {
   state.currentLevelData = generateLevel(level);
-  state.foundTargets = new Set();
-  state.foundExtras = new Set();
-  state.revealedLetters = {};
-  els.extraCount.textContent = '0';
+  if (!resume) {
+    state.foundTargets = new Set();
+    state.foundExtras = new Set();
+    state.revealedLetters = {};
+  }
+  els.extraCount.textContent = state.foundExtras.size;
   els.subLabel.textContent = t().wordsToFind(state.currentLevelData.targets.length);
   applyLevelBackground(level);
   updateHeader();
   updateHintBadge(false);
   renderWordsList();
   renderWheel();
+  if (resume && state.foundTargets.size >= state.currentLevelData.targets.length) {
+    // il livello era già stato completato prima del refresh: riapri il
+    // riepilogo senza riassegnare di nuovo le monete del bonus
+    els.winCoins.textContent = '+' + LEVEL_COMPLETE_COINS;
+    els.winExtra.textContent = '+' + state.foundExtras.size;
+    els.winOverlay.classList.add('show');
+  }
 }
 
 // ---------- Modal parole extra ----------
@@ -818,7 +846,7 @@ async function init() {
   updateHeader();
   applyTranslations();
   await loadDictionary(state.language);
-  startLevel(state.level);
+  startLevel(state.level, true);
 
   els.wheelContainer.addEventListener('mousedown', startDrag);
   window.addEventListener('mousemove', handleMove);
