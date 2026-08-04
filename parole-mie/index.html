@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Parole Mie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.2/confetti.browser.min.js"></script>
+</head>
+<body>
+<div id="app">
+
+  <div id="loadingScreen">
+    <div class="emoji">🏝️</div>
+    <div style="font-size:22px; font-weight:800;">Parole Mie</div>
+    <div class="spinner"></div>
+  </div>
+
+  <div id="bgLayer">
+    <div class="bg-theme theme-beach active" data-theme="beach">
+      <div class="bg-sun"></div>
+      <svg viewBox="0 0 500 200" preserveAspectRatio="none">
+        <path d="M0,80 C80,120 160,40 250,70 C340,100 420,40 500,70 L500,200 L0,200 Z" fill="rgba(255,255,255,0.10)"/>
+        <path d="M0,110 C90,150 170,90 260,110 C350,130 430,90 500,110 L500,200 L0,200 Z" fill="rgba(255,255,255,0.16)"/>
+        <path d="M0,150 C100,180 200,140 300,155 C380,168 440,145 500,150 L500,200 L0,200 Z" fill="rgba(255,255,255,0.24)"/>
+      </svg>
+    </div>
+
+    <div class="bg-theme theme-mountain" data-theme="mountain">
+      <div class="bg-sun"></div>
+      <svg viewBox="0 0 500 200" preserveAspectRatio="none">
+        <polygon points="0,160 60,90 120,140 180,60 260,150 320,80 400,150 460,100 500,150 500,200 0,200" fill="rgba(255,255,255,0.12)"/>
+        <polygon points="0,190 50,120 100,170 170,80 230,160 300,100 380,170 440,120 500,180 500,200 0,200" fill="rgba(255,255,255,0.22)"/>
+        <polygon points="170,80 187,108 153,108" fill="rgba(255,255,255,0.9)"/>
+        <polygon points="300,100 316,124 284,124" fill="rgba(255,255,255,0.9)"/>
+        <polygon points="440,120 454,141 426,141" fill="rgba(255,255,255,0.9)"/>
+      </svg>
+    </div>
+
+    <div class="bg-theme theme-desert" data-theme="desert">
+      <div class="bg-sun"></div>
+      <svg viewBox="0 0 500 200" preserveAspectRatio="none">
+        <path d="M0,100 C100,60 200,140 320,90 C400,60 460,120 500,90 L500,200 L0,200 Z" fill="rgba(255,255,255,0.12)"/>
+        <path d="M0,140 C120,110 220,170 340,130 C420,105 470,150 500,130 L500,200 L0,200 Z" fill="rgba(255,255,255,0.18)"/>
+        <path d="M0,170 C140,150 260,190 380,160 C440,145 470,175 500,165 L500,200 L0,200 Z" fill="rgba(255,255,255,0.26)"/>
+        <g fill="rgba(80,50,20,0.35)">
+          <rect x="52" y="130" width="10" height="45" rx="5"/>
+          <rect x="40" y="145" width="9" height="20" rx="4"/>
+          <rect x="63" y="140" width="9" height="26" rx="4"/>
+          <rect x="410" y="150" width="8" height="34" rx="4"/>
+          <rect x="400" y="160" width="7" height="16" rx="3"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="bg-theme theme-forest" data-theme="forest">
+      <div class="bg-sun"></div>
+      <svg viewBox="0 0 500 200" preserveAspectRatio="none">
+        <polygon points="0,200 0,165 20,195 40,150 60,195 80,140 100,195 120,148 140,195 160,138 180,195 200,155 220,195 240,145 260,195 280,150 300,195 320,140 340,195 360,152 380,195 400,142 420,195 440,158 460,195 480,148 500,195 500,200" fill="rgba(255,255,255,0.14)"/>
+        <polygon points="0,200 0,178 25,200 50,168 75,200 100,162 125,200 150,170 175,200 200,160 225,200 250,172 275,200 300,164 325,200 350,174 375,200 400,166 425,200 450,176 475,200 500,170 500,200" fill="rgba(255,255,255,0.24)"/>
+      </svg>
+    </div>
+
+    <div class="bg-theme theme-night" data-theme="night">
+      <div class="bg-moon"></div>
+      <div class="star" style="left:8%; top:12%; width:3px; height:3px; animation-delay:0s;"></div>
+      <div class="star" style="left:18%; top:22%; width:2px; height:2px; animation-delay:0.4s;"></div>
+      <div class="star" style="left:30%; top:9%; width:3px; height:3px; animation-delay:0.8s;"></div>
+      <div class="star" style="left:45%; top:17%; width:2px; height:2px; animation-delay:1.2s;"></div>
+      <div class="star" style="left:60%; top:8%; width:3px; height:3px; animation-delay:0.2s;"></div>
+      <div class="star" style="left:12%; top:32%; width:2px; height:2px; animation-delay:1.6s;"></div>
+      <div class="star" style="left:70%; top:24%; width:2px; height:2px; animation-delay:0.6s;"></div>
+      <div class="star" style="left:85%; top:14%; width:3px; height:3px; animation-delay:1.0s;"></div>
+      <div class="star" style="left:38%; top:28%; width:2px; height:2px; animation-delay:1.8s;"></div>
+      <div class="star" style="left:22%; top:6%; width:2px; height:2px; animation-delay:0.3s;"></div>
+      <svg viewBox="0 0 500 200" preserveAspectRatio="none">
+        <polygon points="0,170 70,130 140,160 220,110 300,155 380,125 460,150 500,140 500,200 0,200" fill="rgba(255,255,255,0.08)"/>
+        <polygon points="0,190 80,155 160,180 240,140 320,175 400,150 480,175 500,168 500,200 0,200" fill="rgba(255,255,255,0.13)"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="icon-btn" id="gearBtn" aria-label="Impostazioni lingua">⚙️</button>
+    <div class="level-display"><span class="lv-label">Lv.</span><span id="levelLabel">1</span></div>
+    <button class="pill" id="coinBtn"><span class="icon-badge coin-badge">🪙</span><span id="coinLabel">0</span></button>
+  </div>
+
+  <div class="title-wrap">
+    <h1>PAROLE MIE</h1>
+    <div class="sub" id="subLabel">Trova tutte le parole</div>
+  </div>
+
+  <div class="words-card-wrap">
+    <div class="words-card">
+      <div id="wordsList"></div>
+    </div>
+    <div class="compose-overlay" id="composeOverlay">
+      <span id="composeText"></span>
+    </div>
+  </div>
+
+  <div class="info-row">
+    <button class="extra-counter" id="extraCounterBtn">✨ Extra trovate: <span id="extraCount">0</span></button>
+  </div>
+
+  <div class="wheel-zone">
+    <button class="side-btn" id="shuffleBtn"><span class="circle">🔀</span>Mescola</button>
+    <div id="wheelContainer">
+      <svg id="wheelSvgLayer"></svg>
+      <div class="life-ring"></div>
+      <div id="wheelCenterLabel"></div>
+    </div>
+    <button class="side-btn" id="hintBtn">
+      <span class="circle-wrap">
+        <span class="circle">💡</span>
+        <span class="hint-badge" id="hintBadge">0</span>
+      </span>
+      Aiuto
+    </button>
+  </div>
+
+  <div id="toast"></div>
+
+  <div class="overlay" id="winOverlay">
+    <div class="card">
+      <div class="crown-icon">👑</div>
+      <h2>Livello Completato!</h2>
+      <p id="winSub">Ottimo lavoro, isolano!</p>
+      <div class="stat-row">
+        <div class="stat" id="winCoins">+0<span>monete</span></div>
+        <div class="stat" id="winExtra">+0<span>extra</span></div>
+      </div>
+      <button class="primary-btn" id="nextLevelBtn">Continua →</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="extraModalOverlay">
+    <div class="card">
+      <h2>✨ Parole Extra</h2>
+      <p>Le parole bonus trovate in questo livello</p>
+      <div id="extraWordsGrid" class="extra-words-grid"></div>
+      <button class="primary-btn" id="closeExtraModalBtn">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="shopOverlay">
+    <div class="card">
+      <h2>🪙 Negozio Aiuti</h2>
+      <p>Scambia le monete con aiuti</p>
+      <div class="shop-packages">
+        <div class="shop-package" data-coins="50" data-hints="1">
+          <div class="shop-package-info">
+            <div class="shop-package-hints">💡 x1</div>
+            <div class="shop-package-cost">🪙 50</div>
+          </div>
+          <button class="shop-buy-btn">Compra</button>
+        </div>
+        <div class="shop-package" data-coins="100" data-hints="3">
+          <div class="shop-package-info">
+            <div class="shop-package-hints">💡 x3</div>
+            <div class="shop-package-cost">🪙 100</div>
+          </div>
+          <button class="shop-buy-btn">Compra</button>
+        </div>
+        <div class="shop-package" data-coins="200" data-hints="8">
+          <div class="shop-package-info">
+            <div class="shop-package-hints">💡 x8</div>
+            <div class="shop-package-cost">🪙 200</div>
+          </div>
+          <button class="shop-buy-btn">Compra</button>
+        </div>
+      </div>
+      <button class="secondary-btn" id="closeShopBtn">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="confirmPurchaseOverlay">
+    <div class="card">
+      <div class="crown-icon">💡</div>
+      <h2>Confermi l'acquisto?</h2>
+      <p class="confirm-text" id="confirmPurchaseText"></p>
+      <div class="confirm-btn-row">
+        <button class="secondary-btn" id="cancelPurchaseBtn">Annulla</button>
+        <button class="primary-btn" id="confirmPurchaseBtn">Conferma</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageOverlay">
+    <div class="card">
+      <h2>🌍 Lingua</h2>
+      <p>Scegli la lingua delle parole</p>
+      <div class="language-list" id="languageList"></div>
+      <button class="secondary-btn" id="closeLanguageBtn">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageConfirmOverlay">
+    <div class="card">
+      <div class="crown-icon">🌍</div>
+      <h2>Cambiare lingua?</h2>
+      <p class="confirm-text" id="languageConfirmText"></p>
+      <div class="confirm-btn-row">
+        <button class="secondary-btn" id="cancelLanguageBtn">Annulla</button>
+        <button class="primary-btn" id="confirmLanguageBtn">Conferma</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
