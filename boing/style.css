@@ -19,8 +19,26 @@ body{
   background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-darker) 100%);
   color: var(--white);
 }
+
+/* sfondo a tema: un cielo stellato in pixel art (stelline quadrate, non
+   cerchi sfumati), coerente con l'estetica retro/arcade del gioco */
+#bgLayer{
+  position:fixed; inset:0; z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+.pixel-star{
+  position:absolute;
+  background: var(--white);
+  animation: pixel-twinkle 2.6s ease-in-out infinite;
+}
+@keyframes pixel-twinkle{
+  0%, 100%{ opacity:0.2; }
+  50%{ opacity:1; }
+}
+
 #app{
-  position:relative;
+  position:relative; z-index:1;
   width:100%;
   min-height:100vh;
   min-height:100dvh;
@@ -52,10 +70,12 @@ body{
 }
 .icon-btn:active{ transform: scale(0.96); }
 .level-display{
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
   font-family:'Press Start 2P', monospace;
   font-size:13px;
   letter-spacing:1px;
   display:flex; align-items:center; gap:5px;
+  white-space:nowrap;
 }
 .lv-label{ opacity:0.85; }
 .lives{
