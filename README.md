@@ -18,7 +18,7 @@ A word-finding puzzle: spell out all the target words using the letters on a whe
 
 ### Blokko *(coming soon)*
 
-A falling-blocks puzzle game, Tetris-style.
+A falling-blocks puzzle game — clear lines before they stack up.
 
 ### Boing *(coming soon)*
 

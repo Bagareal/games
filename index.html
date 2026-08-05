@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -8,56 +8,92 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  html{ height:100%; }
+  html,body{ height:100%; }
   body{
     margin:0; min-height:100%;
     font-family:'Nunito', sans-serif;
-    background: linear-gradient(180deg, #0B4F6C 0%, #093C56 55%, #061F2E 100%);
+    background: linear-gradient(160deg, #6FD6E8 0%, #4FC3D9 22%, #7B5FC7 55%, #F2622E 100%);
     color: #FFFDF8;
+    overflow-x:hidden;
   }
-  #app{
+
+  /* bolle decorative fluttuanti, solo per allegria */
+  .bubble{
+    position:fixed; border-radius:50%;
+    background: rgba(255,255,255,0.16);
+    pointer-events:none;
+    animation: float 7s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%, 100%{ transform: translateY(0); }
+    50%{ transform: translateY(-18px); }
+  }
+
+  #page{
+    position:relative; z-index:1;
     max-width: 480px;
     margin: 0 auto;
     min-height: 100vh;
     min-height: 100dvh;
-    padding: max(28px, env(safe-area-inset-top)) 20px 40px;
+    padding: max(20px, env(safe-area-inset-top)) 20px 40px;
     display:flex; flex-direction:column;
   }
-  header{ text-align:center; margin-bottom: 28px; }
-  header .logo{ font-size:44px; margin-bottom:6px; }
+
+  .topbar{ display:flex; justify-content:flex-end; }
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(255,255,255,0.22);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    backdrop-filter: blur(6px);
+    color:#fff;
+    font-size:17px;
+    cursor:pointer;
+  }
+  .icon-btn:active{ transform: scale(0.94); }
+
+  header{ text-align:center; margin: 4px 0 26px; }
+  header .logo{
+    font-size:52px; margin-bottom:8px;
+    display:inline-block;
+    animation: bounce 2.4s ease-in-out infinite;
+  }
+  @keyframes bounce{
+    0%, 100%{ transform: translateY(0) rotate(-4deg); }
+    50%{ transform: translateY(-10px) rotate(4deg); }
+  }
   header h1{
     font-family:'Baloo 2', sans-serif;
     font-weight:800;
-    font-size:32px;
+    font-size:34px;
     letter-spacing:0.5px;
     margin:0;
-    text-shadow: 0 2px 0 rgba(0,0,0,0.25);
+    text-shadow: 0 3px 0 rgba(0,0,0,0.2);
   }
   header p{
-    font-size:14px;
+    font-size:15px;
     font-weight:700;
-    color: rgba(255,255,255,0.75);
-    margin:6px 0 0;
+    color: rgba(255,255,255,0.9);
+    margin:8px 0 0;
   }
+
   .games{
     display:flex; flex-direction:column; gap:16px;
   }
   .game-card{
     position:relative;
     display:flex; align-items:center; gap:14px;
-    background: rgba(255,255,255,0.08);
-    border: 1.5px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.14);
+    border: 1.5px solid rgba(255,255,255,0.22);
     border-radius:20px;
     padding:16px 18px;
     text-decoration:none;
     color: inherit;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.12);
     transition: transform 0.15s ease, background 0.15s ease;
   }
-  a.game-card:active{ transform: scale(0.98); background: rgba(255,255,255,0.13); }
-  .game-card.disabled{
-    opacity:0.55;
-    cursor:default;
-  }
+  a.game-card:active{ transform: translateY(3px); box-shadow:none; background: rgba(255,255,255,0.2); }
+  .game-card.disabled{ opacity:0.6; cursor:default; box-shadow:none; }
   .game-icon{
     flex: 0 0 auto;
     width:56px; height:56px; border-radius:16px;
@@ -78,7 +114,7 @@
   .game-info p{
     font-size:13px;
     font-weight:600;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.85);
     margin:0;
     line-height:1.35;
   }
@@ -88,59 +124,227 @@
     font-weight:700;
     font-size:11px;
     letter-spacing:0.3px;
-    background: rgba(255,255,255,0.16);
+    background: rgba(255,255,255,0.2);
     padding:5px 10px;
     border-radius:999px;
     white-space:nowrap;
   }
   .badge.play{ background: linear-gradient(180deg, #14A085, #0d6e5c); }
+
   footer{
     margin-top:32px;
     text-align:center;
     font-size:12px;
     font-weight:700;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.65);
+  }
+
+  /* lingua */
+  .overlay{
+    position:fixed; inset:0; z-index:30;
+    background: rgba(9,60,86,0.6);
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none; transition:opacity 0.2s ease;
+  }
+  .overlay.show{ opacity:1; pointer-events:auto; }
+  .card{
+    background: #FBEBC9;
+    border-radius:24px;
+    padding: 26px 24px 22px;
+    width: 82%;
+    max-width:320px;
+    text-align:center;
+    color:#0B2B3C;
+    box-shadow: 0 12px 0 #EAD3A0, 0 20px 30px rgba(0,0,0,0.35);
+  }
+  .card h2{ font-family:'Baloo 2', sans-serif; font-size:24px; margin:2px 0 4px; }
+  .card p{ font-size:14px; color:#555; margin:4px 0 16px; font-weight:700; }
+  .language-list{ display:flex; flex-direction:column; gap:10px; }
+  .language-option{
+    display:flex; align-items:center; gap:12px;
+    width:100%;
+    background:white; border-radius:14px; padding:12px 16px;
+    box-shadow: 0 3px 0 #E2D2A5;
+    border:none; cursor:pointer;
+    font-family:'Baloo 2', sans-serif; font-weight:700; font-size:16px;
+    color: #0B2B3C;
+    text-align:left;
+  }
+  .language-option:active{ transform:translateY(2px); box-shadow:none; }
+  .language-option.active{ outline: 3px solid #14A085; outline-offset: -3px; }
+  .language-flag{ font-size:22px; }
+
+  /* tablet */
+  @media (min-width: 700px){
+    #page{ max-width: 680px; padding-top: 40px; }
+    header .logo{ font-size:60px; }
+    header h1{ font-size:40px; }
+    header p{ font-size:16px; }
+    .games{ display:grid; grid-template-columns: 1fr 1fr; gap:18px; }
+  }
+  /* desktop */
+  @media (min-width: 1024px){
+    body{ display:flex; align-items:center; }
+    #page{ max-width: 900px; min-height:auto; padding-top:32px; padding-bottom:32px; }
+    .games{ grid-template-columns: 1fr 1fr 1fr; }
+    header{ margin-bottom:34px; }
   }
 </style>
 </head>
 <body>
-<div id="app">
-  <header>
-    <div class="logo">🕹️</div>
-    <h1>Free For Real</h1>
-    <p>Free games. For real.</p>
-  </header>
+  <div class="bubble" style="width:90px;height:90px;top:8%;left:6%;animation-delay:0s;"></div>
+  <div class="bubble" style="width:50px;height:50px;top:18%;right:10%;animation-delay:1.2s;"></div>
+  <div class="bubble" style="width:36px;height:36px;top:65%;left:8%;animation-delay:2.4s;"></div>
+  <div class="bubble" style="width:70px;height:70px;bottom:6%;right:8%;animation-delay:0.8s;"></div>
 
-  <div class="games">
-    <a class="game-card" href="wordio/">
-      <div class="game-icon wordio">🔤</div>
-      <div class="game-info">
-        <h2>Wordio</h2>
-        <p>Spell out every word using the letters on a wheel. Italian, English, French.</p>
-      </div>
-      <span class="badge play">Play</span>
-    </a>
-
-    <div class="game-card disabled">
-      <div class="game-icon blokko">🧱</div>
-      <div class="game-info">
-        <h2>Blokko</h2>
-        <p>A falling-blocks puzzle game, Tetris-style.</p>
-      </div>
-      <span class="badge">Coming soon</span>
+  <div id="page">
+    <div class="topbar">
+      <button class="icon-btn" id="langBtn" aria-label="Language">🌍</button>
     </div>
 
-    <div class="game-card disabled">
-      <div class="game-icon boing">⚡</div>
-      <div class="game-info">
-        <h2>Boing</h2>
-        <p>More to come.</p>
+    <header>
+      <div class="logo">🕹️</div>
+      <h1>Free For Real</h1>
+      <p data-i18n="tagline">Giochi gratis. Per davvero.</p>
+    </header>
+
+    <div class="games">
+      <a class="game-card" href="wordio/">
+        <div class="game-icon wordio">🔤</div>
+        <div class="game-info">
+          <h2>Wordio</h2>
+          <p data-i18n="wordioDesc">Componi tutte le parole usando le lettere sulla ruota. Italiano, inglese, francese.</p>
+        </div>
+        <span class="badge play" data-i18n="play">Gioca</span>
+      </a>
+
+      <div class="game-card disabled">
+        <div class="game-icon blokko">🧱</div>
+        <div class="game-info">
+          <h2>Blokko</h2>
+          <p data-i18n="blokkoDesc">Incastra i blocchi che cadono prima che si accumulino troppo.</p>
+        </div>
+        <span class="badge" data-i18n="comingSoon">In arrivo</span>
       </div>
-      <span class="badge">Coming soon</span>
+
+      <div class="game-card disabled">
+        <div class="game-icon boing">⚡</div>
+        <div class="game-info">
+          <h2>Boing</h2>
+          <p data-i18n="boingDesc">Presto in arrivo.</p>
+        </div>
+        <span class="badge" data-i18n="comingSoon">In arrivo</span>
+      </div>
+    </div>
+
+    <footer data-i18n="footer">Niente pubblicità · Niente account · Niente pagamenti — mai</footer>
+  </div>
+
+  <div class="overlay" id="languageOverlay">
+    <div class="card">
+      <h2 data-i18n="languageTitle">🌍 Lingua</h2>
+      <p data-i18n="languageSub">Scegli la lingua del sito</p>
+      <div class="language-list" id="languageList"></div>
     </div>
   </div>
 
-  <footer>No ads · No accounts · No payments — ever</footer>
-</div>
+<script>
+// lingua condivisa con tutto il sito (home page + ogni gioco): cambiandola qui
+// o dentro un gioco, la scelta vale ovunque la prossima volta che si apre una pagina
+const LANGUAGES = {
+  it: { label: 'Italiano', flag: '🇮🇹' },
+  en: { label: 'English', flag: '🇬🇧' },
+  fr: { label: 'Français', flag: '🇫🇷' },
+};
+const HOME_STRINGS = {
+  it: {
+    tagline: 'Giochi gratis. Per davvero.',
+    wordioDesc: 'Componi tutte le parole usando le lettere sulla ruota. Italiano, inglese, francese.',
+    blokkoDesc: 'Incastra i blocchi che cadono prima che si accumulino troppo.',
+    boingDesc: 'Presto in arrivo.',
+    play: 'Gioca',
+    comingSoon: 'In arrivo',
+    footer: 'Niente pubblicità · Niente account · Niente pagamenti — mai',
+    languageTitle: '🌍 Lingua',
+    languageSub: 'Scegli la lingua del sito',
+  },
+  en: {
+    tagline: 'Free games. For real.',
+    wordioDesc: 'Spell out every word using the letters on a wheel. Italian, English, French.',
+    blokkoDesc: 'Clear the falling blocks before they stack up.',
+    boingDesc: 'More to come.',
+    play: 'Play',
+    comingSoon: 'Coming soon',
+    footer: 'No ads · No accounts · No payments — ever',
+    languageTitle: '🌍 Language',
+    languageSub: 'Choose the site language',
+  },
+  fr: {
+    tagline: 'Jeux gratuits. Pour de vrai.',
+    wordioDesc: "Compose tous les mots avec les lettres sur la roue. Italien, anglais, français.",
+    blokkoDesc: "Range les blocs qui tombent avant qu'ils ne s'accumulent.",
+    boingDesc: 'Bientôt disponible.',
+    play: 'Jouer',
+    comingSoon: 'Bientôt',
+    footer: 'Pas de pubs · Pas de compte · Jamais de paiement',
+    languageTitle: '🌍 Langue',
+    languageSub: 'Choisis la langue du site',
+  },
+};
+
+let language = 'it';
+const els = {
+  langBtn: document.getElementById('langBtn'),
+  languageOverlay: document.getElementById('languageOverlay'),
+  languageList: document.getElementById('languageList'),
+};
+
+function t() { return HOME_STRINGS[language] || HOME_STRINGS.it; }
+
+function applyTranslations() {
+  document.documentElement.lang = language;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const val = t()[el.dataset.i18n];
+    if (typeof val === 'string') el.textContent = val;
+  });
+}
+
+function renderLanguageList() {
+  els.languageList.innerHTML = Object.entries(LANGUAGES).map(([code, info]) => `
+    <button class="language-option${code === language ? ' active' : ''}" data-lang="${code}">
+      <span class="language-flag">${info.flag}</span>
+      <span class="language-name">${info.label}</span>
+    </button>
+  `).join('');
+}
+function openLanguageModal() {
+  renderLanguageList();
+  els.languageOverlay.classList.add('show');
+}
+function closeLanguageModal() {
+  els.languageOverlay.classList.remove('show');
+}
+function selectLanguage(code) {
+  language = code;
+  try { localStorage.setItem('ffr-language', code); } catch (e) { /* ignora */ }
+  applyTranslations();
+  closeLanguageModal();
+}
+
+try {
+  const saved = localStorage.getItem('ffr-language');
+  if (saved && LANGUAGES[saved]) language = saved;
+} catch (e) { /* ignora */ }
+applyTranslations();
+
+els.langBtn.addEventListener('click', openLanguageModal);
+els.languageOverlay.addEventListener('click', (e) => {
+  if (e.target === els.languageOverlay) closeLanguageModal();
+});
+els.languageList.addEventListener('click', (e) => {
+  const btn = e.target.closest('.language-option');
+  if (btn) selectLanguage(btn.dataset.lang);
+});
+</script>
 </body>
 </html>

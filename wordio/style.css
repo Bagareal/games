@@ -126,6 +126,7 @@
     display:flex; align-items:center; justify-content:space-between;
     padding: max(10px, env(safe-area-inset-top)) 16px 4px;
   }
+  .icon-group{ display:flex; align-items:center; gap:8px; flex: 0 0 auto; }
   .icon-btn{
     width:34px; height:34px; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
@@ -135,6 +136,7 @@
     color:var(--white);
     font-size:16px;
     cursor:pointer;
+    text-decoration:none;
     flex: 0 0 auto;
   }
   .icon-btn:active{ transform: scale(0.96); }
@@ -568,3 +570,25 @@
   @keyframes spin{ to{ transform:rotate(360deg); } }
 
   .hidden{ display:none !important; }
+
+  /* tablet: un po' più di respiro, testi leggermente più grandi */
+  @media (min-width: 700px){
+    #app{ max-width: 560px; }
+    .title-wrap h1{ font-size:22px; }
+    .level-display #levelLabel, .lv-label{ font-size:32px; }
+    .words-card{ padding: 14px 16px; }
+  }
+  /* desktop: l'app resta un riquadro "da telefono" ma centrato in verticale,
+     invece di stare incollata in cima a un mare di sfondo */
+  @media (min-width: 1024px){
+    body{ display:flex; align-items:center; }
+    #app{
+      max-width: 600px;
+      min-height: auto;
+      max-height: 96vh;
+      border-radius: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+      overflow-y: auto;
+    }
+    #bgLayer{ position:absolute; }
+  }

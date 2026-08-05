@@ -391,6 +391,20 @@ const els = {
 // gioco); il livello e le parole trovate nel livello in corso sono invece
 // per lingua, così cambiando lingua si riprende da dove si era rimasti
 // invece di perdere il progresso di quella lingua.
+
+// "ffr-language" è condivisa con l'HOME PAGE e con tutti gli altri giochi del
+// sito: cambiando lingua qui o da lì, la scelta vale ovunque.
+const SITE_LANGUAGE_KEY = 'ffr-language';
+function getSiteLanguage() {
+  try {
+    const v = localStorage.getItem(SITE_LANGUAGE_KEY);
+    return v && LANGUAGES[v] ? v : null;
+  } catch (e) { return null; }
+}
+function setSiteLanguage(code) {
+  try { localStorage.setItem(SITE_LANGUAGE_KEY, code); } catch (e) { /* ignora */ }
+}
+
 function snapshotCurrentProgress() {
   const revealedLetters = {};
   for (const word in state.revealedLetters) {
@@ -415,20 +429,23 @@ function applyLanguageProgress(saved) {
   }
 }
 async function loadProgress() {
+  const siteLanguage = getSiteLanguage(); // ha sempre la precedenza: riflette l'ultima scelta fatta ovunque sul sito
   try {
     const raw = localStorage.getItem('wordio-progress');
     if (raw) {
       const data = JSON.parse(raw);
-      state.language = data.language && LANGUAGES[data.language] ? data.language : 'it';
+      state.language = siteLanguage || (data.language && LANGUAGES[data.language] ? data.language : 'it');
       state.coins = data.coins != null ? data.coins : 60;
       state.extraFoundTotal = data.extraFoundTotal || 0;
       state.hintsAvailable = data.hintsAvailable || 0;
       state.progressByLanguage = data.progress || {};
       applyLanguageProgress(state.progressByLanguage[state.language]);
     } else {
+      state.language = siteLanguage || 'it';
       state.coins = 60; // bonus di benvenuto per i nuovi giocatori
     }
   } catch (e) {
+    state.language = siteLanguage || 'it';
     state.coins = 60; // bonus di benvenuto (nessun progresso salvato disponibile)
   }
 }
@@ -449,6 +466,7 @@ async function saveProgress() {
 function switchToLanguage(code) {
   state.progressByLanguage[state.language] = snapshotCurrentProgress();
   state.language = code;
+  setSiteLanguage(code);
   applyLanguageProgress(state.progressByLanguage[code]);
   startLevel(state.level, true);
   saveProgress();
