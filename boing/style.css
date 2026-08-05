@@ -1,0 +1,205 @@
+:root{
+  --bg-dark: #17102A;
+  --bg-darker: #0B0718;
+  --coral: #F2622E;
+  --coral-dark: #A2380F;
+  --gold: #F4B740;
+  --teal: #14A085;
+  --purple: #7B5FC7;
+  --sand: #FBEBC9;
+  --sand-dark: #EAD3A0;
+  --navy-text: #0B2B3C;
+  --white: #FFFDF8;
+}
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+html,body{ height:100%; }
+body{
+  margin:0; padding:0; min-height:100%;
+  font-family:'Nunito', sans-serif;
+  background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-darker) 100%);
+  color: var(--white);
+}
+#app{
+  position:relative;
+  width:100%;
+  min-height:100vh;
+  min-height:100dvh;
+  max-width:480px;
+  margin:0 auto;
+  display:flex; flex-direction:column;
+  overflow-x:hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* topbar (icone/livello/vite: stesso standard del sito) */
+.topbar{
+  position:relative; z-index:5;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: max(10px, env(safe-area-inset-top)) 16px 2px;
+}
+.icon-group{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+.icon-btn{
+  width:34px; height:34px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.22);
+  backdrop-filter: blur(6px);
+  color:var(--white);
+  font-size:16px;
+  cursor:pointer;
+  text-decoration:none;
+  flex:0 0 auto;
+}
+.icon-btn:active{ transform: scale(0.96); }
+.level-display{
+  font-family:'Baloo 2', sans-serif;
+  font-weight:800;
+  font-size:16px;
+  letter-spacing:0.3px;
+}
+.lives{ font-size:16px; letter-spacing:2px; flex:0 0 auto; }
+.score-row{
+  text-align:center;
+  font-family:'Press Start 2P', monospace;
+  font-size:11px;
+  color: var(--gold);
+  padding: 6px 0 2px;
+  letter-spacing:1px;
+}
+
+/* zona di gioco */
+.game-zone{
+  position:relative;
+  flex:1 1 auto;
+  display:flex; align-items:center; justify-content:center;
+  padding: 10px 16px max(16px, env(safe-area-inset-bottom));
+  min-height:0;
+}
+#gameCanvas{
+  width:100%;
+  max-width:360px;
+  aspect-ratio: 2 / 3;
+  height:auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #0B0718;
+  border-radius:10px;
+  border: 3px solid rgba(255,255,255,0.12);
+  touch-action:none;
+}
+.tap-hint{
+  position:absolute; bottom: 8%; left:0; right:0;
+  text-align:center;
+  font-family:'Baloo 2', sans-serif;
+  font-weight:700;
+  font-size:13px;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  pointer-events:none;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse{ 0%,100%{ opacity:0.55; } 50%{ opacity:1; } }
+
+/* overlay/card: stesso linguaggio visivo di Wordio */
+.overlay{
+  position:fixed; inset:0; z-index:30;
+  background: rgba(11,7,24,0.78);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity 0.25s ease;
+}
+.overlay.show{ opacity:1; pointer-events:auto; }
+.card{
+  background: var(--sand);
+  border-radius:24px;
+  padding: 28px 26px 22px;
+  width: 82%;
+  max-width:320px;
+  text-align:center;
+  color: var(--navy-text);
+  box-shadow: 0 12px 0 var(--sand-dark), 0 20px 30px rgba(0,0,0,0.35);
+  transform: translateY(10px) scale(0.96);
+  transition: transform 0.25s ease;
+}
+.overlay.show .card{ transform: translateY(0) scale(1); }
+.card h2{ font-family:'Baloo 2', sans-serif; font-size:24px; margin:2px 0 4px; }
+.card p{ font-size:14px; color:#555; margin:4px 0 16px; font-weight:700; }
+.crown-icon{ font-size:44px; margin-bottom:4px; }
+
+.difficulty-list{ display:flex; flex-direction:column; gap:10px; }
+.difficulty-option{
+  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:17px;
+  background: white; color: var(--navy-text);
+  border: none; border-radius:14px;
+  padding:14px 16px;
+  box-shadow: 0 3px 0 #E2D2A5;
+  cursor:pointer;
+}
+.difficulty-option:active{ transform:translateY(2px); box-shadow:none; }
+.difficulty-option[data-difficulty="easy"]{ border-left: 8px solid var(--teal); }
+.difficulty-option[data-difficulty="medium"]{ border-left: 8px solid var(--gold); }
+.difficulty-option[data-difficulty="hard"]{ border-left: 8px solid var(--coral); }
+
+.primary-btn{
+  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:17px;
+  background: linear-gradient(180deg, var(--coral), var(--coral-dark));
+  color:white; border:none; padding:12px 30px; border-radius:999px;
+  box-shadow: 0 5px 0 #6d2409;
+  cursor:pointer;
+}
+.primary-btn:active{ transform:translateY(3px); box-shadow:0 2px 0 #6d2409; }
+.secondary-btn{
+  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:15px;
+  background: white; color: var(--navy-text); border: 2px solid var(--sand-dark);
+  padding:10px 22px; border-radius:999px;
+  cursor:pointer;
+  margin-top:6px;
+}
+.secondary-btn:active{ transform:scale(0.96); }
+
+.language-list{ display:flex; flex-direction:column; gap:10px; padding: 4px 0 18px; }
+.language-option{
+  display:flex; align-items:center; gap:12px;
+  width:100%;
+  background:white; border-radius:14px; padding:12px 16px;
+  box-shadow: 0 3px 0 #E2D2A5;
+  border:none; cursor:pointer;
+  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:16px;
+  color: var(--navy-text);
+  text-align:left;
+}
+.language-option:active{ transform:translateY(2px); box-shadow:none; }
+.language-option.active{ outline: 3px solid var(--teal); outline-offset: -3px; }
+.language-flag{ font-size:22px; }
+
+#loadingScreen{
+  position:fixed; inset:0; z-index:50;
+  background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-darker) 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color:white; font-family:'Baloo 2';
+  transition: opacity 0.3s ease;
+}
+#loadingScreen .emoji{ font-size:54px; margin-bottom:10px; }
+.spinner{
+  width:34px; height:34px; border-radius:50%;
+  border:4px solid rgba(255,255,255,0.2); border-top-color:var(--coral);
+  animation: spin 0.8s linear infinite; margin-top:14px;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.hidden{ display:none !important; }
+
+/* tablet / desktop: come le altre pagine del sito, l'app diventa una card centrata */
+@media (min-width: 700px){
+  #app{ max-width: 560px; }
+  #gameCanvas{ max-width: 400px; }
+}
+@media (min-width: 1024px){
+  body{ display:flex; align-items:center; }
+  #app{
+    max-width: 600px;
+    min-height:auto;
+    max-height:96vh;
+    border-radius:28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    overflow-y:auto;
+  }
+}

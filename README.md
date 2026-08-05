@@ -16,13 +16,15 @@ A word-finding puzzle: spell out all the target words using the letters on a whe
 
 **[ivanprea.github.io/games/wordio](https://ivanprea.github.io/games/wordio/)**
 
+### [Boing](boing/)
+
+A brick-breaker: bounce the ball off your paddle to clear every brick. 3 lives, falling power-ups (wider paddle, extra life, multi-ball, slower ball), 3 difficulty levels, and levels that get tougher as you go. Small, deliberately rough pixel-art look. Play it at:
+
+**[ivanprea.github.io/games/boing](https://ivanprea.github.io/games/boing/)**
+
 ### Blokko *(coming soon)*
 
 A falling-blocks puzzle game — clear lines before they stack up.
-
-### Boing *(coming soon)*
-
-TBD.
 
 ## What's next
 
