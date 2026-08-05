@@ -20,12 +20,22 @@
   <div class="topbar">
     <div class="icon-group">
       <a class="icon-btn" href="../" aria-label="Home">🏠</a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Pausa">⚙️</button>
       <button class="icon-btn" id="langBtn" aria-label="Lingua">🌍</button>
     </div>
-    <div class="level-display"><span class="lv-label" data-i18n="levelLabel">Livello</span> <span id="levelValue">1</span></div>
-    <div class="lives" id="livesDisplay"></div>
+    <div class="level-display"><span class="lv-label">LV.</span><span id="levelValue">1</span></div>
+    <canvas class="lives" id="livesCanvas" width="24" height="6"></canvas>
   </div>
-  <div class="score-row"><span data-i18n="scoreLabel">Punteggio</span>: <span id="scoreValue">0</span></div>
+
+  <div class="score-block">
+    <div id="scoreValue">0</div>
+    <div data-i18n="scoreLabel">Punteggio</div>
+  </div>
+
+  <div class="title-wrap">
+    <span class="emoji">⚡</span>
+    <h1>BOING</h1>
+  </div>
 
   <div class="game-zone">
     <canvas id="gameCanvas" width="180" height="270"></canvas>
@@ -38,6 +48,20 @@
       <h2 data-i18n="chooseDifficulty">Scegli la difficoltà</h2>
       <p data-i18n="chooseDifficultySub">Puoi cambiarla ogni volta che inizi una partita</p>
       <div class="difficulty-list">
+        <button class="difficulty-option" data-difficulty="easy" data-i18n="easy">Facile</button>
+        <button class="difficulty-option" data-difficulty="medium" data-i18n="medium">Medio</button>
+        <button class="difficulty-option" data-difficulty="hard" data-i18n="hard">Difficile</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="pauseOverlay">
+    <div class="card">
+      <div class="crown-icon">⏸️</div>
+      <h2 data-i18n="paused">Pausa</h2>
+      <p data-i18n="pausedSub">Puoi riprendere o cambiare difficoltà</p>
+      <button class="primary-btn" id="resumeBtn" data-i18n="resume">Riprendi ▶</button>
+      <div class="difficulty-list" style="margin-top:14px;">
         <button class="difficulty-option" data-difficulty="easy" data-i18n="easy">Facile</button>
         <button class="difficulty-option" data-difficulty="medium" data-i18n="medium">Medio</button>
         <button class="difficulty-option" data-difficulty="hard" data-i18n="hard">Difficile</button>

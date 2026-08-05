@@ -52,19 +52,50 @@ body{
 }
 .icon-btn:active{ transform: scale(0.96); }
 .level-display{
+  font-family:'Press Start 2P', monospace;
+  font-size:13px;
+  letter-spacing:1px;
+  display:flex; align-items:center; gap:5px;
+}
+.lv-label{ opacity:0.85; }
+.lives{
+  flex:0 0 auto;
+  width:72px; height:18px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+.score-block{
+  text-align:center;
+  padding: 8px 0 2px;
+}
+.score-block div:first-child{
+  font-family:'Press Start 2P', monospace;
+  font-size:28px;
+  color: var(--gold);
+  line-height:1.2;
+}
+.score-block div:last-child{
+  font-family:'Press Start 2P', monospace;
+  font-size:10px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing:1px;
+  margin-top:4px;
+}
+
+.title-wrap{
+  text-align:center;
+  padding: 2px 0 6px;
+}
+.title-wrap .emoji{ font-size:20px; vertical-align:middle; }
+.title-wrap h1{
+  display:inline;
   font-family:'Baloo 2', sans-serif;
   font-weight:800;
-  font-size:16px;
-  letter-spacing:0.3px;
-}
-.lives{ font-size:16px; letter-spacing:2px; flex:0 0 auto; }
-.score-row{
-  text-align:center;
-  font-family:'Press Start 2P', monospace;
-  font-size:11px;
-  color: var(--gold);
-  padding: 6px 0 2px;
+  font-size:20px;
   letter-spacing:1px;
+  margin:0 0 0 6px;
+  vertical-align:middle;
+  color: var(--white);
 }
 
 /* zona di gioco */
@@ -138,6 +169,7 @@ body{
 .difficulty-option[data-difficulty="easy"]{ border-left: 8px solid var(--teal); }
 .difficulty-option[data-difficulty="medium"]{ border-left: 8px solid var(--gold); }
 .difficulty-option[data-difficulty="hard"]{ border-left: 8px solid var(--coral); }
+.difficulty-option.active{ outline: 3px solid var(--navy-text); outline-offset: -3px; }
 
 .primary-btn{
   font-family:'Baloo 2', sans-serif; font-weight:700; font-size:17px;

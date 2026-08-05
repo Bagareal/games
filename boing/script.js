@@ -13,7 +13,6 @@ const SITE_LANGUAGE_KEY = 'ffr-language';
 
 const UI_STRINGS = {
   it: {
-    levelLabel: 'Livello',
     scoreLabel: 'Punteggio',
     tapToLaunch: 'Tocca per lanciare la pallina',
     chooseDifficulty: 'Scegli la difficoltà',
@@ -25,8 +24,11 @@ const UI_STRINGS = {
     levelCompleteSub: score => `Punteggio: ${score}`,
     continueBtn: 'Continua →',
     gameOver: 'Game Over',
-    gameOverSub: (level, score) => `Livello ${level} — Punteggio: ${score}`,
+    gameOverSub: (level, score) => `LV. ${level} — Punteggio: ${score}`,
     playAgain: 'Rigioca',
+    paused: 'Pausa',
+    pausedSub: 'Puoi riprendere o cambiare difficoltà',
+    resume: 'Riprendi ▶',
     languageTitle: '🌍 Lingua',
     languageSub: "Scegli la lingua dell'interfaccia",
     close: 'Chiudi',
@@ -37,7 +39,6 @@ const UI_STRINGS = {
     powerUpSlow: '🐌 Pallina rallentata!',
   },
   en: {
-    levelLabel: 'Level',
     scoreLabel: 'Score',
     tapToLaunch: 'Tap to launch the ball',
     chooseDifficulty: 'Choose difficulty',
@@ -49,8 +50,11 @@ const UI_STRINGS = {
     levelCompleteSub: score => `Score: ${score}`,
     continueBtn: 'Continue →',
     gameOver: 'Game Over',
-    gameOverSub: (level, score) => `Level ${level} — Score: ${score}`,
+    gameOverSub: (level, score) => `LV. ${level} — Score: ${score}`,
     playAgain: 'Play again',
+    paused: 'Paused',
+    pausedSub: 'You can resume or change difficulty',
+    resume: 'Resume ▶',
     languageTitle: '🌍 Language',
     languageSub: 'Choose the interface language',
     close: 'Close',
@@ -61,7 +65,6 @@ const UI_STRINGS = {
     powerUpSlow: '🐌 Ball slowed down!',
   },
   fr: {
-    levelLabel: 'Niveau',
     scoreLabel: 'Score',
     tapToLaunch: 'Touche pour lancer la balle',
     chooseDifficulty: 'Choisis la difficulté',
@@ -73,8 +76,11 @@ const UI_STRINGS = {
     levelCompleteSub: score => `Score : ${score}`,
     continueBtn: 'Continuer →',
     gameOver: 'Game Over',
-    gameOverSub: (level, score) => `Niveau ${level} — Score : ${score}`,
+    gameOverSub: (level, score) => `LV. ${level} — Score : ${score}`,
     playAgain: 'Rejouer',
+    paused: 'Pause',
+    pausedSub: 'Tu peux reprendre ou changer de difficulté',
+    resume: 'Reprendre ▶',
     languageTitle: '🌍 Langue',
     languageSub: "Choisis la langue de l'interface",
     close: 'Fermer',
@@ -181,7 +187,7 @@ const els = {
   tapHint: document.getElementById('tapHint'),
   levelValue: document.getElementById('levelValue'),
   scoreValue: document.getElementById('scoreValue'),
-  livesDisplay: document.getElementById('livesDisplay'),
+  livesCanvas: document.getElementById('livesCanvas'),
   langBtn: document.getElementById('langBtn'),
   languageOverlay: document.getElementById('languageOverlay'),
   languageList: document.getElementById('languageList'),
@@ -193,14 +199,41 @@ const els = {
   gameOverOverlay: document.getElementById('gameOverOverlay'),
   gameOverSub: document.getElementById('gameOverSub'),
   retryBtn: document.getElementById('retryBtn'),
+  settingsBtn: document.getElementById('settingsBtn'),
+  pauseOverlay: document.getElementById('pauseOverlay'),
+  resumeBtn: document.getElementById('resumeBtn'),
 };
 const ctx = els.canvas.getContext('2d');
+const livesCtx = els.livesCanvas.getContext('2d');
+
+// piccolo cuore pixel art (7x6), acceso o "vuoto" a seconda delle vite rimaste
+const HEART_PATTERN = [
+  '.XX.XX.',
+  'XXXXXXX',
+  'XXXXXXX',
+  '.XXXXX.',
+  '..XXX..',
+  '...X...',
+];
+function drawHearts() {
+  livesCtx.clearRect(0, 0, els.livesCanvas.width, els.livesCanvas.height);
+  for (let i = 0; i < MAX_LIVES; i++) {
+    const filled = i < state.lives;
+    livesCtx.fillStyle = filled ? '#F2622E' : 'rgba(255,255,255,0.18)';
+    const offsetX = i * 8;
+    for (let row = 0; row < HEART_PATTERN.length; row++) {
+      for (let col = 0; col < HEART_PATTERN[row].length; col++) {
+        if (HEART_PATTERN[row][col] === 'X') livesCtx.fillRect(offsetX + col, row, 1, 1);
+      }
+    }
+  }
+}
 
 // ---------- HUD ----------
 function updateHUD() {
   els.levelValue.textContent = state.level;
   els.scoreValue.textContent = state.score;
-  els.livesDisplay.textContent = '❤️'.repeat(state.lives) + '🖤'.repeat(MAX_LIVES - state.lives);
+  drawHearts();
 }
 
 let toastTimer = null;
@@ -255,6 +288,21 @@ function startNewGame(difficultyKey) {
   state.slowUntil = 0;
   startLevel(state.level);
   els.difficultyOverlay.classList.remove('show');
+  els.pauseOverlay.classList.remove('show');
+  state.paused = false;
+}
+
+// ---------- Pausa / impostazioni ----------
+function openSettings() {
+  if (state.difficulty == null) return; // niente da mettere in pausa prima di scegliere la difficoltà
+  state.paused = true;
+  document.querySelectorAll('#pauseOverlay .difficulty-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.difficulty === state.difficulty);
+  });
+  els.pauseOverlay.classList.add('show');
+}
+function closeSettings() {
+  els.pauseOverlay.classList.remove('show');
   state.paused = false;
 }
 
@@ -428,9 +476,11 @@ function render() {
   }
 
   ctx.fillStyle = '#FBEBC9';
-  ctx.fillRect(state.paddle.x, PADDLE_Y, state.paddle.width, PADDLE_H);
-  ctx.fillStyle = '#EAD3A0';
-  ctx.fillRect(state.paddle.x, PADDLE_Y + PADDLE_H - 1, state.paddle.width, 1);
+  roundedRectPath(ctx, state.paddle.x, PADDLE_Y, state.paddle.width, PADDLE_H, PADDLE_H / 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(234,211,160,0.8)';
+  roundedRectPath(ctx, state.paddle.x, PADDLE_Y + PADDLE_H - 1.5, state.paddle.width, 1.5, 0.75);
+  ctx.fill();
 
   for (const b of state.balls) {
     ctx.fillStyle = '#FFFDF8';
@@ -448,6 +498,16 @@ function render() {
     ctx.textBaseline = 'middle';
     ctx.fillText(POWER_UP_LETTERS[p.type], p.x + p.size / 2, p.y + p.size / 2 + 1);
   }
+}
+function roundedRectPath(c, x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  c.beginPath();
+  c.moveTo(x + r, y);
+  c.arcTo(x + w, y, x + w, y + h, r);
+  c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r);
+  c.arcTo(x, y, x + w, y, r);
+  c.closePath();
 }
 function shade(hex, factor) {
   const n = parseInt(hex.slice(1), 16);
@@ -473,18 +533,18 @@ function canvasPointToVirtual(clientX) {
   const rect = els.canvas.getBoundingClientRect();
   return ((clientX - rect.left) / rect.width) * VW;
 }
-let dragging = false;
+// il paddle segue il puntatore semplicemente quando è sopra l'area di gioco:
+// su desktop non serve tenere premuto il mouse (comodo), su touch continua a
+// bastare trascinare il dito come prima.
 function handlePointerDown(e) {
   if (state.paused) return;
-  dragging = true;
   movePaddleTo(canvasPointToVirtual(e.clientX));
   launchStuckBalls();
 }
 function handlePointerMove(e) {
-  if (!dragging || state.paused) return;
+  if (state.paused) return;
   movePaddleTo(canvasPointToVirtual(e.clientX));
 }
-function handlePointerUp() { dragging = false; }
 function handleKeyDown(e) {
   if (state.paused) return;
   const step = 14;
@@ -524,8 +584,7 @@ function init() {
   updateHUD();
 
   els.canvas.addEventListener('pointerdown', handlePointerDown);
-  window.addEventListener('pointermove', handlePointerMove);
-  window.addEventListener('pointerup', handlePointerUp);
+  els.canvas.addEventListener('pointermove', handlePointerMove);
   window.addEventListener('keydown', handleKeyDown);
 
   document.querySelectorAll('.difficulty-option').forEach(btn => {
@@ -540,6 +599,12 @@ function init() {
   els.retryBtn.addEventListener('click', () => {
     els.gameOverOverlay.classList.remove('show');
     els.difficultyOverlay.classList.add('show');
+  });
+
+  els.settingsBtn.addEventListener('click', openSettings);
+  els.resumeBtn.addEventListener('click', closeSettings);
+  els.pauseOverlay.addEventListener('click', (e) => {
+    if (e.target === els.pauseOverlay) closeSettings();
   });
 
   els.langBtn.addEventListener('click', openLanguageModal);
