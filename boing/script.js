@@ -29,6 +29,7 @@ const UI_STRINGS = {
     paused: 'Pausa',
     resume: 'Riprendi ▶',
     difficultyLabel: 'Difficoltà',
+    settingsTitle: '⚙️ Impostazioni',
     languageMenuLabel: 'Lingua',
     commands: 'Comandi',
     resetLevel: 'Reset livello',
@@ -64,6 +65,7 @@ const UI_STRINGS = {
     paused: 'Paused',
     resume: 'Resume ▶',
     difficultyLabel: 'Difficulty',
+    settingsTitle: '⚙️ Settings',
     languageMenuLabel: 'Language',
     commands: 'Controls',
     resetLevel: 'Reset level',
@@ -99,6 +101,7 @@ const UI_STRINGS = {
     paused: 'Pause',
     resume: 'Reprendre ▶',
     difficultyLabel: 'Difficulté',
+    settingsTitle: '⚙️ Paramètres',
     languageMenuLabel: 'Langue',
     commands: 'Commandes',
     resetLevel: 'Réinitialiser le niveau',
@@ -224,12 +227,15 @@ const els = {
   gameOverOverlay: document.getElementById('gameOverOverlay'),
   gameOverSub: document.getElementById('gameOverSub'),
   retryBtn: document.getElementById('retryBtn'),
-  settingsBtn: document.getElementById('settingsBtn'),
+  pauseBtn: document.getElementById('pauseBtn'),
   pauseOverlay: document.getElementById('pauseOverlay'),
   resumeBtn: document.getElementById('resumeBtn'),
+  resetLevelBtn: document.getElementById('resetLevelBtn'),
+  settingsBtn: document.getElementById('settingsBtn'),
+  settingsOverlay: document.getElementById('settingsOverlay'),
+  closeSettingsBtn: document.getElementById('closeSettingsBtn'),
   openLanguageBtn: document.getElementById('openLanguageBtn'),
   openTutorialBtn: document.getElementById('openTutorialBtn'),
-  resetLevelBtn: document.getElementById('resetLevelBtn'),
   tutorialOverlay: document.getElementById('tutorialOverlay'),
   closeTutorialBtn: document.getElementById('closeTutorialBtn'),
 };
@@ -319,11 +325,12 @@ function startNewGame(difficultyKey) {
   startLevel(state.level);
   els.difficultyOverlay.classList.remove('show');
   els.pauseOverlay.classList.remove('show');
+  els.settingsOverlay.classList.remove('show');
   state.paused = false;
 }
 
-// ---------- Pausa / impostazioni ----------
-function openSettings() {
+// ---------- Pausa (riprendi / difficoltà / reset livello) ----------
+function openPause() {
   if (state.difficulty == null) return; // niente da mettere in pausa prima di scegliere la difficoltà
   state.paused = true;
   document.querySelectorAll('#pauseOverlay .difficulty-option').forEach(btn => {
@@ -331,13 +338,24 @@ function openSettings() {
   });
   els.pauseOverlay.classList.add('show');
 }
-function closeSettings() {
+function closePause() {
   els.pauseOverlay.classList.remove('show');
   state.paused = false;
 }
 function resetLevel() {
   startLevel(state.level);
-  closeSettings();
+  closePause();
+}
+
+// ---------- Impostazioni (lingua / comandi) ----------
+function openSettingsMenu() {
+  if (state.difficulty == null) return;
+  state.paused = true;
+  els.settingsOverlay.classList.add('show');
+}
+function closeSettingsMenu() {
+  els.settingsOverlay.classList.remove('show');
+  state.paused = false;
 }
 
 function startLevel(level) {
@@ -351,11 +369,16 @@ function startLevel(level) {
 }
 
 // ---------- Fisica ----------
-function movePaddleTo(virtualX) {
-  state.paddle.x = Math.max(0, Math.min(VW - state.paddle.width, virtualX - state.paddle.width / 2));
+function setPaddleX(x) {
+  state.paddle.x = Math.max(0, Math.min(VW - state.paddle.width, x));
   state.balls.forEach(b => {
     if (b.stuck) b.x = state.paddle.x + state.paddle.width / 2 - BALL_SIZE / 2;
   });
+}
+// centra il paddle su virtualX (usato dal mouse: il paddle si mette subito
+// sotto al puntatore)
+function movePaddleTo(virtualX) {
+  setPaddleX(virtualX - state.paddle.width / 2);
 }
 
 function spawnPowerUp(x, y) {
@@ -581,25 +604,37 @@ function canvasPointToVirtual(clientX) {
   const rect = els.canvas.getBoundingClientRect();
   return ((clientX - rect.left) / rect.width) * VW;
 }
-// il paddle segue il puntatore semplicemente quando è sopra l'area di gioco:
-// su desktop non serve tenere premuto il mouse (comodo). Su touch, una volta
-// iniziato il tocco sul canvas continuiamo a seguire il dito anche se esce dai
-// bordi del canvas (il pollice altrimenti coprirebbe il paddle e non si
-// vedrebbe più dove lo si sta spostando).
+// Mouse: il paddle segue il puntatore semplicemente quando è sopra l'area di
+// gioco (comodo su desktop, non serve tenere premuto).
+// Touch: invece di mettere il paddle esattamente sotto al dito (il pollice lo
+// coprirebbe e non si vedrebbe più dove lo si sta spostando), si usa un
+// trascinamento RELATIVO — si può toccare ovunque, e il paddle si sposta
+// della stessa quantità di cui si muove il dito, mantenendo la posizione
+// iniziale come riferimento. Il trascinamento continua a funzionare anche se
+// il dito esce dai bordi del canvas.
 let touchDragging = false;
+let touchStartClientX = 0;
+let touchStartPaddleX = 0;
 function handlePointerDown(e) {
   if (state.paused) return;
-  if (e.pointerType === 'touch') touchDragging = true;
-  movePaddleTo(canvasPointToVirtual(e.clientX));
+  if (e.pointerType === 'touch') {
+    touchDragging = true;
+    touchStartClientX = e.clientX;
+    touchStartPaddleX = state.paddle.x;
+  } else {
+    movePaddleTo(canvasPointToVirtual(e.clientX));
+  }
   launchStuckBalls();
 }
 function handlePointerMove(e) {
-  if (state.paused) return;
+  if (state.paused || e.pointerType === 'touch') return; // il touch è gestito sotto
   movePaddleTo(canvasPointToVirtual(e.clientX));
 }
 function handleWindowPointerMove(e) {
   if (state.paused || !touchDragging) return;
-  movePaddleTo(canvasPointToVirtual(e.clientX));
+  const rect = els.canvas.getBoundingClientRect();
+  const deltaVirtualX = (e.clientX - touchStartClientX) * (VW / rect.width);
+  setPaddleX(touchStartPaddleX + deltaVirtualX);
 }
 function handlePointerUpOrCancel() { touchDragging = false; }
 function handleKeyDown(e) {
@@ -620,13 +655,13 @@ function renderLanguageList() {
   `).join('');
 }
 function openLanguageModal() {
-  els.pauseOverlay.classList.remove('show'); // si apre dal menu impostazioni
+  els.settingsOverlay.classList.remove('show'); // si apre dal menu impostazioni
   renderLanguageList();
   els.languageOverlay.classList.add('show');
 }
 function closeLanguageModal() {
   els.languageOverlay.classList.remove('show');
-  els.pauseOverlay.classList.add('show'); // torna al menu impostazioni da cui si era aperta
+  els.settingsOverlay.classList.add('show'); // torna al menu impostazioni da cui si era aperta
 }
 function selectLanguage(code) {
   language = code;
@@ -638,7 +673,7 @@ function selectLanguage(code) {
 
 // ---------- Tutorial ----------
 function openTutorial() {
-  els.pauseOverlay.classList.remove('show');
+  els.settingsOverlay.classList.remove('show');
   els.tutorialOverlay.classList.add('show');
 }
 function closeTutorial() {
@@ -647,7 +682,7 @@ function closeTutorial() {
   if (state.difficulty == null) {
     els.difficultyOverlay.classList.add('show'); // primo avvio: dopo il tutorial si sceglie la difficoltà
   } else {
-    els.pauseOverlay.classList.add('show'); // riaperto dal menu impostazioni durante una partita
+    els.settingsOverlay.classList.add('show'); // riaperto dal menu impostazioni durante una partita
   }
 }
 
@@ -678,11 +713,17 @@ function init() {
     els.difficultyOverlay.classList.add('show');
   });
 
-  els.settingsBtn.addEventListener('click', openSettings);
-  els.resumeBtn.addEventListener('click', closeSettings);
+  els.pauseBtn.addEventListener('click', openPause);
+  els.resumeBtn.addEventListener('click', closePause);
   els.resetLevelBtn.addEventListener('click', resetLevel);
   els.pauseOverlay.addEventListener('click', (e) => {
-    if (e.target === els.pauseOverlay) closeSettings();
+    if (e.target === els.pauseOverlay) closePause();
+  });
+
+  els.settingsBtn.addEventListener('click', openSettingsMenu);
+  els.closeSettingsBtn.addEventListener('click', closeSettingsMenu);
+  els.settingsOverlay.addEventListener('click', (e) => {
+    if (e.target === els.settingsOverlay) closeSettingsMenu();
   });
 
   els.openLanguageBtn.addEventListener('click', openLanguageModal);

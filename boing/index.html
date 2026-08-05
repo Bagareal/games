@@ -38,7 +38,6 @@
 <div id="app">
 
   <div id="loadingScreen">
-    <div class="emoji">🏓</div>
     <div style="font-size:22px; font-weight:800;">Boing</div>
     <div class="spinner"></div>
   </div>
@@ -46,6 +45,7 @@
   <div class="topbar">
     <div class="icon-group">
       <a class="icon-btn" href="../" aria-label="Home">🏠</a>
+      <button class="icon-btn" id="pauseBtn" aria-label="Pausa">⏸️</button>
       <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
     </div>
     <div class="level-display"><span class="lv-label">LV.</span><span id="levelValue">1</span></div>
@@ -58,7 +58,6 @@
   </div>
 
   <div class="title-wrap">
-    <span class="emoji">🏓</span>
     <h1>BOING</h1>
   </div>
 
@@ -69,7 +68,6 @@
 
   <div class="overlay" id="difficultyOverlay">
     <div class="card">
-      <div class="crown-icon">🏓</div>
       <h2 data-i18n="chooseDifficulty">Scegli la difficoltà</h2>
       <p data-i18n="chooseDifficultySub">Puoi cambiarla ogni volta che inizi una partita</p>
       <div class="difficulty-list">
@@ -80,6 +78,7 @@
     </div>
   </div>
 
+  <!-- pausa: riprendi / cambio difficoltà / reset livello -->
   <div class="overlay" id="pauseOverlay">
     <div class="card">
       <div class="crown-icon">⏸️</div>
@@ -93,11 +92,19 @@
         <button class="difficulty-option" data-difficulty="hard" data-i18n="hard">Difficile</button>
       </div>
 
+      <button class="secondary-btn" id="resetLevelBtn" data-i18n="resetLevel">Reset livello</button>
+    </div>
+  </div>
+
+  <!-- impostazioni: lingua / comandi -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="card">
+      <h2 data-i18n="settingsTitle">⚙️ Impostazioni</h2>
       <div class="menu-list">
         <button class="menu-row" id="openLanguageBtn">🌍 <span data-i18n="languageMenuLabel">Lingua</span></button>
         <button class="menu-row" id="openTutorialBtn">🎮 <span data-i18n="commands">Comandi</span></button>
-        <button class="menu-row" id="resetLevelBtn">🔄 <span data-i18n="resetLevel">Reset livello</span></button>
       </div>
+      <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
     </div>
   </div>
 
