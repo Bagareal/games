@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Free For Real</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html{ height:100%; }
+  body{
+    margin:0; min-height:100%;
+    font-family:'Nunito', sans-serif;
+    background: linear-gradient(180deg, #0B4F6C 0%, #093C56 55%, #061F2E 100%);
+    color: #FFFDF8;
+  }
+  #app{
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: max(28px, env(safe-area-inset-top)) 20px 40px;
+    display:flex; flex-direction:column;
+  }
+  header{ text-align:center; margin-bottom: 28px; }
+  header .logo{ font-size:44px; margin-bottom:6px; }
+  header h1{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:800;
+    font-size:32px;
+    letter-spacing:0.5px;
+    margin:0;
+    text-shadow: 0 2px 0 rgba(0,0,0,0.25);
+  }
+  header p{
+    font-size:14px;
+    font-weight:700;
+    color: rgba(255,255,255,0.75);
+    margin:6px 0 0;
+  }
+  .games{
+    display:flex; flex-direction:column; gap:16px;
+  }
+  .game-card{
+    position:relative;
+    display:flex; align-items:center; gap:14px;
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.14);
+    border-radius:20px;
+    padding:16px 18px;
+    text-decoration:none;
+    color: inherit;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  a.game-card:active{ transform: scale(0.98); background: rgba(255,255,255,0.13); }
+  .game-card.disabled{
+    opacity:0.55;
+    cursor:default;
+  }
+  .game-icon{
+    flex: 0 0 auto;
+    width:56px; height:56px; border-radius:16px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:28px;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+  }
+  .game-icon.wordio{ background: radial-gradient(circle at 32% 28%, #4FC3D9, #0B4F6C); }
+  .game-icon.blokko{ background: radial-gradient(circle at 32% 28%, #F4B740, #C1651F); }
+  .game-icon.boing{ background: radial-gradient(circle at 32% 28%, #F2622E, #A2380F); }
+  .game-info{ flex:1 1 auto; min-width:0; }
+  .game-info h2{
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:19px;
+    margin:0 0 3px;
+  }
+  .game-info p{
+    font-size:13px;
+    font-weight:600;
+    color: rgba(255,255,255,0.7);
+    margin:0;
+    line-height:1.35;
+  }
+  .badge{
+    flex: 0 0 auto;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:11px;
+    letter-spacing:0.3px;
+    background: rgba(255,255,255,0.16);
+    padding:5px 10px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .badge.play{ background: linear-gradient(180deg, #14A085, #0d6e5c); }
+  footer{
+    margin-top:32px;
+    text-align:center;
+    font-size:12px;
+    font-weight:700;
+    color: rgba(255,255,255,0.45);
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="logo">🕹️</div>
+    <h1>Free For Real</h1>
+    <p>Free games. For real.</p>
+  </header>
+
+  <div class="games">
+    <a class="game-card" href="wordio/">
+      <div class="game-icon wordio">🔤</div>
+      <div class="game-info">
+        <h2>Wordio</h2>
+        <p>Spell out every word using the letters on a wheel. Italian, English, French.</p>
+      </div>
+      <span class="badge play">Play</span>
+    </a>
+
+    <div class="game-card disabled">
+      <div class="game-icon blokko">🧱</div>
+      <div class="game-info">
+        <h2>Blokko</h2>
+        <p>A falling-blocks puzzle game, Tetris-style.</p>
+      </div>
+      <span class="badge">Coming soon</span>
+    </div>
+
+    <div class="game-card disabled">
+      <div class="game-icon boing">⚡</div>
+      <div class="game-info">
+        <h2>Boing</h2>
+        <p>More to come.</p>
+      </div>
+      <span class="badge">Coming soon</span>
+    </div>
+  </div>
+
+  <footer>No ads · No accounts · No payments — ever</footer>
+</div>
+</body>
+</html>

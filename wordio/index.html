@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Parole Mie</title>
+<title>Wordio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -14,7 +14,7 @@
 
   <div id="loadingScreen">
     <div class="emoji">🏝️</div>
-    <div style="font-size:22px; font-weight:800;">Parole Mie</div>
+    <div style="font-size:22px; font-weight:800;">Wordio</div>
     <div class="spinner"></div>
   </div>
 
@@ -83,13 +83,16 @@
   </div>
 
   <div class="topbar">
-    <button class="icon-btn" id="gearBtn" aria-label="Impostazioni lingua">⚙️</button>
+    <span class="icon-btn-wrap">
+      <button class="icon-btn" id="gearBtn" aria-label="Impostazioni lingua">⚙️</button>
+      <span class="lang-badge" id="langBadge">🇮🇹</span>
+    </span>
     <div class="level-display"><span class="lv-label">Lv.</span><span id="levelLabel">1</span></div>
     <button class="pill" id="coinBtn"><span class="icon-badge coin-badge">🪙</span><span id="coinLabel">0</span></button>
   </div>
 
   <div class="title-wrap">
-    <h1>PAROLE MIE</h1>
+    <h1>WORDIO</h1>
     <div class="sub" id="subLabel" data-i18n="tagline">Trova tutte le parole</div>
   </div>
 

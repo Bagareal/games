@@ -1,4 +1,4 @@
-/* ============ ISOLA DI PAROLE — motore di gioco ============ */
+/* ============ WORDIO — motore di gioco ============ */
 
 // ---------- Dizionario ----------
 // Le lingue caricano il proprio dizionario da file esterni (dictionaries/<lingua>.json),
@@ -10,7 +10,7 @@ const LANGUAGES = {
 };
 
 // ---------- Interfaccia: testi tradotti ----------
-// il nome "Parole Mie" resta invariato (è il nome del gioco); tutto il resto
+// il nome "Wordio" resta invariato (è il nome del gioco); tutto il resto
 // dell'interfaccia si traduce quando l'utente cambia lingua.
 const UI_STRINGS = {
   it: {
@@ -49,7 +49,9 @@ const UI_STRINGS = {
     dictError: 'Errore nel caricamento del dizionario',
     purchaseConfirmText: (coins, hints) => `Vuoi spendere ${coins} 🪙 per ottenere ${hints} aiuti?`,
     languageConfirmText: name => `Passare a ${name}? Si ricomincerà dal livello 1.`,
+    languageConfirmResumeText: (name, level) => `Passare a ${name}? Riprenderai dal livello ${level}.`,
     noExtraWords: 'Nessuna parola extra trovata in questo livello. Prova a scrivere altre parole valide con le lettere disponibili!',
+    hintsMaxedOut: 'Hai già il massimo di aiuti (10)',
   },
   en: {
     tagline: 'Find all the words',
@@ -87,7 +89,9 @@ const UI_STRINGS = {
     dictError: 'Error loading dictionary',
     purchaseConfirmText: (coins, hints) => `Spend ${coins} 🪙 to get ${hints} hints?`,
     languageConfirmText: name => `Switch to ${name}? You'll restart from level 1.`,
+    languageConfirmResumeText: (name, level) => `Switch to ${name}? You'll resume from level ${level}.`,
     noExtraWords: "No extra words found in this level yet. Try spelling other valid words with the available letters!",
+    hintsMaxedOut: 'You already have the max hints (10)',
   },
   fr: {
     tagline: 'Trouve tous les mots',
@@ -125,7 +129,9 @@ const UI_STRINGS = {
     dictError: 'Erreur de chargement du dictionnaire',
     purchaseConfirmText: (coins, hints) => `Dépenser ${coins} 🪙 pour obtenir ${hints} indices ?`,
     languageConfirmText: name => `Passer à ${name} ? Tu recommenceras au niveau 1.`,
+    languageConfirmResumeText: (name, level) => `Passer à ${name} ? Tu reprendras au niveau ${level}.`,
     noExtraWords: "Aucun mot bonus trouvé dans ce niveau pour l'instant. Essaie d'écrire d'autres mots valides avec les lettres disponibles !",
+    hintsMaxedOut: "Tu as déjà le maximum d'indices (10)",
   },
 };
 function t() {
@@ -140,22 +146,42 @@ function applyTranslations() {
 }
 
 let ALL_WORDS = [];
-let WORD_SET = new Set();
 let COMMON_WORDS = new Set();
 let WORD_DATA = [];
 let BY_LEN = {};
+let NORMALIZED_TO_WORD = new Map(); // "metier" -> "métier": per riconoscere/mostrare le parole a partire dalle lettere "semplici" della ruota
+
+// toglie gli accenti (é,è,ê,à,ç,...) e scompone le legature (œ->oe, æ->ae):
+// la ruota mostra e fa comporre solo lettere "semplici", ma la parola trovata
+// si visualizza sempre con l'ortografia corretta (vedi NORMALIZED_TO_WORD)
+function normalizeWord(w) {
+  return w.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\u0153/g, 'oe').replace(/\u00e6/g, 'ae');
+}
 
 async function loadDictionary(lang) {
   const res = await fetch(`dictionaries/${lang}.json`);
   if (!res.ok) throw new Error(`Impossibile caricare il dizionario "${lang}"`);
   const data = await res.json();
   ALL_WORDS = data.words.split(',');
-  WORD_SET = new Set(ALL_WORDS); // per verifica rapida e affidabile di qualsiasi parola scritta
   COMMON_WORDS = new Set(data.common.split(','));
-  WORD_DATA = ALL_WORDS.map(w => ({ word: w, len: w.length, counts: countLetters(w) }));
+  WORD_DATA = ALL_WORDS.map(w => {
+    const normalized = normalizeWord(w);
+    return { word: w, normalized, len: normalized.length, counts: countLetters(normalized) };
+  });
   BY_LEN = {};
   for (const wd of WORD_DATA) {
     (BY_LEN[wd.len] = BY_LEN[wd.len] || []).push(wd);
+  }
+  // mappa parola normalizzata -> parola originale (con accenti), preferendo le parole comuni
+  // quando più parole condividono la stessa forma senza accenti
+  NORMALIZED_TO_WORD = new Map();
+  for (const wd of WORD_DATA) {
+    if (COMMON_WORDS.has(wd.word) && !NORMALIZED_TO_WORD.has(wd.normalized)) {
+      NORMALIZED_TO_WORD.set(wd.normalized, wd.word);
+    }
+  }
+  for (const wd of WORD_DATA) {
+    if (!NORMALIZED_TO_WORD.has(wd.normalized)) NORMALIZED_TO_WORD.set(wd.normalized, wd.word);
   }
 }
 
@@ -196,13 +222,17 @@ function shuffleInPlace(arr, rnd) {
 // come righe di caselle vuote (una riga per parola); tutte le altre
 // parole valide trovabili con le stesse lettere contano come bonus estra.
 
-function findSubwords(anchorWord, anchorCounts) {
+// anchorNormalized/anchorCounts sono già in forma "senza accenti": la ruota
+// mostra solo lettere semplici, quindi le sottoparole vanno cercate in quello
+// spazio. res contiene comunque le parole ORIGINALI (con accenti), per la
+// visualizzazione.
+function findSubwords(anchorNormalized, anchorCounts) {
   const res = [];
-  for (let len = 3; len <= anchorWord.length; len++) {
+  for (let len = 3; len <= anchorNormalized.length; len++) {
     const bucket = BY_LEN[len];
     if (!bucket) continue;
     for (const wd of bucket) {
-      if (wd.word === anchorWord) continue;
+      if (wd.normalized === anchorNormalized) continue;
       if (isSubset(wd.counts, anchorCounts)) res.push(wd.word);
     }
   }
@@ -240,7 +270,8 @@ function generateLevel(level) {
   for (let attempt = 0; attempt < 60; attempt++) {
     const anchorWd = pick(anchorPool, rnd);
     const anchor = anchorWd.word;
-    const subwords = findSubwords(anchor, anchorWd.counts);
+    const anchorNormalized = anchorWd.normalized;
+    const subwords = findSubwords(anchorNormalized, anchorWd.counts);
     const pool = Array.from(new Set(subwords)).filter(w => w.length >= 3);
     if (pool.length < minTargets - 1) continue; // -1 perché l'anchor stesso è sempre un target
 
@@ -279,9 +310,13 @@ function generateLevel(level) {
       const extra = pool.filter(w => !targetsSet.has(w));
       return {
         anchor,
-        letters: shuffleInPlace(anchor.split(''), rnd),
-        targets,
-        extraWords: new Set(extra)
+        anchorNormalized,
+        // la ruota mostra/compone solo lettere semplici (senza accenti)
+        letters: shuffleInPlace(anchorNormalized.split(''), rnd),
+        targets, // parole originali (con accenti), per la visualizzazione
+        targetsByNormalized: new Map(targets.map(w => [normalizeWord(w), w])),
+        extraWords: new Set(extra),
+        extraByNormalized: new Map(extra.map(w => [normalizeWord(w), w])),
       };
     }
   }
@@ -290,6 +325,7 @@ function generateLevel(level) {
 
 // ---------- Stato di gioco ----------
 const EXTRA_PER_HINT = 10; // ogni N parole extra (a vita) si guadagna un aiuto
+const MAX_HINTS = 10; // tetto massimo di aiuti accumulabili contemporaneamente
 const state = {
   language: 'it',
   level: 1,
@@ -301,6 +337,7 @@ const state = {
   selection: [],
   extraFoundTotal: 0,  // parole extra trovate in totale (a vita, persistente)
   hintsAvailable: 0,   // aiuti guadagnati e non ancora usati
+  progressByLanguage: {}, // livello/parole trovate per ciascuna lingua, per riprendere da dove si era rimasti
 };
 
 const els = {
@@ -339,6 +376,7 @@ const els = {
   confirmPurchaseBtn: document.getElementById('confirmPurchaseBtn'),
   cancelPurchaseBtn: document.getElementById('cancelPurchaseBtn'),
   gearBtn: document.getElementById('gearBtn'),
+  langBadge: document.getElementById('langBadge'),
   languageOverlay: document.getElementById('languageOverlay'),
   languageList: document.getElementById('languageList'),
   closeLanguageBtn: document.getElementById('closeLanguageBtn'),
@@ -349,26 +387,44 @@ const els = {
 };
 
 // ---------- Persistenza ----------
+// Le monete e gli aiuti sono condivisi tra tutte le lingue (è valuta di
+// gioco); il livello e le parole trovate nel livello in corso sono invece
+// per lingua, così cambiando lingua si riprende da dove si era rimasti
+// invece di perdere il progresso di quella lingua.
+function snapshotCurrentProgress() {
+  const revealedLetters = {};
+  for (const word in state.revealedLetters) {
+    revealedLetters[word] = Array.from(state.revealedLetters[word]);
+  }
+  return {
+    level: state.level,
+    foundTargets: Array.from(state.foundTargets),
+    foundExtras: Array.from(state.foundExtras),
+    revealedLetters
+  };
+}
+function applyLanguageProgress(saved) {
+  state.level = saved ? saved.level : 1;
+  state.foundTargets = new Set(saved ? saved.foundTargets : []);
+  state.foundExtras = new Set(saved ? saved.foundExtras : []);
+  state.revealedLetters = {};
+  if (saved && saved.revealedLetters) {
+    for (const word in saved.revealedLetters) {
+      state.revealedLetters[word] = new Set(saved.revealedLetters[word]);
+    }
+  }
+}
 async function loadProgress() {
   try {
-    const raw = localStorage.getItem('parole-mie-progress');
+    const raw = localStorage.getItem('wordio-progress');
     if (raw) {
       const data = JSON.parse(raw);
       state.language = data.language && LANGUAGES[data.language] ? data.language : 'it';
-      state.level = data.level || 1;
       state.coins = data.coins != null ? data.coins : 60;
       state.extraFoundTotal = data.extraFoundTotal || 0;
       state.hintsAvailable = data.hintsAvailable || 0;
-      // parole già trovate/aiuti usati nel livello in corso, per non perdere
-      // nulla in caso di refresh accidentale della pagina
-      state.foundTargets = new Set(data.foundTargets || []);
-      state.foundExtras = new Set(data.foundExtras || []);
-      state.revealedLetters = {};
-      if (data.revealedLetters) {
-        for (const word in data.revealedLetters) {
-          state.revealedLetters[word] = new Set(data.revealedLetters[word]);
-        }
-      }
+      state.progressByLanguage = data.progress || {};
+      applyLanguageProgress(state.progressByLanguage[state.language]);
     } else {
       state.coins = 60; // bonus di benvenuto per i nuovi giocatori
     }
@@ -378,21 +434,24 @@ async function loadProgress() {
 }
 async function saveProgress() {
   try {
-    const revealedLetters = {};
-    for (const word in state.revealedLetters) {
-      revealedLetters[word] = Array.from(state.revealedLetters[word]);
-    }
-    localStorage.setItem('parole-mie-progress', JSON.stringify({
+    state.progressByLanguage[state.language] = snapshotCurrentProgress();
+    localStorage.setItem('wordio-progress', JSON.stringify({
       language: state.language,
-      level: state.level,
       coins: state.coins,
       extraFoundTotal: state.extraFoundTotal,
       hintsAvailable: state.hintsAvailable,
-      foundTargets: Array.from(state.foundTargets),
-      foundExtras: Array.from(state.foundExtras),
-      revealedLetters
+      progress: state.progressByLanguage
     }));
   } catch (e) { /* ignora errori di salvataggio */ }
+}
+// passa a un'altra lingua: salva il progresso di quella corrente e carica
+// quello della nuova lingua (livello 1 vuoto se non l'ha mai giocata)
+function switchToLanguage(code) {
+  state.progressByLanguage[state.language] = snapshotCurrentProgress();
+  state.language = code;
+  applyLanguageProgress(state.progressByLanguage[code]);
+  startLevel(state.level, true);
+  saveProgress();
 }
 
 // ---------- Rendering elenco parole ----------
@@ -565,49 +624,65 @@ function flashInvalid() {
   }, 420);
 }
 
-// verifica se una parola è valida come bonus extra: prima controlla il pool
+// verifica se una sequenza di lettere (senza accenti, come composta sulla
+// ruota) corrisponde a una parola extra valida: prima controlla il pool
 // pre-calcolato del livello, poi (per sicurezza) verifica anche dinamicamente
 // nel dizionario completo, così qualsiasi parola vera formabile con le lettere
 // disponibili viene sempre riconosciuta.
-function isValidExtraWord(word) {
+function isValidExtraWord(normWord) {
   const data = state.currentLevelData;
-  if (data.extraWords.has(word)) return true;
-  if (!WORD_SET.has(word)) return false;
-  if (data.targets.includes(word)) return false; // le parole target si gestiscono a parte
-  return isSubset(countLetters(word), countLetters(data.anchor));
+  if (data.targetsByNormalized.has(normWord)) return false; // le parole target si gestiscono a parte
+  if (data.extraByNormalized.has(normWord)) return true;
+  if (!NORMALIZED_TO_WORD.has(normWord)) return false;
+  return isSubset(countLetters(normWord), countLetters(data.anchorNormalized));
 }
 
-function checkWord(word) {
+// normWord: sequenza di lettere senza accenti composta trascinando le tessere
+// della ruota. Le parole trovate si salvano/mostrano sempre con l'ortografia
+// originale (con accenti), recuperata dalle mappe del livello o dal dizionario.
+function checkWord(normWord) {
   const data = state.currentLevelData;
-  const isTarget = data.targets.includes(word);
-  if (isTarget && !state.foundTargets.has(word)) {
-    state.foundTargets.add(word);
+  const targetWord = data.targetsByNormalized.get(normWord);
+  if (targetWord) {
+    if (state.foundTargets.has(targetWord)) {
+      showToast(t().alreadyFound);
+      return 'duplicate';
+    }
+    state.foundTargets.add(targetWord);
     updateHeader();
     renderWordsList();
-    showToast(t().wordFoundToast(word));
+    showToast(t().wordFoundToast(targetWord));
     saveProgress();
     checkLevelComplete();
     return 'target';
-  } else if (!state.foundExtras.has(word) && isValidExtraWord(word)) {
-    state.foundExtras.add(word);
+  }
+
+  if (isValidExtraWord(normWord)) {
+    const extraWord = data.extraByNormalized.get(normWord) || NORMALIZED_TO_WORD.get(normWord);
+    if (state.foundExtras.has(extraWord)) {
+      showToast(t().alreadyFound);
+      return 'duplicate';
+    }
+    state.foundExtras.add(extraWord);
     state.coins += 5;
     state.extraFoundTotal += 1;
     els.extraCount.textContent = state.foundExtras.size;
     updateHeader();
     showToast(t().extraFoundToast);
     if (state.extraFoundTotal % EXTRA_PER_HINT === 0) {
-      state.hintsAvailable += 1;
-      updateHintBadge(true);
-      showToast(t().hintEarnedToast);
+      if (state.hintsAvailable < MAX_HINTS) {
+        state.hintsAvailable += 1;
+        updateHintBadge(true);
+        showToast(t().hintEarnedToast);
+      } else {
+        showToast(t().hintsMaxedOut);
+      }
     }
     saveProgress();
     return 'extra';
-  } else if (state.foundTargets.has(word) || state.foundExtras.has(word)) {
-    showToast(t().alreadyFound);
-    return 'duplicate';
-  } else {
-    return 'invalid';
   }
+
+  return 'invalid';
 }
 
 let toastTimer = null;
@@ -621,6 +696,7 @@ function showToast(msg) {
 function updateHeader() {
   els.levelLabel.textContent = state.level;
   els.coinLabel.textContent = state.coins;
+  els.langBadge.textContent = LANGUAGES[state.language].flag;
 }
 
 function updateHintBadge(justEarned) {
@@ -655,8 +731,13 @@ function showWinOverlay() {
 function nextLevel() {
   els.winOverlay.classList.remove('show');
   state.level += 1;
-  saveProgress();
+  // prima si azzerano le parole trovate del nuovo livello (dentro startLevel),
+  // poi si salva: se si salvasse prima, un refresh/blocco dello schermo nella
+  // finestra tra le due chiamate poteva persistere "livello nuovo" insieme
+  // alle parole trovate del livello VECCHIO, facendo sembrare il nuovo livello
+  // già completato (bug: livello saltato senza essere giocato)
   startLevel(state.level);
+  saveProgress();
 }
 
 function useHint() {
@@ -746,8 +827,11 @@ function openShop() {
   els.shopBalance.textContent = state.coins;
   els.shopPackages.forEach(pkg => {
     const cost = parseInt(pkg.dataset.coins, 10);
+    const hints = parseInt(pkg.dataset.hints, 10);
     const buyBtn = pkg.querySelector('.shop-buy-btn');
-    const affordable = state.coins >= cost;
+    // ogni pacchetto si disabilita singolarmente se farebbe superare il tetto
+    // massimo di aiuti, così non si spendono monete per aiuti persi
+    const affordable = state.coins >= cost && state.hintsAvailable + hints <= MAX_HINTS;
     pkg.classList.toggle('disabled', !affordable);
     buyBtn.disabled = !affordable;
   });
@@ -770,7 +854,9 @@ function closePurchaseConfirm() {
 function confirmPurchase() {
   if (!pendingPurchase) { closePurchaseConfirm(); return; }
   const { coins, hints } = pendingPurchase;
-  if (state.coins >= coins) {
+  if (state.hintsAvailable + hints > MAX_HINTS) {
+    showToast(t().hintsMaxedOut);
+  } else if (state.coins >= coins) {
     state.coins -= coins;
     state.hintsAvailable += hints;
     updateHeader();
@@ -804,7 +890,10 @@ function closeLanguageModal() {
 function openLanguageConfirm(code) {
   if (code === state.language) { closeLanguageModal(); return; }
   pendingLanguage = code;
-  els.languageConfirmText.textContent = t().languageConfirmText(LANGUAGES[code].label);
+  const saved = state.progressByLanguage[code];
+  els.languageConfirmText.textContent = saved
+    ? t().languageConfirmResumeText(LANGUAGES[code].label, saved.level)
+    : t().languageConfirmText(LANGUAGES[code].label);
   els.languageOverlay.classList.remove('show');
   els.languageConfirmOverlay.classList.add('show');
 }
@@ -819,11 +908,8 @@ async function confirmLanguageChange() {
   showLoadingScreen();
   try {
     await loadDictionary(code);
-    state.language = code;
-    state.level = 1;
-    saveProgress();
+    switchToLanguage(code);
     applyTranslations();
-    startLevel(state.level);
   } catch (e) {
     showToast(t().dictError);
   }
@@ -874,7 +960,7 @@ async function init() {
     pkg.querySelector('.shop-buy-btn').addEventListener('click', () => {
       const cost = parseInt(pkg.dataset.coins, 10);
       const hints = parseInt(pkg.dataset.hints, 10);
-      if (state.coins >= cost) openPurchaseConfirm(cost, hints);
+      if (state.coins >= cost && state.hintsAvailable + hints <= MAX_HINTS) openPurchaseConfirm(cost, hints);
     });
   });
   els.confirmPurchaseBtn.addEventListener('click', confirmPurchase);

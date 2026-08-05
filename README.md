@@ -1,4 +1,6 @@
-# games
+# Free For Real
+
+*Free games. For real.*
 
 A collection of free, browser-based games. No ads, no accounts, no payment requirements — just open a link and play.
 
@@ -8,12 +10,20 @@ Everything here is free to play, forever. There are no in-app purchases that unl
 
 ## Games
 
-### [Parole Mie](parole-mie/)
+### [Wordio](wordio/)
 
 A word-finding puzzle: spell out all the target words using the letters on a wheel, in Italian, English, or French. Play it at:
 
-**[ivanprea.github.io/games/parole-mie](https://ivanprea.github.io/games/parole-mie/)**
+**[ivanprea.github.io/games/wordio](https://ivanprea.github.io/games/wordio/)**
+
+### Blokko *(coming soon)*
+
+A falling-blocks puzzle game, Tetris-style.
+
+### Boing *(coming soon)*
+
+TBD.
 
 ## What's next
 
-Right now there's just the one game, but the plan is to grow this into a small site with a handful of free games to pick from, all built the same way: plain HTML/CSS/JS, no build step, no backend, easy to open and play directly from GitHub Pages.
+There's a home page (`index.html` at the repo root) listing all the games — playable ones link out, the rest show as "coming soon". The plan is to keep growing this into a small site with a handful of free games to pick from, all built the same way: plain HTML/CSS/JS, no build step, no backend, easy to open and play directly from GitHub Pages.
