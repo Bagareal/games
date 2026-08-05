@@ -20,8 +20,7 @@
   <div class="topbar">
     <div class="icon-group">
       <a class="icon-btn" href="../" aria-label="Home">🏠</a>
-      <button class="icon-btn" id="settingsBtn" aria-label="Pausa">⚙️</button>
-      <button class="icon-btn" id="langBtn" aria-label="Lingua">🌍</button>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
     </div>
     <div class="level-display"><span class="lv-label">LV.</span><span id="levelValue">1</span></div>
     <canvas class="lives" id="livesCanvas" width="24" height="6"></canvas>
@@ -42,7 +41,7 @@
     <div class="tap-hint hidden" id="tapHint" data-i18n="tapToLaunch">Tocca per lanciare la pallina</div>
   </div>
 
-  <div class="overlay show" id="difficultyOverlay">
+  <div class="overlay" id="difficultyOverlay">
     <div class="card">
       <div class="crown-icon">⚡</div>
       <h2 data-i18n="chooseDifficulty">Scegli la difficoltà</h2>
@@ -59,13 +58,45 @@
     <div class="card">
       <div class="crown-icon">⏸️</div>
       <h2 data-i18n="paused">Pausa</h2>
-      <p data-i18n="pausedSub">Puoi riprendere o cambiare difficoltà</p>
       <button class="primary-btn" id="resumeBtn" data-i18n="resume">Riprendi ▶</button>
-      <div class="difficulty-list" style="margin-top:14px;">
+
+      <p class="menu-section-label" data-i18n="difficultyLabel">Difficoltà</p>
+      <div class="difficulty-list">
         <button class="difficulty-option" data-difficulty="easy" data-i18n="easy">Facile</button>
         <button class="difficulty-option" data-difficulty="medium" data-i18n="medium">Medio</button>
         <button class="difficulty-option" data-difficulty="hard" data-i18n="hard">Difficile</button>
       </div>
+
+      <div class="menu-list">
+        <button class="menu-row" id="openLanguageBtn">🌍 <span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openTutorialBtn">🎮 <span data-i18n="commands">Comandi</span></button>
+        <button class="menu-row" id="resetLevelBtn">🔄 <span data-i18n="resetLevel">Reset livello</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="tutorialOverlay">
+    <div class="card tutorial-card">
+      <h2 data-i18n="tutorialTitle">Come si gioca</h2>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">↔️</span>
+        <p data-i18n="tutorialMove">Sposta il paddle: trascina il dito o muovi il mouse sull'area di gioco</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">👆</span>
+        <p data-i18n="tutorialLaunch">Tocca per lanciare la pallina</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">
+          <span class="pu-swatch" style="--c:#4FC3D9"></span><span class="pu-swatch" style="--c:#7B5FC7"></span><span class="pu-swatch" style="--c:#14A085"></span>❤️
+        </span>
+        <p data-i18n="tutorialPowerups">Prendi i potenziamenti che cadono dai mattoncini rotti: paddle più largo, multi-pallina, pallina più lenta, vita extra</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">❤️❤️❤️</span>
+        <p data-i18n="tutorialLives">Hai 3 vite: non far cadere la pallina!</p>
+      </div>
+      <button class="primary-btn" id="closeTutorialBtn" data-i18n="gotIt">Ho capito!</button>
     </div>
   </div>
 

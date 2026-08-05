@@ -131,77 +131,124 @@ body{
 }
 @keyframes pulse{ 0%,100%{ opacity:0.55; } 50%{ opacity:1; } }
 
-/* overlay/card: stesso linguaggio visivo di Wordio */
+/* overlay/card: estetica propria di Boing (arcade scuro/neon), non quella
+   "da spiaggia" di Wordio — anche i modal condivisi seguono il tema del
+   gioco in cui vivono */
 .overlay{
   position:fixed; inset:0; z-index:30;
-  background: rgba(11,7,24,0.78);
+  background: rgba(6,4,14,0.82);
   display:flex; align-items:center; justify-content:center;
   opacity:0; pointer-events:none; transition:opacity 0.25s ease;
 }
 .overlay.show{ opacity:1; pointer-events:auto; }
 .card{
-  background: var(--sand);
-  border-radius:24px;
-  padding: 28px 26px 22px;
+  background: #201736;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius:22px;
+  padding: 26px 22px 20px;
   width: 82%;
   max-width:320px;
+  max-height: 82vh;
+  overflow-y: auto;
   text-align:center;
-  color: var(--navy-text);
-  box-shadow: 0 12px 0 var(--sand-dark), 0 20px 30px rgba(0,0,0,0.35);
+  color: var(--white);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 30px rgba(242,98,46,0.12);
   transform: translateY(10px) scale(0.96);
   transition: transform 0.25s ease;
 }
 .overlay.show .card{ transform: translateY(0) scale(1); }
-.card h2{ font-family:'Baloo 2', sans-serif; font-size:24px; margin:2px 0 4px; }
-.card p{ font-size:14px; color:#555; margin:4px 0 16px; font-weight:700; }
-.crown-icon{ font-size:44px; margin-bottom:4px; }
+.card h2{
+  font-family:'Press Start 2P', monospace;
+  font-size:15px; line-height:1.5;
+  margin:4px 0 10px;
+  color: var(--gold);
+  text-shadow: 0 0 10px rgba(244,183,64,0.55);
+}
+.card p{ font-size:13px; color: rgba(255,255,255,0.75); margin:4px 0 16px; font-weight:600; }
+.crown-icon{ font-size:40px; margin-bottom:4px; }
 
-.difficulty-list{ display:flex; flex-direction:column; gap:10px; }
+.difficulty-list{ display:flex; flex-direction:column; gap:8px; }
+.menu-section-label{
+  font-size:11px; font-weight:800; letter-spacing:1px; text-transform:uppercase;
+  color: rgba(255,255,255,0.45);
+  margin: 14px 0 8px; text-align:left;
+}
 .difficulty-option{
-  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:17px;
-  background: white; color: var(--navy-text);
-  border: none; border-radius:14px;
-  padding:14px 16px;
-  box-shadow: 0 3px 0 #E2D2A5;
+  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:15px;
+  background: rgba(255,255,255,0.06); color: var(--white);
+  border: 1px solid rgba(255,255,255,0.1); border-radius:12px;
+  padding:12px 14px;
   cursor:pointer;
 }
-.difficulty-option:active{ transform:translateY(2px); box-shadow:none; }
-.difficulty-option[data-difficulty="easy"]{ border-left: 8px solid var(--teal); }
-.difficulty-option[data-difficulty="medium"]{ border-left: 8px solid var(--gold); }
-.difficulty-option[data-difficulty="hard"]{ border-left: 8px solid var(--coral); }
-.difficulty-option.active{ outline: 3px solid var(--navy-text); outline-offset: -3px; }
+.difficulty-option:active{ background: rgba(255,255,255,0.12); }
+.difficulty-option[data-difficulty="easy"]{ border-left: 6px solid var(--teal); }
+.difficulty-option[data-difficulty="medium"]{ border-left: 6px solid var(--gold); }
+.difficulty-option[data-difficulty="hard"]{ border-left: 6px solid var(--coral); }
+.difficulty-option.active{ outline: 2px solid rgba(255,255,255,0.5); outline-offset: -2px; }
 
 .primary-btn{
-  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:17px;
+  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:16px;
   background: linear-gradient(180deg, var(--coral), var(--coral-dark));
   color:white; border:none; padding:12px 30px; border-radius:999px;
-  box-shadow: 0 5px 0 #6d2409;
+  box-shadow: 0 4px 0 #6d2409, 0 0 18px rgba(242,98,46,0.4);
   cursor:pointer;
+  margin-bottom: 4px;
 }
-.primary-btn:active{ transform:translateY(3px); box-shadow:0 2px 0 #6d2409; }
+.primary-btn:active{ transform:translateY(3px); box-shadow:0 1px 0 #6d2409; }
 .secondary-btn{
-  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:15px;
-  background: white; color: var(--navy-text); border: 2px solid var(--sand-dark);
-  padding:10px 22px; border-radius:999px;
+  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px;
+  background: transparent; color: rgba(255,255,255,0.75); border: 2px solid rgba(255,255,255,0.2);
+  padding:9px 20px; border-radius:999px;
   cursor:pointer;
   margin-top:6px;
 }
 .secondary-btn:active{ transform:scale(0.96); }
 
-.language-list{ display:flex; flex-direction:column; gap:10px; padding: 4px 0 18px; }
+.menu-list{ display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+.menu-row{
+  display:flex; align-items:center; gap:8px;
+  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px;
+  background: rgba(255,255,255,0.06); color: var(--white);
+  border: 1px solid rgba(255,255,255,0.1); border-radius:12px;
+  padding:11px 14px;
+  cursor:pointer;
+  text-align:left;
+}
+.menu-row:active{ background: rgba(255,255,255,0.12); }
+
+.language-list{ display:flex; flex-direction:column; gap:8px; padding: 4px 0 8px; }
 .language-option{
   display:flex; align-items:center; gap:12px;
   width:100%;
-  background:white; border-radius:14px; padding:12px 16px;
-  box-shadow: 0 3px 0 #E2D2A5;
-  border:none; cursor:pointer;
-  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:16px;
-  color: var(--navy-text);
+  background: rgba(255,255,255,0.06); border-radius:12px; padding:11px 14px;
+  border: 1px solid rgba(255,255,255,0.1); cursor:pointer;
+  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:15px;
+  color: var(--white);
   text-align:left;
 }
-.language-option:active{ transform:translateY(2px); box-shadow:none; }
-.language-option.active{ outline: 3px solid var(--teal); outline-offset: -3px; }
+.language-option:active{ background: rgba(255,255,255,0.12); }
+.language-option.active{ outline: 2px solid var(--teal); outline-offset: -2px; }
 .language-flag{ font-size:22px; }
+
+/* tutorial */
+.tutorial-card{ max-width:340px; }
+.tutorial-row{
+  display:flex; align-items:center; gap:12px;
+  text-align:left;
+  margin-bottom:14px;
+}
+.tutorial-icon{
+  flex:0 0 auto; width:44px; text-align:center;
+  font-size:20px;
+}
+.tutorial-row p{ margin:0; font-size:12.5px; line-height:1.4; }
+.pu-swatch{
+  display:inline-block; width:11px; height:11px; margin:0 2px;
+  background: var(--c);
+  box-shadow: 0 0 6px var(--c);
+  border-radius:2px;
+  vertical-align:middle;
+}
 
 #loadingScreen{
   position:fixed; inset:0; z-index:50;

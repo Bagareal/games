@@ -27,8 +27,11 @@ const UI_STRINGS = {
     gameOverSub: (level, score) => `LV. ${level} — Punteggio: ${score}`,
     playAgain: 'Rigioca',
     paused: 'Pausa',
-    pausedSub: 'Puoi riprendere o cambiare difficoltà',
     resume: 'Riprendi ▶',
+    difficultyLabel: 'Difficoltà',
+    languageMenuLabel: 'Lingua',
+    commands: 'Comandi',
+    resetLevel: 'Reset livello',
     languageTitle: '🌍 Lingua',
     languageSub: "Scegli la lingua dell'interfaccia",
     close: 'Chiudi',
@@ -37,6 +40,12 @@ const UI_STRINGS = {
     powerUpLifeMax: '❤️ Vite già al massimo (+50 punti)',
     powerUpMulti: '⚪ Multi-pallina!',
     powerUpSlow: '🐌 Pallina rallentata!',
+    tutorialTitle: 'Come si gioca',
+    tutorialMove: "Sposta il paddle: trascina il dito o muovi il mouse sull'area di gioco",
+    tutorialLaunch: 'Tocca per lanciare la pallina',
+    tutorialPowerups: 'Prendi i potenziamenti che cadono dai mattoncini rotti: paddle più largo, multi-pallina, pallina più lenta, vita extra',
+    tutorialLives: 'Hai 3 vite: non far cadere la pallina!',
+    gotIt: 'Ho capito!',
   },
   en: {
     scoreLabel: 'Score',
@@ -53,8 +62,11 @@ const UI_STRINGS = {
     gameOverSub: (level, score) => `LV. ${level} — Score: ${score}`,
     playAgain: 'Play again',
     paused: 'Paused',
-    pausedSub: 'You can resume or change difficulty',
     resume: 'Resume ▶',
+    difficultyLabel: 'Difficulty',
+    languageMenuLabel: 'Language',
+    commands: 'Controls',
+    resetLevel: 'Reset level',
     languageTitle: '🌍 Language',
     languageSub: 'Choose the interface language',
     close: 'Close',
@@ -63,6 +75,12 @@ const UI_STRINGS = {
     powerUpLifeMax: '❤️ Already max lives (+50 points)',
     powerUpMulti: '⚪ Multi-ball!',
     powerUpSlow: '🐌 Ball slowed down!',
+    tutorialTitle: 'How to play',
+    tutorialMove: 'Move the paddle: drag your finger or move the mouse over the game area',
+    tutorialLaunch: 'Tap to launch the ball',
+    tutorialPowerups: 'Grab the power-ups that fall from broken bricks: wider paddle, multi-ball, slower ball, extra life',
+    tutorialLives: "You have 3 lives: don't let the ball fall!",
+    gotIt: 'Got it!',
   },
   fr: {
     scoreLabel: 'Score',
@@ -79,8 +97,11 @@ const UI_STRINGS = {
     gameOverSub: (level, score) => `LV. ${level} — Score : ${score}`,
     playAgain: 'Rejouer',
     paused: 'Pause',
-    pausedSub: 'Tu peux reprendre ou changer de difficulté',
     resume: 'Reprendre ▶',
+    difficultyLabel: 'Difficulté',
+    languageMenuLabel: 'Langue',
+    commands: 'Commandes',
+    resetLevel: 'Réinitialiser le niveau',
     languageTitle: '🌍 Langue',
     languageSub: "Choisis la langue de l'interface",
     close: 'Fermer',
@@ -89,6 +110,12 @@ const UI_STRINGS = {
     powerUpLifeMax: '❤️ Vies déjà au maximum (+50 points)',
     powerUpMulti: '⚪ Multi-balle !',
     powerUpSlow: '🐌 Balle ralentie !',
+    tutorialTitle: 'Comment jouer',
+    tutorialMove: 'Déplace la raquette : glisse ton doigt ou bouge la souris sur la zone de jeu',
+    tutorialLaunch: 'Touche pour lancer la balle',
+    tutorialPowerups: 'Attrape les bonus qui tombent des briques cassées : raquette plus large, multi-balle, balle plus lente, vie supplémentaire',
+    tutorialLives: 'Tu as 3 vies : ne laisse pas tomber la balle !',
+    gotIt: "C'est compris !",
   },
 };
 
@@ -117,7 +144,7 @@ const BRICK_COLS = 8;
 const BRICK_W = 20, BRICK_H = 8, BRICK_GAP = 2;
 const BRICK_MARGIN_X = 3;
 const BRICK_TOP = 20;
-const PADDLE_Y = VH - 14;
+const PADDLE_Y = VH - 42; // margine ampio sotto il paddle: sul mobile il pollice sta lì e non deve coprirlo
 const PADDLE_H = 4;
 const BALL_SIZE = 3;
 const BASE_BALL_SPEED = 95; // pixel virtuali al secondo
@@ -125,7 +152,6 @@ const MAX_LIVES = 3;
 const PALETTE = ['#F2622E', '#F4B740', '#14A085', '#7B5FC7', '#4FC3D9'];
 const POWER_UP_TYPES = ['wide', 'life', 'multi', 'slow'];
 const POWER_UP_COLORS = { wide: '#4FC3D9', life: '#F2622E', multi: '#7B5FC7', slow: '#14A085' };
-const POWER_UP_LETTERS = { wide: 'W', life: '+', multi: 'M', slow: 'S' };
 
 const DIFFICULTIES = {
   easy: { ballSpeed: 1.0, paddleWidth: 36, powerUpChance: 0.25, toughBrickBase: 0.03 },
@@ -188,7 +214,6 @@ const els = {
   levelValue: document.getElementById('levelValue'),
   scoreValue: document.getElementById('scoreValue'),
   livesCanvas: document.getElementById('livesCanvas'),
-  langBtn: document.getElementById('langBtn'),
   languageOverlay: document.getElementById('languageOverlay'),
   languageList: document.getElementById('languageList'),
   closeLanguageBtn: document.getElementById('closeLanguageBtn'),
@@ -202,6 +227,11 @@ const els = {
   settingsBtn: document.getElementById('settingsBtn'),
   pauseOverlay: document.getElementById('pauseOverlay'),
   resumeBtn: document.getElementById('resumeBtn'),
+  openLanguageBtn: document.getElementById('openLanguageBtn'),
+  openTutorialBtn: document.getElementById('openTutorialBtn'),
+  resetLevelBtn: document.getElementById('resetLevelBtn'),
+  tutorialOverlay: document.getElementById('tutorialOverlay'),
+  closeTutorialBtn: document.getElementById('closeTutorialBtn'),
 };
 const ctx = els.canvas.getContext('2d');
 const livesCtx = els.livesCanvas.getContext('2d');
@@ -304,6 +334,10 @@ function openSettings() {
 function closeSettings() {
   els.pauseOverlay.classList.remove('show');
   state.paused = false;
+}
+function resetLevel() {
+  startLevel(state.level);
+  closeSettings();
 }
 
 function startLevel(level) {
@@ -489,14 +523,28 @@ function render() {
     ctx.fillRect(Math.round(b.x) + BALL_SIZE - 1, Math.round(b.y) + BALL_SIZE - 1, 1, 1);
   }
 
+  // power-up: nessuna icona interna, solo un quadrato (o un cuore, per la
+  // vita) a tinta unita con un bagliore neon
   for (const p of state.powerUps) {
-    ctx.fillStyle = POWER_UP_COLORS[p.type];
-    ctx.fillRect(p.x, p.y, p.size, p.size);
-    ctx.fillStyle = '#FFFDF8';
-    ctx.font = "6px 'Press Start 2P'";
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(POWER_UP_LETTERS[p.type], p.x + p.size / 2, p.y + p.size / 2 + 1);
+    const color = POWER_UP_COLORS[p.type];
+    ctx.save();
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 5;
+    ctx.fillStyle = color;
+    if (p.type === 'life') {
+      const cell = p.size / 7;
+      for (let row = 0; row < HEART_PATTERN.length; row++) {
+        for (let col = 0; col < HEART_PATTERN[row].length; col++) {
+          if (HEART_PATTERN[row][col] === 'X') {
+            ctx.fillRect(p.x + col * cell, p.y + row * cell, cell + 0.6, cell + 0.6);
+          }
+        }
+      }
+    } else {
+      roundedRectPath(ctx, p.x, p.y, p.size, p.size, 2);
+      ctx.fill();
+    }
+    ctx.restore();
   }
 }
 function roundedRectPath(c, x, y, w, h, r) {
@@ -534,10 +582,14 @@ function canvasPointToVirtual(clientX) {
   return ((clientX - rect.left) / rect.width) * VW;
 }
 // il paddle segue il puntatore semplicemente quando è sopra l'area di gioco:
-// su desktop non serve tenere premuto il mouse (comodo), su touch continua a
-// bastare trascinare il dito come prima.
+// su desktop non serve tenere premuto il mouse (comodo). Su touch, una volta
+// iniziato il tocco sul canvas continuiamo a seguire il dito anche se esce dai
+// bordi del canvas (il pollice altrimenti coprirebbe il paddle e non si
+// vedrebbe più dove lo si sta spostando).
+let touchDragging = false;
 function handlePointerDown(e) {
   if (state.paused) return;
+  if (e.pointerType === 'touch') touchDragging = true;
   movePaddleTo(canvasPointToVirtual(e.clientX));
   launchStuckBalls();
 }
@@ -545,6 +597,11 @@ function handlePointerMove(e) {
   if (state.paused) return;
   movePaddleTo(canvasPointToVirtual(e.clientX));
 }
+function handleWindowPointerMove(e) {
+  if (state.paused || !touchDragging) return;
+  movePaddleTo(canvasPointToVirtual(e.clientX));
+}
+function handlePointerUpOrCancel() { touchDragging = false; }
 function handleKeyDown(e) {
   if (state.paused) return;
   const step = 14;
@@ -563,11 +620,13 @@ function renderLanguageList() {
   `).join('');
 }
 function openLanguageModal() {
+  els.pauseOverlay.classList.remove('show'); // si apre dal menu impostazioni
   renderLanguageList();
   els.languageOverlay.classList.add('show');
 }
 function closeLanguageModal() {
   els.languageOverlay.classList.remove('show');
+  els.pauseOverlay.classList.add('show'); // torna al menu impostazioni da cui si era aperta
 }
 function selectLanguage(code) {
   language = code;
@@ -575,6 +634,21 @@ function selectLanguage(code) {
   applyTranslations();
   if (anyBallStuck()) els.tapHint.textContent = t().tapToLaunch;
   closeLanguageModal();
+}
+
+// ---------- Tutorial ----------
+function openTutorial() {
+  els.pauseOverlay.classList.remove('show');
+  els.tutorialOverlay.classList.add('show');
+}
+function closeTutorial() {
+  els.tutorialOverlay.classList.remove('show');
+  try { localStorage.setItem('boing-tutorial-seen', '1'); } catch (e) { /* ignora */ }
+  if (state.difficulty == null) {
+    els.difficultyOverlay.classList.add('show'); // primo avvio: dopo il tutorial si sceglie la difficoltà
+  } else {
+    els.pauseOverlay.classList.add('show'); // riaperto dal menu impostazioni durante una partita
+  }
 }
 
 // ---------- Init ----------
@@ -585,6 +659,9 @@ function init() {
 
   els.canvas.addEventListener('pointerdown', handlePointerDown);
   els.canvas.addEventListener('pointermove', handlePointerMove);
+  window.addEventListener('pointermove', handleWindowPointerMove);
+  window.addEventListener('pointerup', handlePointerUpOrCancel);
+  window.addEventListener('pointercancel', handlePointerUpOrCancel);
   window.addEventListener('keydown', handleKeyDown);
 
   document.querySelectorAll('.difficulty-option').forEach(btn => {
@@ -603,11 +680,12 @@ function init() {
 
   els.settingsBtn.addEventListener('click', openSettings);
   els.resumeBtn.addEventListener('click', closeSettings);
+  els.resetLevelBtn.addEventListener('click', resetLevel);
   els.pauseOverlay.addEventListener('click', (e) => {
     if (e.target === els.pauseOverlay) closeSettings();
   });
 
-  els.langBtn.addEventListener('click', openLanguageModal);
+  els.openLanguageBtn.addEventListener('click', openLanguageModal);
   els.closeLanguageBtn.addEventListener('click', closeLanguageModal);
   els.languageOverlay.addEventListener('click', (e) => {
     if (e.target === els.languageOverlay) closeLanguageModal();
@@ -617,7 +695,23 @@ function init() {
     if (btn) selectLanguage(btn.dataset.lang);
   });
 
+  els.openTutorialBtn.addEventListener('click', openTutorial);
+  els.closeTutorialBtn.addEventListener('click', closeTutorial);
+  els.tutorialOverlay.addEventListener('click', (e) => {
+    if (e.target === els.tutorialOverlay) closeTutorial();
+  });
+
   requestAnimationFrame(loop);
+
+  // primo avvio in assoluto: tutorial prima della scelta della difficoltà;
+  // altrimenti si va dritti alla scelta della difficoltà come sempre
+  let tutorialSeen = false;
+  try { tutorialSeen = !!localStorage.getItem('boing-tutorial-seen'); } catch (e) { /* ignora */ }
+  if (tutorialSeen) {
+    els.difficultyOverlay.classList.add('show');
+  } else {
+    els.tutorialOverlay.classList.add('show');
+  }
 
   setTimeout(() => {
     els.loading.style.opacity = '0';
