@@ -604,19 +604,30 @@
 
   .hidden{ display:none !important; }
 
-  /* tablet: un po' più di respiro, testi leggermente più grandi */
+  /* tablet: la card, la ruota di lettere e le tessere continuano a crescere
+     con lo schermo (10" fino a 14"+), non si fermano a una taglia da
+     telefono grande — vedi anche renderWheel()/slotPosition() in script.js,
+     che calcolano la geometria della ruota dalla taglia reale del
+     contenitore invece che da costanti fisse, così seguono questi breakpoint
+     automaticamente */
   @media (min-width: 700px){
     #app{ max-width: 560px; }
     .title-wrap h1{ font-size:22px; }
     .level-display #levelLabel, .lv-label{ font-size:32px; }
     .words-card{ padding: 14px 16px; }
   }
+  @media (min-width: 900px){
+    #app{ max-width: 680px; }
+    .words-card{ padding: 16px 18px; }
+    #wheelContainer{ width:280px; height:280px; }
+    .life-ring{ width:236px; height:236px; }
+    .tile{ width:56px; height:56px; font-size:22px; }
+  }
   /* desktop: l'app resta un riquadro "da telefono" ma centrato in verticale,
      invece di stare incollata in cima a un mare di sfondo */
   @media (min-width: 1024px){
     body{ display:flex; align-items:center; }
     #app{
-      max-width: 600px;
       min-height: auto;
       max-height: 96vh;
       border-radius: 28px;
@@ -624,4 +635,18 @@
       overflow-y: auto;
     }
     #bgLayer{ position:absolute; }
+  }
+  @media (min-width: 1200px){
+    #app{ max-width: 820px; }
+    #wheelContainer{ width:340px; height:340px; }
+    .life-ring{ width:288px; height:288px; }
+    .tile{ width:64px; height:64px; font-size:25px; }
+    .title-wrap h1{ font-size:26px; }
+    .level-display #levelLabel, .lv-label{ font-size:36px; }
+  }
+  @media (min-width: 1500px){
+    #app{ max-width: 940px; }
+    #wheelContainer{ width:400px; height:400px; }
+    .life-ring{ width:340px; height:340px; }
+    .tile{ width:72px; height:72px; font-size:28px; }
   }

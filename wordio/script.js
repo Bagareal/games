@@ -567,11 +567,20 @@ function renderWordsList() {
 }
 
 // ---------- Rendering ruota lettere ----------
+// la geometria si calcola dalla taglia REALE del contenitore (non da
+// costanti fisse) così la ruota segue automaticamente gli ingrandimenti
+// per tablet definiti in style.css (vedi i breakpoint di #wheelContainer)
 let tileEls = [];
-const WHEEL_RADIUS = 75, WHEEL_CX = 116, WHEEL_CY = 116;
+const WHEEL_RADIUS_RATIO = 75 / 232; // stessa proporzione della taglia base (232px, raggio 75px)
+const TILE_HIT_RADIUS_RATIO = 30 / 232;
+function wheelGeometry() {
+  const size = els.wheelContainer.clientWidth || 232;
+  return { cx: size / 2, cy: size / 2, radius: size * WHEEL_RADIUS_RATIO, hitRadius: size * TILE_HIT_RADIUS_RATIO };
+}
 function slotPosition(i, n) {
+  const { cx, cy, radius } = wheelGeometry();
   const angle = (Math.PI * 2 * i) / n - Math.PI / 2;
-  return { x: WHEEL_CX + WHEEL_RADIUS * Math.cos(angle), y: WHEEL_CY + WHEEL_RADIUS * Math.sin(angle) };
+  return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
 }
 function renderWheel() {
   const data = state.currentLevelData;
@@ -615,9 +624,10 @@ function pointFromEvent(e) {
   return { x: t.clientX - rect.left, y: t.clientY - rect.top };
 }
 function tileAtPoint(x, y) {
+  const hitRadius = wheelGeometry().hitRadius;
   for (const t of tileEls) {
     const dx = x - t.x, dy = y - t.y;
-    if (Math.sqrt(dx * dx + dy * dy) < 30) return t;
+    if (Math.sqrt(dx * dx + dy * dy) < hitRadius) return t;
   }
   return null;
 }
@@ -1144,7 +1154,7 @@ async function init() {
     if (e.target === els.languageConfirmOverlay) cancelLanguageChange();
   });
 
-  window.addEventListener('resize', () => renderWordsList());
+  window.addEventListener('resize', () => { renderWordsList(); renderWheel(); });
 
   setTimeout(hideLoadingScreen, 350);
 }
