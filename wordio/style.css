@@ -604,24 +604,20 @@
 
   .hidden{ display:none !important; }
 
-  /* tablet: la card, la ruota di lettere e le tessere continuano a crescere
-     con lo schermo (10" fino a 14"+), non si fermano a una taglia da
-     telefono grande — vedi anche renderWheel()/slotPosition() in script.js,
-     che calcolano la geometria della ruota dalla taglia reale del
-     contenitore invece che da costanti fisse, così seguono questi breakpoint
-     automaticamente */
+  /* tablet: la card, la ruota di lettere e le tessere crescono IN
+     PROPORZIONE diretta allo schermo (min(vw/vh, tetto in px)) invece di
+     scalini fissi indovinati a caso — così qualsiasi tablet, da 10" a 14",
+     porta la sua taglia reale. renderWheel()/slotPosition() in script.js
+     calcolano la geometria dalla taglia reale del contenitore, quindi
+     seguono questi valori automaticamente, anche ruotando lo schermo. */
   @media (min-width: 700px){
-    #app{ max-width: 560px; }
+    #app{ max-width: min(92vw, 1200px); }
     .title-wrap h1{ font-size:22px; }
     .level-display #levelLabel, .lv-label{ font-size:32px; }
     .words-card{ padding: 14px 16px; }
-  }
-  @media (min-width: 900px){
-    #app{ max-width: 680px; }
-    .words-card{ padding: 16px 18px; }
-    #wheelContainer{ width:280px; height:280px; }
-    .life-ring{ width:236px; height:236px; }
-    .tile{ width:56px; height:56px; font-size:22px; }
+    #wheelContainer{ width:min(58vw, 58vh, 560px); height:min(58vw, 58vh, 560px); }
+    .life-ring{ width:min(49vw, 49vh, 473px); height:min(49vw, 49vh, 473px); }
+    .tile{ width:min(12vw, 12vh, 116px); height:min(12vw, 12vh, 116px); font-size:min(4.8vw, 4.8vh, 46px); }
   }
   /* desktop: l'app resta un riquadro "da telefono" ma centrato in verticale,
      invece di stare incollata in cima a un mare di sfondo */
@@ -635,18 +631,6 @@
       overflow-y: auto;
     }
     #bgLayer{ position:absolute; }
-  }
-  @media (min-width: 1200px){
-    #app{ max-width: 820px; }
-    #wheelContainer{ width:340px; height:340px; }
-    .life-ring{ width:288px; height:288px; }
-    .tile{ width:64px; height:64px; font-size:25px; }
     .title-wrap h1{ font-size:26px; }
     .level-display #levelLabel, .lv-label{ font-size:36px; }
-  }
-  @media (min-width: 1500px){
-    #app{ max-width: 940px; }
-    #wheelContainer{ width:400px; height:400px; }
-    .life-ring{ width:340px; height:340px; }
-    .tile{ width:72px; height:72px; font-size:28px; }
   }

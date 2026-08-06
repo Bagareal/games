@@ -311,17 +311,19 @@ body{
 @keyframes spin{ to{ transform:rotate(360deg); } }
 .hidden{ display:none !important; }
 
-/* tablet / desktop: come le altre pagine del sito, l'app diventa una card
-   centrata — la card e il canvas continuano a crescere con lo schermo
-   invece di fermarsi a una taglia da telefono grande, per coprire bene
-   anche i tablet da 10" fino a 14" (non solo il salto telefono→desktop) */
+/* tablet / desktop: la card e il canvas crescono IN PROPORZIONE diretta
+   allo schermo (min(vw, tetto in px)) invece di scalini fissi indovinati a
+   caso — così qualsiasi tablet, da 10" a 14", porta la sua taglia reale
+   invece di doverla far combaciare con un breakpoint scelto a mano. Il
+   tetto in px serve solo a non farlo diventare assurdo su monitor giganti. */
 @media (min-width: 700px){
-  #app{ max-width: 560px; }
-  #gameCanvas{ max-width: 400px; }
-}
-@media (min-width: 900px){
-  #app{ max-width: 680px; }
-  #gameCanvas{ max-width: 460px; }
+  #app{ max-width: min(92vw, 1200px); }
+  #gameCanvas{ max-width: min(88vw, calc(60vh / 1.5), 900px); }
+  .icon-btn{ width:42px; height:42px; font-size:19px; }
+  .level-display{ font-size:16px; }
+  .lives{ width:90px; height:22px; }
+  #scoreValue{ font-size:30px; }
+  .title-wrap h1{ font-size:22px; }
 }
 @media (min-width: 1024px){
   body{ display:flex; align-items:center; }
@@ -332,17 +334,9 @@ body{
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     overflow-y:auto;
   }
-}
-@media (min-width: 1200px){
-  #app{ max-width: 820px; }
-  #gameCanvas{ max-width: 560px; }
-  .icon-btn{ width:44px; height:44px; font-size:20px; }
-  .level-display{ font-size:16px; }
-  .lives{ width:90px; height:22px; }
-  #scoreValue{ font-size:30px; }
-  .title-wrap h1{ font-size:22px; }
-}
-@media (min-width: 1500px){
-  #app{ max-width: 940px; }
-  #gameCanvas{ max-width: 640px; }
+  .icon-btn{ width:48px; height:48px; font-size:22px; }
+  .level-display{ font-size:18px; }
+  .lives{ width:104px; height:26px; }
+  #scoreValue{ font-size:34px; }
+  .title-wrap h1{ font-size:26px; }
 }
