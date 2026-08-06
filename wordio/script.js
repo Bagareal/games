@@ -883,7 +883,12 @@ function applyLevelBackground(level) {
 // non si azzerano le parole già trovate/gli aiuti già usati nel livello.
 function startLevel(level, resume) {
   const usedList = state.usedAnchorsByLanguage[state.language] || (state.usedAnchorsByLanguage[state.language] = []);
-  const usedSet = new Set(usedList);
+  // "resume" rigenera lo STESSO identico livello (riapertura, cambio lingua
+  // e ritorno, ecc.): nessuna esclusione, altrimenti la parola madre già
+  // usata da questo stesso livello verrebbe scartata e si rigenererebbe un
+  // puzzle diverso con lo stesso numero — le parole già trovate smetterebbero
+  // di combaciare con le nuove parole target e sembrerebbero sparite
+  const usedSet = resume ? new Set() : new Set(usedList);
   state.currentLevelData = generateLevel(level, usedSet);
   if (!usedList.includes(state.currentLevelData.anchor)) {
     usedList.push(state.currentLevelData.anchor);
