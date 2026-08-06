@@ -781,5 +781,6 @@
     getLeaderboard,
     openAccountPanel,
     openLoginModal,
+    refreshLabel: updateAccountLabel, // da richiamare quando la pagina cambia lingua (l'icona account non lo sa da sola)
   };
 })();

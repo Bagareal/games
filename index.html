@@ -352,6 +352,9 @@ function selectLanguage(code) {
   language = code;
   try { localStorage.setItem('ffr-language', code); } catch (e) { /* ignora */ }
   applyTranslations();
+  // l'etichetta Ospite/nickname accanto all'icona account è gestita da
+  // shared/auth.js, che non sa quando cambia la lingua della pagina
+  if (window.FFR && window.FFR.auth && window.FFR.auth.refreshLabel) window.FFR.auth.refreshLabel();
   closeLanguageModal();
 }
 
