@@ -493,6 +493,7 @@ function bestLevelReached() {
 async function loadProgress() {
   const siteLanguage = getSiteLanguage(); // ha sempre la precedenza: riflette l'ultima scelta fatta ovunque sul sito
   try {
+    if (window.FFR && window.FFR.auth && window.FFR.auth.ready) await window.FFR.auth.ready;
     const data = (window.FFR && window.FFR.auth) ? await window.FFR.auth.loadProgress('wordio') : null;
     if (data) {
       state.language = siteLanguage || (data.language && LANGUAGES[data.language] ? data.language : 'it');

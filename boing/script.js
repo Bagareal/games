@@ -748,6 +748,7 @@ function saveBoingProgress() {
 }
 async function loadBoingProgress() {
   if (!(window.FFR && window.FFR.auth)) return null;
+  if (window.FFR.auth.ready) await window.FFR.auth.ready;
   return window.FFR.auth.loadProgress('boing');
 }
 function resumeFromSaved(saved) {

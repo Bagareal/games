@@ -367,8 +367,7 @@
         background:#fff; border-radius:12px; padding:14px; margin:10px 0; word-break:break-all; }
       .ffr-auth-check{ display:flex; align-items:center; gap:8px; text-align:left; font-size:13px;
         font-weight:700; margin:10px 0 16px; }
-      .ffr-auth-fixed-wrap{ position:fixed; top:max(20px, env(safe-area-inset-top)); right:20px; z-index:40;
-        display:flex; align-items:center; gap:8px; }
+      .ffr-auth-wrap{ display:flex; align-items:center; gap:8px; margin-left:auto; }
       .ffr-auth-label{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:13px; color:#fff;
         text-shadow:0 1px 3px rgba(0,0,0,0.35); max-width:120px; overflow:hidden; text-overflow:ellipsis;
         white-space:nowrap; }
@@ -722,7 +721,7 @@
   function injectAccountIcon() {
     if (document.getElementById('ffr-account-icon')) return;
     const wrap = document.createElement('div');
-    wrap.className = 'ffr-auth-fixed-wrap';
+    wrap.className = 'ffr-auth-wrap';
     const label = document.createElement('span');
     label.id = 'ffr-account-label';
     label.className = 'ffr-auth-label';
@@ -734,7 +733,10 @@
     btn.onclick = openAccountPanel;
     wrap.appendChild(label);
     wrap.appendChild(btn);
-    document.body.appendChild(wrap);
+    // stesso contenitore dell'icona lingua (.topbar): scorre via con la
+    // pagina come lei, invece di restare fissa in overlay sopra i contenuti
+    const topbar = document.querySelector('.topbar');
+    (topbar || document.body).appendChild(wrap);
     updateAccountLabel();
     listeners.push(updateAccountLabel);
   }
@@ -752,10 +754,19 @@
     } catch (e) { /* niente sessione, resta ospite */ }
   }
 
+  // parte subito, non aspetta il DOM: le pagine di gioco fanno `await
+  // FFR.auth.ready` prima di chiedere il progresso cloud, altrimenti lo
+  // script del gioco (eseguito subito dopo questo file) chiede "chi è
+  // loggato?" prima che restoreSession() abbia finito di scoprirlo, e
+  // riceve sempre "nessuno" — bug che restava invisibile sullo stesso
+  // dispositivo (il salvataggio locale coincideva comunque) ma faceva
+  // sparire il progresso cloud su un dispositivo diverso.
+  const sessionReady = restoreSession();
+
   function init() {
     injectStyles();
     if (!HEADLESS) injectAccountIcon();
-    restoreSession().then(() => {
+    sessionReady.then(() => {
       if (HEADLESS) return; // niente popup ospite/account nei giochi, solo in home
       let choice = null;
       try { choice = localStorage.getItem(LS_CHOICE); } catch (e) { /* ignora */ }
@@ -776,6 +787,7 @@
     getNickname: () => currentNickname,
     isGuest: () => !currentUser,
     onChange: (fn) => { listeners.push(fn); },
+    ready: sessionReady,
     saveProgress,
     loadProgress,
     getLeaderboard,
