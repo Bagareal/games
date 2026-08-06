@@ -15,7 +15,7 @@
 html,body{ height:100%; }
 body{
   margin:0; padding:0; min-height:100%;
-  font-family:'Nunito', sans-serif;
+  font-family:'Press Start 2P', monospace;
   background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-darker) 100%);
   color: var(--white);
 }
@@ -107,7 +107,7 @@ body{
   padding: 0 0 4px;
 }
 .title-wrap h1{
-  font-family:'Baloo 2', sans-serif;
+  font-family:'Press Start 2P', monospace;
   font-weight:800;
   font-size:18px;
   letter-spacing:1px;
@@ -138,7 +138,7 @@ body{
 .tap-hint{
   position:absolute; bottom: 8%; left:0; right:0;
   text-align:center;
-  font-family:'Baloo 2', sans-serif;
+  font-family:'Press Start 2P', monospace;
   font-weight:700;
   font-size:13px;
   color: rgba(255,255,255,0.85);
@@ -191,7 +191,7 @@ body{
   margin: 14px 0 8px; text-align:left;
 }
 .difficulty-option{
-  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:15px;
+  font-family:'Press Start 2P', monospace; font-weight:700; font-size:15px;
   background: rgba(255,255,255,0.06); color: var(--white);
   border: 1px solid rgba(255,255,255,0.1); border-radius:12px;
   padding:12px 14px;
@@ -204,7 +204,7 @@ body{
 .difficulty-option.active{ outline: 2px solid rgba(255,255,255,0.5); outline-offset: -2px; }
 
 .primary-btn{
-  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:16px;
+  font-family:'Press Start 2P', monospace; font-weight:700; font-size:16px;
   background: linear-gradient(180deg, var(--coral), var(--coral-dark));
   color:white; border:none; padding:12px 30px; border-radius:999px;
   box-shadow: 0 4px 0 #6d2409, 0 0 18px rgba(242,98,46,0.4);
@@ -213,7 +213,7 @@ body{
 }
 .primary-btn:active{ transform:translateY(3px); box-shadow:0 1px 0 #6d2409; }
 .secondary-btn{
-  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px;
+  font-family:'Press Start 2P', monospace; font-weight:700; font-size:14px;
   background: transparent; color: rgba(255,255,255,0.75); border: 2px solid rgba(255,255,255,0.2);
   padding:9px 20px; border-radius:999px;
   cursor:pointer;
@@ -224,7 +224,7 @@ body{
 .menu-list{ display:flex; flex-direction:column; gap:8px; margin-top:14px; }
 .menu-row{
   display:flex; align-items:center; gap:8px;
-  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px;
+  font-family:'Press Start 2P', monospace; font-weight:700; font-size:14px;
   background: rgba(255,255,255,0.06); color: var(--white);
   border: 1px solid rgba(255,255,255,0.1); border-radius:12px;
   padding:11px 14px;
@@ -239,7 +239,7 @@ body{
   width:100%;
   background: rgba(255,255,255,0.06); border-radius:12px; padding:11px 14px;
   border: 1px solid rgba(255,255,255,0.1); cursor:pointer;
-  font-family:'Baloo 2', sans-serif; font-weight:700; font-size:15px;
+  font-family:'Press Start 2P', monospace; font-weight:700; font-size:15px;
   color: var(--white);
   text-align:left;
 }
@@ -267,11 +267,24 @@ body{
   vertical-align:middle;
 }
 
+/* classifica */
+.leaderboard-list{ display:flex; flex-direction:column; gap:8px; margin: 4px 0 16px; max-height:50vh; overflow-y:auto; }
+.leaderboard-row{
+  display:flex; align-items:center; gap:10px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius:12px; padding:9px 14px;
+  font-family:'Press Start 2P', monospace; font-weight:700; font-size:14px; color: var(--white);
+}
+.leaderboard-rank{ flex:0 0 auto; width:24px; text-align:center; color: rgba(255,255,255,0.5); }
+.leaderboard-name{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
+.leaderboard-score{ flex:0 0 auto; color: var(--gold); }
+.leaderboard-empty{ font-size:13px; color: rgba(255,255,255,0.6); font-weight:600; padding: 6px 4px 16px; line-height:1.4; }
+
 #loadingScreen{
   position:fixed; inset:0; z-index:50;
   background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-darker) 100%);
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  color:white; font-family:'Baloo 2';
+  color:white; font-family:'Press Start 2P', monospace;
   transition: opacity 0.3s ease;
 }
 .spinner{

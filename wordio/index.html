@@ -86,7 +86,7 @@
     <div class="icon-group">
       <a class="icon-btn" href="../" aria-label="Home">🏠</a>
       <span class="icon-btn-wrap">
-        <button class="icon-btn" id="gearBtn" aria-label="Lingua">🌍</button>
+        <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
         <span class="lang-badge" id="langBadge">🇮🇹</span>
       </span>
     </div>
@@ -195,6 +195,50 @@
     </div>
   </div>
 
+  <div class="overlay" id="settingsOverlay">
+    <div class="card">
+      <h2 data-i18n="settingsTitle">⚙️ Impostazioni</h2>
+      <div class="menu-list">
+        <button class="menu-row" id="openLanguageBtn">🌍 <span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openTutorialBtn">🎮 <span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn">🏆 <span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+      </div>
+      <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="tutorialOverlay">
+    <div class="card tutorial-card">
+      <h2 data-i18n="tutorialTitle">Come si gioca</h2>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">👆</span>
+        <p data-i18n="tutorialCompose">Tocca le lettere sulla ruota (o trascina da una all'altra) per comporre una parola</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">✅</span>
+        <p data-i18n="tutorialTargets">Trova tutte le parole del livello per completarlo; le parole extra danno monete e sbloccano aiuti</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">🔀</span>
+        <p data-i18n="tutorialShuffle">Mescola: cambia la disposizione delle lettere sulla ruota</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">💡</span>
+        <p data-i18n="tutorialHint">Aiuto: rivela una lettera di una parola non ancora trovata</p>
+      </div>
+      <button class="primary-btn" id="closeTutorialBtn" data-i18n="gotIt">Ho capito!</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="leaderboardOverlay">
+    <div class="card">
+      <div class="crown-icon">🏆</div>
+      <h2 data-i18n="leaderboardTitle">Classifica</h2>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+      <button class="secondary-btn" id="closeLeaderboardBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
   <div class="overlay" id="languageOverlay">
     <div class="card">
       <h2 data-i18n="languageTitle">🌍 Lingua</h2>
@@ -218,6 +262,8 @@
 
 </div>
 
+<script>window.FFR_AUTH_HEADLESS = true;</script>
+<script src="../shared/auth.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

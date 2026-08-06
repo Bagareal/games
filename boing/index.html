@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Boing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -45,8 +45,8 @@
   <div class="topbar">
     <div class="icon-group">
       <a class="icon-btn" href="../" aria-label="Home">🏠</a>
-      <button class="icon-btn" id="pauseBtn" aria-label="Pausa">⏸️</button>
       <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
+      <button class="icon-btn" id="pauseBtn" aria-label="Pausa">⏸️</button>
     </div>
     <div class="level-display"><span class="lv-label">LV.</span><span id="levelValue">1</span></div>
     <canvas class="lives" id="livesCanvas" width="24" height="6"></canvas>
@@ -102,7 +102,8 @@
       <h2 data-i18n="settingsTitle">⚙️ Impostazioni</h2>
       <div class="menu-list">
         <button class="menu-row" id="openLanguageBtn">🌍 <span data-i18n="languageMenuLabel">Lingua</span></button>
-        <button class="menu-row" id="openTutorialBtn">🎮 <span data-i18n="commands">Comandi</span></button>
+        <button class="menu-row" id="openTutorialBtn">🎮 <span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn">🏆 <span data-i18n="leaderboardMenuLabel">Classifica</span></button>
       </div>
       <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
     </div>
@@ -160,8 +161,19 @@
     </div>
   </div>
 
+  <div class="overlay" id="leaderboardOverlay">
+    <div class="card">
+      <div class="crown-icon">🏆</div>
+      <h2 data-i18n="leaderboardTitle">Classifica</h2>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+      <button class="secondary-btn" id="closeLeaderboardBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
 </div>
 
+<script>window.FFR_AUTH_HEADLESS = true;</script>
+<script src="../shared/auth.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

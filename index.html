@@ -104,6 +104,15 @@
   .game-icon.wordio{ background: radial-gradient(circle at 32% 28%, #4FC3D9, #0B4F6C); }
   .game-icon.blokko{ background: radial-gradient(circle at 32% 28%, #F4B740, #C1651F); }
   .game-icon.boing{ background: radial-gradient(circle at 32% 28%, #F2622E, #A2380F); }
+  .boing-icon{ position:relative; width:26px; height:26px; }
+  .boing-icon .boing-ball{
+    position:absolute; top:1px; left:9px; width:8px; height:8px;
+    border-radius:50%; background:#FFFDF8; box-shadow:0 1px 2px rgba(0,0,0,0.25);
+  }
+  .boing-icon .boing-paddle{
+    position:absolute; bottom:1px; left:1px; width:24px; height:6px;
+    border-radius:3px; background:#FBEBC9; box-shadow:0 1px 2px rgba(0,0,0,0.25);
+  }
   .game-info{ flex:1 1 auto; min-width:0; }
   .game-info h2{
     font-family:'Baloo 2', sans-serif;
@@ -236,7 +245,7 @@
       </div>
 
       <a class="game-card" href="boing/">
-        <div class="game-icon boing">🔴</div>
+        <div class="game-icon boing"><span class="boing-icon"><span class="boing-ball"></span><span class="boing-paddle"></span></span></div>
         <div class="game-info">
           <h2>Boing</h2>
           <p data-i18n="boingDesc">Rompi tutti i mattoncini rimbalzando la pallina col paddle. 3 vite, potenziamenti e 3 livelli di difficoltà.</p>

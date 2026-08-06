@@ -9,6 +9,11 @@
 (function () {
   'use strict';
 
+  // pagine di gioco: window.FFR_AUTH_HEADLESS = true PRIMA di includere questo
+  // script disattiva icona account e popup ospite/account (restano solo in
+  // home), ma sessione e salvataggio/caricamento progresso restano attivi.
+  const HEADLESS = !!window.FFR_AUTH_HEADLESS;
+
   const SUPABASE_URL = 'https://xlncmgeglotckkeqwyhg.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_d-yMixopM-row39OKWWyKw_MX85caJ2';
   const EMAIL_DOMAIN = '@ffr-games.local';
@@ -64,6 +69,7 @@
       backToLogin: 'Torna al login',
       accountPanelGuest: 'Stai giocando come Ospite',
       accountPanelSignedIn: n => `Ciao, ${n}!`,
+      guestLabel: 'Ospite',
       logoutBtn: 'Esci',
       regenCodeBtn: '🔑 Genera un nuovo codice di recupero',
       close: 'Chiudi',
@@ -117,6 +123,7 @@
       backToLogin: 'Back to login',
       accountPanelGuest: 'You\'re playing as a Guest',
       accountPanelSignedIn: n => `Hi, ${n}!`,
+      guestLabel: 'Guest',
       logoutBtn: 'Log out',
       regenCodeBtn: '🔑 Generate a new recovery code',
       close: 'Close',
@@ -170,6 +177,7 @@
       backToLogin: 'Retour à la connexion',
       accountPanelGuest: 'Tu joues en Invité',
       accountPanelSignedIn: n => `Salut, ${n} !`,
+      guestLabel: 'Invité',
       logoutBtn: 'Se déconnecter',
       regenCodeBtn: '🔑 Générer un nouveau code de récupération',
       close: 'Fermer',
@@ -341,10 +349,14 @@
         background:#fff; border-radius:12px; padding:14px; margin:10px 0; word-break:break-all; }
       .ffr-auth-check{ display:flex; align-items:center; gap:8px; text-align:left; font-size:13px;
         font-weight:700; margin:10px 0 16px; }
-      .ffr-auth-icon-btn{ position:fixed; top:max(20px, env(safe-area-inset-top)); right:20px; z-index:40;
-        width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-        background:rgba(255,255,255,0.22); border:1.5px solid rgba(255,255,255,0.4); backdrop-filter:blur(6px);
-        color:#fff; font-size:17px; cursor:pointer; }
+      .ffr-auth-fixed-wrap{ position:fixed; top:max(20px, env(safe-area-inset-top)); right:20px; z-index:40;
+        display:flex; align-items:center; gap:8px; }
+      .ffr-auth-label{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:13px; color:#fff;
+        text-shadow:0 1px 3px rgba(0,0,0,0.35); max-width:120px; overflow:hidden; text-overflow:ellipsis;
+        white-space:nowrap; }
+      .ffr-auth-icon-btn{ width:38px; height:38px; border-radius:50%; display:flex; align-items:center;
+        justify-content:center; background:rgba(255,255,255,0.22); border:1.5px solid rgba(255,255,255,0.4);
+        backdrop-filter:blur(6px); color:#fff; font-size:17px; cursor:pointer; flex:0 0 auto; }
       .ffr-auth-icon-btn:active{ transform:scale(0.94); }
     `;
     document.head.appendChild(style);
@@ -683,15 +695,30 @@
     }
   }
 
+  function updateAccountLabel() {
+    const label = document.getElementById('ffr-account-label');
+    if (!label) return;
+    label.textContent = currentUser ? (currentNickname || '') : tt('guestLabel');
+  }
+
   function injectAccountIcon() {
     if (document.getElementById('ffr-account-icon')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'ffr-auth-fixed-wrap';
+    const label = document.createElement('span');
+    label.id = 'ffr-account-label';
+    label.className = 'ffr-auth-label';
     const btn = document.createElement('button');
     btn.id = 'ffr-account-icon';
     btn.className = 'ffr-auth-icon-btn';
     btn.setAttribute('aria-label', 'Account');
     btn.textContent = '👤';
     btn.onclick = openAccountPanel;
-    document.body.appendChild(btn);
+    wrap.appendChild(label);
+    wrap.appendChild(btn);
+    document.body.appendChild(wrap);
+    updateAccountLabel();
+    listeners.push(updateAccountLabel);
   }
 
   // ---------------- avvio ----------------
@@ -709,8 +736,9 @@
 
   function init() {
     injectStyles();
-    injectAccountIcon();
+    if (!HEADLESS) injectAccountIcon();
     restoreSession().then(() => {
+      if (HEADLESS) return; // niente popup ospite/account nei giochi, solo in home
       let choice = null;
       try { choice = localStorage.getItem(LS_CHOICE); } catch (e) { /* ignora */ }
       if (!choice) setTimeout(openWelcomeModal, 400);

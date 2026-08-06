@@ -52,6 +52,18 @@ const UI_STRINGS = {
     languageConfirmResumeText: (name, level) => `Passare a ${name}? Riprenderai dal livello ${level}.`,
     noExtraWords: 'Nessuna parola extra trovata in questo livello. Prova a scrivere altre parole valide con le lettere disponibili!',
     hintsMaxedOut: 'Hai già il massimo di aiuti (10)',
+    settingsTitle: '⚙️ Impostazioni',
+    languageMenuLabel: 'Lingua',
+    commands: 'Istruzioni',
+    leaderboardMenuLabel: 'Classifica',
+    leaderboardTitle: 'Classifica',
+    leaderboardEmpty: 'Nessun punteggio ancora: gioca da loggato per essere il primo!',
+    tutorialTitle: 'Come si gioca',
+    tutorialCompose: "Tocca le lettere sulla ruota (o trascina da una all'altra) per comporre una parola",
+    tutorialTargets: 'Trova tutte le parole del livello per completarlo; le parole extra danno monete e sbloccano aiuti',
+    tutorialShuffle: 'Mescola: cambia la disposizione delle lettere sulla ruota',
+    tutorialHint: 'Aiuto: rivela una lettera di una parola non ancora trovata',
+    gotIt: 'Ho capito!',
   },
   en: {
     tagline: 'Find all the words',
@@ -92,6 +104,18 @@ const UI_STRINGS = {
     languageConfirmResumeText: (name, level) => `Switch to ${name}? You'll resume from level ${level}.`,
     noExtraWords: "No extra words found in this level yet. Try spelling other valid words with the available letters!",
     hintsMaxedOut: 'You already have the max hints (10)',
+    settingsTitle: '⚙️ Settings',
+    languageMenuLabel: 'Language',
+    commands: 'Instructions',
+    leaderboardMenuLabel: 'Leaderboard',
+    leaderboardTitle: 'Leaderboard',
+    leaderboardEmpty: 'No scores yet: play while signed in to be the first!',
+    tutorialTitle: 'How to play',
+    tutorialCompose: 'Tap the letters on the wheel (or drag from one to another) to spell a word',
+    tutorialTargets: 'Find every word in the level to complete it; extra words earn coins and unlock hints',
+    tutorialShuffle: 'Shuffle: change how the letters are arranged on the wheel',
+    tutorialHint: 'Hint: reveals one letter of a word you haven\'t found yet',
+    gotIt: 'Got it!',
   },
   fr: {
     tagline: 'Trouve tous les mots',
@@ -132,6 +156,18 @@ const UI_STRINGS = {
     languageConfirmResumeText: (name, level) => `Passer à ${name} ? Tu reprendras au niveau ${level}.`,
     noExtraWords: "Aucun mot bonus trouvé dans ce niveau pour l'instant. Essaie d'écrire d'autres mots valides avec les lettres disponibles !",
     hintsMaxedOut: "Tu as déjà le maximum d'indices (10)",
+    settingsTitle: '⚙️ Paramètres',
+    languageMenuLabel: 'Langue',
+    commands: 'Instructions',
+    leaderboardMenuLabel: 'Classement',
+    leaderboardTitle: 'Classement',
+    leaderboardEmpty: 'Aucun score pour l\'instant : joue connecté pour être le premier !',
+    tutorialTitle: 'Comment jouer',
+    tutorialCompose: "Touche les lettres sur la roue (ou glisse de l'une à l'autre) pour composer un mot",
+    tutorialTargets: 'Trouve tous les mots du niveau pour le terminer ; les mots bonus rapportent des pièces et débloquent des indices',
+    tutorialShuffle: 'Mélanger : change la disposition des lettres sur la roue',
+    tutorialHint: "Indice : révèle une lettre d'un mot pas encore trouvé",
+    gotIt: "C'est compris !",
   },
 };
 function t() {
@@ -246,7 +282,7 @@ function difficultyForLevel(level) {
   return { minLen, maxLen: Math.max(minLen, maxLen) };
 }
 
-function generateLevel(level) {
+function generateLevel(level, usedAnchors) {
   const seed = level * 104729 + 17;
   const rnd = seededRandom(seed);
   const { minLen, maxLen } = difficultyForLevel(level);
@@ -255,7 +291,7 @@ function generateLevel(level) {
 
   // la "parola madre" viene scelta solo tra parole comuni, così le lettere
   // disponibili formano sempre un termine riconoscibile
-  const anchorPool = [];
+  let anchorPool = [];
   for (let len = minLen; len <= maxLen; len++) {
     const bucket = BY_LEN[len];
     if (!bucket) continue;
@@ -265,7 +301,15 @@ function generateLevel(level) {
     // fallback: nessuna parola comune di quella lunghezza, usa il dizionario intero
     for (let len = minLen; len <= maxLen; len++) if (BY_LEN[len]) anchorPool.push(...BY_LEN[len]);
   }
-  if (anchorPool.length === 0) return generateLevel(1);
+  if (anchorPool.length === 0) return generateLevel(1, usedAnchors);
+
+  // evita di riproporre una parola madre già usata in un livello precedente
+  // (stesso identico puzzle); se il pool si esaurisce, si accettano ripetizioni
+  // pur di non restare bloccati
+  if (usedAnchors && usedAnchors.size > 0) {
+    const fresh = anchorPool.filter(wd => !usedAnchors.has(wd.word));
+    if (fresh.length > 0) anchorPool = fresh;
+  }
 
   for (let attempt = 0; attempt < 60; attempt++) {
     const anchorWd = pick(anchorPool, rnd);
@@ -320,7 +364,7 @@ function generateLevel(level) {
       };
     }
   }
-  return generateLevel(level + 1000);
+  return generateLevel(level + 1000, usedAnchors);
 }
 
 // ---------- Stato di gioco ----------
@@ -338,6 +382,7 @@ const state = {
   extraFoundTotal: 0,  // parole extra trovate in totale (a vita, persistente)
   hintsAvailable: 0,   // aiuti guadagnati e non ancora usati
   progressByLanguage: {}, // livello/parole trovate per ciascuna lingua, per riprendere da dove si era rimasti
+  usedAnchorsByLanguage: {}, // parole madre già proposte per lingua, per non ripetere lo stesso livello
 };
 
 const els = {
@@ -375,8 +420,18 @@ const els = {
   confirmPurchaseText: document.getElementById('confirmPurchaseText'),
   confirmPurchaseBtn: document.getElementById('confirmPurchaseBtn'),
   cancelPurchaseBtn: document.getElementById('cancelPurchaseBtn'),
-  gearBtn: document.getElementById('gearBtn'),
   langBadge: document.getElementById('langBadge'),
+  settingsBtn: document.getElementById('settingsBtn'),
+  settingsOverlay: document.getElementById('settingsOverlay'),
+  closeSettingsBtn: document.getElementById('closeSettingsBtn'),
+  openLanguageBtn: document.getElementById('openLanguageBtn'),
+  openTutorialBtn: document.getElementById('openTutorialBtn'),
+  tutorialOverlay: document.getElementById('tutorialOverlay'),
+  closeTutorialBtn: document.getElementById('closeTutorialBtn'),
+  openLeaderboardBtn: document.getElementById('openLeaderboardBtn'),
+  leaderboardOverlay: document.getElementById('leaderboardOverlay'),
+  leaderboardList: document.getElementById('leaderboardList'),
+  closeLeaderboardBtn: document.getElementById('closeLeaderboardBtn'),
   languageOverlay: document.getElementById('languageOverlay'),
   languageList: document.getElementById('languageList'),
   closeLanguageBtn: document.getElementById('closeLanguageBtn'),
@@ -428,17 +483,24 @@ function applyLanguageProgress(saved) {
     }
   }
 }
+function bestLevelReached() {
+  let best = state.level;
+  for (const p of Object.values(state.progressByLanguage)) {
+    if (p && p.level > best) best = p.level;
+  }
+  return best;
+}
 async function loadProgress() {
   const siteLanguage = getSiteLanguage(); // ha sempre la precedenza: riflette l'ultima scelta fatta ovunque sul sito
   try {
-    const raw = localStorage.getItem('wordio-progress');
-    if (raw) {
-      const data = JSON.parse(raw);
+    const data = (window.FFR && window.FFR.auth) ? await window.FFR.auth.loadProgress('wordio') : null;
+    if (data) {
       state.language = siteLanguage || (data.language && LANGUAGES[data.language] ? data.language : 'it');
       state.coins = data.coins != null ? data.coins : 60;
       state.extraFoundTotal = data.extraFoundTotal || 0;
       state.hintsAvailable = data.hintsAvailable || 0;
       state.progressByLanguage = data.progress || {};
+      state.usedAnchorsByLanguage = data.usedAnchors || {};
       applyLanguageProgress(state.progressByLanguage[state.language]);
     } else {
       state.language = siteLanguage || 'it';
@@ -452,13 +514,19 @@ async function loadProgress() {
 async function saveProgress() {
   try {
     state.progressByLanguage[state.language] = snapshotCurrentProgress();
-    localStorage.setItem('wordio-progress', JSON.stringify({
+    const payload = {
       language: state.language,
       coins: state.coins,
       extraFoundTotal: state.extraFoundTotal,
       hintsAvailable: state.hintsAvailable,
-      progress: state.progressByLanguage
-    }));
+      progress: state.progressByLanguage,
+      usedAnchors: state.usedAnchorsByLanguage
+    };
+    if (window.FFR && window.FFR.auth) {
+      window.FFR.auth.saveProgress('wordio', payload, bestLevelReached());
+    } else {
+      localStorage.setItem('wordio-progress', JSON.stringify(payload));
+    }
   } catch (e) { /* ignora errori di salvataggio */ }
 }
 // passa a un'altra lingua: salva il progresso di quella corrente e carica
@@ -804,7 +872,13 @@ function applyLevelBackground(level) {
 // "resume" true = si sta ripristinando lo stato dopo un refresh della pagina:
 // non si azzerano le parole già trovate/gli aiuti già usati nel livello.
 function startLevel(level, resume) {
-  state.currentLevelData = generateLevel(level);
+  const usedList = state.usedAnchorsByLanguage[state.language] || (state.usedAnchorsByLanguage[state.language] = []);
+  const usedSet = new Set(usedList);
+  state.currentLevelData = generateLevel(level, usedSet);
+  if (!usedList.includes(state.currentLevelData.anchor)) {
+    usedList.push(state.currentLevelData.anchor);
+    saveProgress();
+  }
   if (!resume) {
     state.foundTargets = new Set();
     state.foundExtras = new Set();
@@ -890,6 +964,50 @@ function confirmPurchase() {
 // ---------- Selezione lingua ----------
 let pendingLanguage = null;
 
+// ---------- Impostazioni (lingua / istruzioni / classifica) ----------
+function openSettingsMenu() {
+  els.settingsOverlay.classList.add('show');
+}
+function closeSettingsMenu() {
+  els.settingsOverlay.classList.remove('show');
+}
+
+// ---------- Istruzioni ----------
+function openTutorial() {
+  els.settingsOverlay.classList.remove('show');
+  els.tutorialOverlay.classList.add('show');
+}
+function closeTutorial() {
+  els.tutorialOverlay.classList.remove('show');
+  els.settingsOverlay.classList.add('show');
+}
+
+// ---------- Classifica ----------
+async function openLeaderboard() {
+  els.settingsOverlay.classList.remove('show');
+  els.leaderboardOverlay.classList.add('show');
+  els.leaderboardList.innerHTML = '<div class="leaderboard-empty">…</div>';
+  const rows = (window.FFR && window.FFR.auth) ? await window.FFR.auth.getLeaderboard('wordio', 20) : [];
+  if (!rows.length) {
+    els.leaderboardList.innerHTML = `<div class="leaderboard-empty">${t().leaderboardEmpty}</div>`;
+    return;
+  }
+  els.leaderboardList.innerHTML = rows.map((row, i) => `
+    <div class="leaderboard-row">
+      <span class="leaderboard-rank">${i + 1}</span>
+      <span class="leaderboard-name">${escapeHtml(row.nickname)}</span>
+      <span class="leaderboard-score">${row.score}</span>
+    </div>
+  `).join('');
+}
+function closeLeaderboard() {
+  els.leaderboardOverlay.classList.remove('show');
+  els.settingsOverlay.classList.add('show');
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 function renderLanguageList() {
   els.languageList.innerHTML = Object.entries(LANGUAGES).map(([code, info]) => `
     <button class="language-option${code === state.language ? ' active' : ''}" data-lang="${code}">
@@ -899,11 +1017,13 @@ function renderLanguageList() {
   `).join('');
 }
 function openLanguageModal() {
+  els.settingsOverlay.classList.remove('show'); // si apre dal menu impostazioni
   renderLanguageList();
   els.languageOverlay.classList.add('show');
 }
 function closeLanguageModal() {
   els.languageOverlay.classList.remove('show');
+  els.settingsOverlay.classList.add('show'); // torna al menu impostazioni da cui si era aperta
 }
 function openLanguageConfirm(code) {
   if (code === state.language) { closeLanguageModal(); return; }
@@ -918,6 +1038,13 @@ function openLanguageConfirm(code) {
 function closeLanguageConfirm() {
   pendingLanguage = null;
   els.languageConfirmOverlay.classList.remove('show');
+}
+// annulla il cambio lingua: a differenza di closeLanguageConfirm() (usata
+// anche a metà della conferma riuscita, dove si torna al gioco) qui si torna
+// al menu impostazioni da cui si era partiti
+function cancelLanguageChange() {
+  closeLanguageConfirm();
+  els.settingsOverlay.classList.add('show');
 }
 async function confirmLanguageChange() {
   if (!pendingLanguage) { closeLanguageConfirm(); return; }
@@ -987,7 +1114,22 @@ async function init() {
     if (e.target === els.confirmPurchaseOverlay) closePurchaseConfirm();
   });
 
-  els.gearBtn.addEventListener('click', openLanguageModal);
+  els.settingsBtn.addEventListener('click', openSettingsMenu);
+  els.closeSettingsBtn.addEventListener('click', closeSettingsMenu);
+  els.settingsOverlay.addEventListener('click', (e) => {
+    if (e.target === els.settingsOverlay) closeSettingsMenu();
+  });
+  els.openLanguageBtn.addEventListener('click', openLanguageModal);
+  els.openTutorialBtn.addEventListener('click', openTutorial);
+  els.closeTutorialBtn.addEventListener('click', closeTutorial);
+  els.tutorialOverlay.addEventListener('click', (e) => {
+    if (e.target === els.tutorialOverlay) closeTutorial();
+  });
+  els.openLeaderboardBtn.addEventListener('click', openLeaderboard);
+  els.closeLeaderboardBtn.addEventListener('click', closeLeaderboard);
+  els.leaderboardOverlay.addEventListener('click', (e) => {
+    if (e.target === els.leaderboardOverlay) closeLeaderboard();
+  });
   els.closeLanguageBtn.addEventListener('click', closeLanguageModal);
   els.languageOverlay.addEventListener('click', (e) => {
     if (e.target === els.languageOverlay) closeLanguageModal();
@@ -997,9 +1139,9 @@ async function init() {
     if (btn) openLanguageConfirm(btn.dataset.lang);
   });
   els.confirmLanguageBtn.addEventListener('click', confirmLanguageChange);
-  els.cancelLanguageBtn.addEventListener('click', closeLanguageConfirm);
+  els.cancelLanguageBtn.addEventListener('click', cancelLanguageChange);
   els.languageConfirmOverlay.addEventListener('click', (e) => {
-    if (e.target === els.languageConfirmOverlay) closeLanguageConfirm();
+    if (e.target === els.languageConfirmOverlay) cancelLanguageChange();
   });
 
   window.addEventListener('resize', () => renderWordsList());

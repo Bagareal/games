@@ -31,12 +31,15 @@ const UI_STRINGS = {
     difficultyLabel: 'Difficoltà',
     settingsTitle: '⚙️ Impostazioni',
     languageMenuLabel: 'Lingua',
-    commands: 'Comandi',
+    commands: 'Istruzioni',
+    leaderboardMenuLabel: 'Classifica',
+    leaderboardTitle: 'Classifica',
+    leaderboardEmpty: 'Nessun punteggio ancora: gioca da loggato per essere il primo!',
     resetLevel: 'Reset livello',
     languageTitle: '🌍 Lingua',
     languageSub: "Scegli la lingua dell'interfaccia",
     close: 'Chiudi',
-    powerUpWide: '🏓 Paddle allargato!',
+    powerUpWide: '▬ Paddle allargato!',
     powerUpLife: '❤️ Vita extra!',
     powerUpLifeMax: '❤️ Vite già al massimo (+50 punti)',
     powerUpMulti: '⚪ Multi-pallina!',
@@ -67,12 +70,15 @@ const UI_STRINGS = {
     difficultyLabel: 'Difficulty',
     settingsTitle: '⚙️ Settings',
     languageMenuLabel: 'Language',
-    commands: 'Controls',
+    commands: 'Instructions',
+    leaderboardMenuLabel: 'Leaderboard',
+    leaderboardTitle: 'Leaderboard',
+    leaderboardEmpty: 'No scores yet: play while signed in to be the first!',
     resetLevel: 'Reset level',
     languageTitle: '🌍 Language',
     languageSub: 'Choose the interface language',
     close: 'Close',
-    powerUpWide: '🏓 Paddle widened!',
+    powerUpWide: '▬ Paddle widened!',
     powerUpLife: '❤️ Extra life!',
     powerUpLifeMax: '❤️ Already max lives (+50 points)',
     powerUpMulti: '⚪ Multi-ball!',
@@ -103,12 +109,15 @@ const UI_STRINGS = {
     difficultyLabel: 'Difficulté',
     settingsTitle: '⚙️ Paramètres',
     languageMenuLabel: 'Langue',
-    commands: 'Commandes',
+    commands: 'Instructions',
+    leaderboardMenuLabel: 'Classement',
+    leaderboardTitle: 'Classement',
+    leaderboardEmpty: 'Aucun score pour l\'instant : joue connecté pour être le premier !',
     resetLevel: 'Réinitialiser le niveau',
     languageTitle: '🌍 Langue',
     languageSub: "Choisis la langue de l'interface",
     close: 'Fermer',
-    powerUpWide: '🏓 Raquette élargie !',
+    powerUpWide: '▬ Raquette élargie !',
     powerUpLife: '❤️ Vie supplémentaire !',
     powerUpLifeMax: '❤️ Vies déjà au maximum (+50 points)',
     powerUpMulti: '⚪ Multi-balle !',
@@ -201,6 +210,7 @@ const state = {
   level: 1,
   lives: MAX_LIVES,
   score: 0,
+  bestScore: 0, // punteggio più alto mai raggiunto: usato per la classifica (non scende ricominciando)
   bricks: [],
   balls: [],
   powerUps: [],
@@ -238,6 +248,10 @@ const els = {
   openTutorialBtn: document.getElementById('openTutorialBtn'),
   tutorialOverlay: document.getElementById('tutorialOverlay'),
   closeTutorialBtn: document.getElementById('closeTutorialBtn'),
+  openLeaderboardBtn: document.getElementById('openLeaderboardBtn'),
+  leaderboardOverlay: document.getElementById('leaderboardOverlay'),
+  leaderboardList: document.getElementById('leaderboardList'),
+  closeLeaderboardBtn: document.getElementById('closeLeaderboardBtn'),
 };
 const ctx = els.canvas.getContext('2d');
 const livesCtx = els.livesCanvas.getContext('2d');
@@ -327,6 +341,7 @@ function startNewGame(difficultyKey) {
   els.pauseOverlay.classList.remove('show');
   els.settingsOverlay.classList.remove('show');
   state.paused = false;
+  saveBoingProgress();
 }
 
 // ---------- Pausa (riprendi / difficoltà / reset livello) ----------
@@ -345,6 +360,7 @@ function closePause() {
 function resetLevel() {
   startLevel(state.level);
   closePause();
+  saveBoingProgress();
 }
 
 // ---------- Impostazioni (lingua / comandi) ----------
@@ -449,7 +465,12 @@ function update(dt) {
 
     // paddle
     if (b.dirY > 0 && rectsOverlap(b.x, b.y, BALL_SIZE, BALL_SIZE, state.paddle.x, PADDLE_Y, state.paddle.width, PADDLE_H)) {
-      const hitPos = (b.x + BALL_SIZE / 2 - state.paddle.x) / state.paddle.width; // 0..1
+      // clampato a 0..1: senza questo, una pallina che colpisce il paddle di
+      // striscio (bordo estremo, più facile con tante palline in campo o
+      // paddle stretto in difficile) poteva ricevere un angolo vicinissimo a
+      // 0°/180°, cioè quasi orizzontale — la pallina restava a rimbalzare
+      // avanti e indietro tra le pareti senza più risalire
+      const hitPos = Math.max(0, Math.min(1, (b.x + BALL_SIZE / 2 - state.paddle.x) / state.paddle.width));
       const angle = (-90 + (hitPos - 0.5) * 130) * Math.PI / 180;
       b.dirX = Math.cos(angle);
       b.dirY = Math.sin(angle);
@@ -484,6 +505,7 @@ function update(dt) {
   if (state.balls.length === 0) {
     state.lives -= 1;
     updateHUD();
+    saveBoingProgress();
     if (state.lives <= 0) {
       showGameOver();
     } else {
@@ -512,11 +534,13 @@ function showLevelComplete() {
   state.paused = true;
   els.levelCompleteSub.textContent = t().levelCompleteSub(state.score);
   els.levelCompleteOverlay.classList.add('show');
+  saveBoingProgress();
 }
 function showGameOver() {
   state.paused = true;
   els.gameOverSub.textContent = t().gameOverSub(state.level, state.score);
   els.gameOverOverlay.classList.add('show');
+  saveBoingProgress();
 }
 
 // ---------- Rendering (pixel art volutamente piccolo e un po' spartano) ----------
@@ -686,8 +710,65 @@ function closeTutorial() {
   }
 }
 
+// ---------- Classifica ----------
+async function openLeaderboard() {
+  els.settingsOverlay.classList.remove('show');
+  els.leaderboardOverlay.classList.add('show');
+  els.leaderboardList.innerHTML = '<div class="leaderboard-empty">…</div>';
+  const rows = (window.FFR && window.FFR.auth) ? await window.FFR.auth.getLeaderboard('boing', 20) : [];
+  if (!rows.length) {
+    els.leaderboardList.innerHTML = `<div class="leaderboard-empty">${t().leaderboardEmpty}</div>`;
+    return;
+  }
+  els.leaderboardList.innerHTML = rows.map((row, i) => `
+    <div class="leaderboard-row">
+      <span class="leaderboard-rank">${i + 1}</span>
+      <span class="leaderboard-name">${escapeHtml(row.nickname)}</span>
+      <span class="leaderboard-score">${row.score}</span>
+    </div>
+  `).join('');
+}
+function closeLeaderboard() {
+  els.leaderboardOverlay.classList.remove('show');
+  els.settingsOverlay.classList.add('show');
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// ---------- Persistenza progresso (localStorage + cloud se loggato) ----------
+function saveBoingProgress() {
+  if (!(window.FFR && window.FFR.auth)) return;
+  if (state.difficulty == null) return;
+  state.bestScore = Math.max(state.bestScore, state.score);
+  window.FFR.auth.saveProgress('boing', {
+    difficulty: state.difficulty,
+    level: state.level,
+    lives: state.lives,
+    score: state.score,
+    bestScore: state.bestScore,
+  }, state.bestScore);
+}
+async function loadBoingProgress() {
+  if (!(window.FFR && window.FFR.auth)) return null;
+  return window.FFR.auth.loadProgress('boing');
+}
+function resumeFromSaved(saved) {
+  state.difficulty = saved.difficulty;
+  state.level = saved.level || 1;
+  state.lives = saved.lives != null ? saved.lives : MAX_LIVES;
+  state.score = saved.score || 0;
+  state.bestScore = saved.bestScore || state.score;
+  state.paddle.width = DIFFICULTIES[state.difficulty].paddleWidth;
+  state.wideUntil = 0;
+  state.slowUntil = 0;
+  startLevel(state.level);
+  els.difficultyOverlay.classList.remove('show');
+  state.paused = false;
+}
+
 // ---------- Init ----------
-function init() {
+async function init() {
   language = getSiteLanguage() || 'it';
   applyTranslations();
   updateHUD();
@@ -707,6 +788,7 @@ function init() {
     state.level += 1;
     startLevel(state.level);
     state.paused = false;
+    saveBoingProgress();
   });
   els.retryBtn.addEventListener('click', () => {
     els.gameOverOverlay.classList.remove('show');
@@ -742,16 +824,28 @@ function init() {
     if (e.target === els.tutorialOverlay) closeTutorial();
   });
 
+  els.openLeaderboardBtn.addEventListener('click', openLeaderboard);
+  els.closeLeaderboardBtn.addEventListener('click', closeLeaderboard);
+  els.leaderboardOverlay.addEventListener('click', (e) => {
+    if (e.target === els.leaderboardOverlay) closeLeaderboard();
+  });
+
   requestAnimationFrame(loop);
 
   // primo avvio in assoluto: tutorial prima della scelta della difficoltà;
-  // altrimenti si va dritti alla scelta della difficoltà come sempre
+  // altrimenti si riprende la partita salvata (livello/difficoltà/vite/punteggio),
+  // o si va alla scelta della difficoltà se non c'è nessun progresso salvato
   let tutorialSeen = false;
   try { tutorialSeen = !!localStorage.getItem('boing-tutorial-seen'); } catch (e) { /* ignora */ }
-  if (tutorialSeen) {
-    els.difficultyOverlay.classList.add('show');
-  } else {
+  if (!tutorialSeen) {
     els.tutorialOverlay.classList.add('show');
+  } else {
+    const saved = await loadBoingProgress();
+    if (saved && saved.difficulty) {
+      resumeFromSaved(saved);
+    } else {
+      els.difficultyOverlay.classList.add('show');
+    }
   }
 
   setTimeout(() => {
