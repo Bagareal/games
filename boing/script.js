@@ -13,7 +13,7 @@ const SITE_LANGUAGE_KEY = 'ffr-language';
 
 const UI_STRINGS = {
   it: {
-    scoreLabel: 'Punteggio',
+    backToHome: 'Torna in Home',
     tapToLaunch: 'Tocca per lanciare la pallina',
     chooseDifficulty: 'Scegli la difficoltà',
     chooseDifficultySub: 'Puoi cambiarla ogni volta che inizi una partita',
@@ -52,7 +52,7 @@ const UI_STRINGS = {
     gotIt: 'Ho capito!',
   },
   en: {
-    scoreLabel: 'Score',
+    backToHome: 'Back to Home',
     tapToLaunch: 'Tap to launch the ball',
     chooseDifficulty: 'Choose difficulty',
     chooseDifficultySub: 'You can change it every time you start a game',
@@ -91,7 +91,7 @@ const UI_STRINGS = {
     gotIt: 'Got it!',
   },
   fr: {
-    scoreLabel: 'Score',
+    backToHome: "Retour à l'accueil",
     tapToLaunch: 'Touche pour lancer la balle',
     chooseDifficulty: 'Choisis la difficulté',
     chooseDifficultySub: 'Tu peux la changer à chaque nouvelle partie',
@@ -224,6 +224,7 @@ const els = {
   loading: document.getElementById('loadingScreen'),
   canvas: document.getElementById('gameCanvas'),
   tapHint: document.getElementById('tapHint'),
+  centerToast: document.getElementById('centerToast'),
   levelValue: document.getElementById('levelValue'),
   scoreValue: document.getElementById('scoreValue'),
   livesCanvas: document.getElementById('livesCanvas'),
@@ -288,15 +289,11 @@ function updateHUD() {
 
 let toastTimer = null;
 function showToast(msg) {
-  els.tapHint.textContent = msg;
-  els.tapHint.classList.remove('hidden');
+  els.centerToast.textContent = msg;
+  els.centerToast.classList.remove('hidden');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
-    if (anyBallStuck()) {
-      els.tapHint.textContent = t().tapToLaunch;
-    } else {
-      els.tapHint.classList.add('hidden');
-    }
+    els.centerToast.classList.add('hidden');
   }, 1400);
 }
 

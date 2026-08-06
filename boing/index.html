@@ -44,7 +44,7 @@
 
   <div class="topbar">
     <div class="icon-group">
-      <a class="icon-btn" href="../" aria-label="Home">🏠</a>
+      <a class="icon-btn" href="../" aria-label="Home">⬅️</a>
       <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
       <button class="icon-btn" id="pauseBtn" aria-label="Pausa">⏸️</button>
     </div>
@@ -54,7 +54,6 @@
 
   <div class="score-block">
     <div id="scoreValue">0</div>
-    <div data-i18n="scoreLabel">Punteggio</div>
   </div>
 
   <div class="title-wrap">
@@ -64,6 +63,7 @@
   <div class="game-zone">
     <canvas id="gameCanvas" width="180" height="270"></canvas>
     <div class="tap-hint hidden" id="tapHint" data-i18n="tapToLaunch">Tocca per lanciare la pallina</div>
+    <div class="center-toast hidden" id="centerToast"></div>
   </div>
 
   <div class="overlay" id="difficultyOverlay">
@@ -93,6 +93,7 @@
       </div>
 
       <button class="secondary-btn" id="resetLevelBtn" data-i18n="resetLevel">Reset livello</button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
     </div>
   </div>
 

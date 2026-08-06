@@ -23,6 +23,10 @@
   // chiavi localStorage già usate dai singoli giochi per il progresso locale
   const GAME_LOCAL_KEYS = { wordio: 'wordio-progress' };
   function localKeyFor(game) { return GAME_LOCAL_KEYS[game] || ('ffr-' + game + '-progress'); }
+  // ogni gioco che salva progresso va elencato qui, non solo quelli con una
+  // chiave localStorage "storica" in GAME_LOCAL_KEYS — altrimenti il suo
+  // progresso da ospite non viene mai migrato quando si crea un account
+  const KNOWN_GAMES = ['wordio', 'boing'];
 
   // ---------------- testi (it/en/fr) ----------------
   const STR = {
@@ -261,18 +265,30 @@
   }
 
   // ---------------- progresso: locale + cloud ----------------
+  // NOTA: le chiamate supabase-js (client.from(...).upsert/select/...) NON
+  // rifiutano la Promise sugli errori del database (RLS, vincoli, ecc.) — la
+  // Promise si risolve comunque, con l'errore dentro il campo `error` della
+  // risposta. Va sempre controllato esplicitamente, altrimenti un fallimento
+  // (es. una policy RLS che blocca l'upsert) passa completamente inosservato:
+  // il codice pensa che sia andato tutto bene mentre in realtà su Supabase
+  // non è stato scritto niente. Per questo ogni chiamata qui sotto controlla
+  // `error` e lo logga in console, invece di limitarsi al try/catch (che
+  // intercetta solo errori di rete, non errori applicativi del database).
   async function migrateGuestProgressToAccount(userId) {
     const client = await getClient();
-    for (const game of Object.keys(GAME_LOCAL_KEYS)) {
+    for (const game of KNOWN_GAMES) {
       try {
         const raw = localStorage.getItem(localKeyFor(game));
         if (!raw) continue;
         const data = JSON.parse(raw);
-        await client.from('game_progress').upsert(
+        const { error } = await client.from('game_progress').upsert(
           { user_id: userId, game, data, updated_at: new Date().toISOString() },
           { onConflict: 'user_id,game' }
         );
-      } catch (e) { /* un gioco che fallisce non deve bloccare gli altri */ }
+        if (error) console.error('[FFR] migrazione progresso ospite→account fallita per', game, error);
+      } catch (e) {
+        console.error('[FFR] migrazione progresso ospite→account fallita per', game, e);
+      }
     }
   }
 
@@ -281,11 +297,12 @@
     if (!currentUser) return;
     try {
       const client = await getClient();
-      await client.from('game_progress').upsert(
+      const { error } = await client.from('game_progress').upsert(
         { user_id: currentUser.id, game, data, score: (score == null ? null : score), updated_at: new Date().toISOString() },
         { onConflict: 'user_id,game' }
       );
-    } catch (e) { /* offline: verrà ritentato al prossimo saveProgress */ }
+      if (error) console.error('[FFR] saveProgress(' + game + ') fallito:', error);
+    } catch (e) { console.error('[FFR] saveProgress(' + game + ') fallito (rete/offline):', e); }
   }
 
   async function loadProgress(game) {
@@ -295,19 +312,20 @@
     try {
       const client = await getClient();
       const { data, error } = await client.from('game_progress').select('data').eq('user_id', currentUser.id).eq('game', game).maybeSingle();
-      if (error || !data) return local;
+      if (error) { console.error('[FFR] loadProgress(' + game + ') fallito:', error); return local; }
+      if (!data) return local; // nessun progresso cloud salvato ancora per questo utente/gioco: normale
       try { localStorage.setItem(localKeyFor(game), JSON.stringify(data.data)); } catch (e) { /* ignora */ }
       return data.data;
-    } catch (e) { return local; }
+    } catch (e) { console.error('[FFR] loadProgress(' + game + ') fallito (rete/offline):', e); return local; }
   }
 
   async function getLeaderboard(game, limit) {
     try {
       const client = await getClient();
       const { data, error } = await client.rpc('get_leaderboard', { p_game: game, p_limit: limit || 20 });
-      if (error) return [];
+      if (error) { console.error('[FFR] getLeaderboard(' + game + ') fallita:', error); return []; }
       return data || [];
-    } catch (e) { return []; }
+    } catch (e) { console.error('[FFR] getLeaderboard(' + game + ') fallita (rete/offline):', e); return []; }
   }
 
   // ---------------- UI: stili ----------------

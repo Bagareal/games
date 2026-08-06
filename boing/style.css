@@ -88,18 +88,11 @@ body{
   text-align:center;
   padding: 2px 0 0;
 }
-.score-block div:first-child{
+#scoreValue{
   font-family:'Press Start 2P', monospace;
   font-size:24px;
   color: var(--gold);
   line-height:1.15;
-}
-.score-block div:last-child{
-  font-family:'Press Start 2P', monospace;
-  font-size:9px;
-  color: rgba(255,255,255,0.6);
-  letter-spacing:1px;
-  margin-top:3px;
 }
 
 .title-wrap{
@@ -147,6 +140,21 @@ body{
   animation: pulse 1.4s ease-in-out infinite;
 }
 @keyframes pulse{ 0%,100%{ opacity:0.55; } 50%{ opacity:1; } }
+.center-toast{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  text-align:center;
+  font-family:'Press Start 2P', monospace;
+  font-size:11px;
+  line-height:1.6;
+  color: var(--white);
+  background: rgba(6,4,14,0.75);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius:12px;
+  padding:10px 16px;
+  max-width:80%;
+  pointer-events:none;
+  z-index:10;
+}
 
 /* overlay/card: estetica propria di Boing (arcade scuro/neon), non quella
    "da spiaggia" di Wordio — anche i modal condivisi seguono il tema del
@@ -220,6 +228,14 @@ body{
   margin-top:6px;
 }
 .secondary-btn:active{ transform:scale(0.96); }
+
+.home-link{
+  display:block; margin-top:14px;
+  font-family:'Press Start 2P', monospace;
+  font-size:10px;
+  color: rgba(255,255,255,0.5);
+  text-decoration:underline;
+}
 
 .menu-list{ display:flex; flex-direction:column; gap:8px; margin-top:14px; }
 .menu-row{
