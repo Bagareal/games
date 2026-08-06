@@ -618,6 +618,9 @@
     #wheelContainer{ width:min(58vw, 58vh, 560px); height:min(58vw, 58vh, 560px); }
     .life-ring{ width:min(49vw, 49vh, 473px); height:min(49vw, 49vh, 473px); }
     .tile{ width:min(12vw, 12vh, 116px); height:min(12vw, 12vh, 116px); font-size:min(4.8vw, 4.8vh, 46px); }
+    .side-btn{ width:min(9vw, 9vh, 74px); font-size:min(2.4vw, 2.4vh, 14px); }
+    .side-btn .circle{ width:min(8vw, 8vh, 64px); height:min(8vw, 8vh, 64px); font-size:min(3.2vw, 3.2vh, 24px); }
+    .extra-counter{ font-size:min(2.6vw, 2.6vh, 15px); padding:5px 14px; }
   }
   /* desktop: l'app resta un riquadro "da telefono" ma centrato in verticale,
      invece di stare incollata in cima a un mare di sfondo */

@@ -318,7 +318,11 @@ body{
    tetto in px serve solo a non farlo diventare assurdo su monitor giganti. */
 @media (min-width: 700px){
   #app{ max-width: min(92vw, 1200px); }
-  #gameCanvas{ max-width: min(88vw, calc(60vh / 1.5), 900px); }
+  /* 170px copre topbar + titolo + punteggio + padding della game-zone: prima
+     il tetto era un 60vh fisso, una stima che ignorava quanto poco spazio
+     occupi davvero quell'intestazione, tenendo il gioco piccolo anche dove
+     c'era spazio verticale abbondante (tablet alti) */
+  #gameCanvas{ max-width: min(88vw, calc((100dvh - 170px) / 1.5), 900px); }
   .icon-btn{ width:42px; height:42px; font-size:19px; }
   .level-display{ font-size:16px; }
   .lives{ width:90px; height:22px; }

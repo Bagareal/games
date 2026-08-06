@@ -545,9 +545,12 @@ function switchToLanguage(code) {
 function renderWordsList() {
   const data = state.currentLevelData;
   const maxLen = Math.max(...data.targets.map(w => w.length));
-  const availableWidth = Math.min(420, (window.innerWidth || 380) - 60);
+  // larghezza reale del contenitore, non window.innerWidth: su tablet la
+  // words-card cresce col resto della pagina, e un tetto fisso a 420px/30px
+  // teneva le caselle piccole anche con spazio libero abbondante
+  const availableWidth = els.wordsList.clientWidth || Math.min(420, (window.innerWidth || 380) - 60);
   let tileSize = Math.floor(availableWidth / maxLen) - 4;
-  tileSize = Math.max(20, Math.min(30, tileSize));
+  tileSize = Math.max(20, Math.min(64, tileSize));
   els.wordsList.style.setProperty('--tile-size', tileSize + 'px');
 
   els.wordsList.innerHTML = '';

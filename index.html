@@ -51,6 +51,15 @@
     cursor:pointer;
   }
   .icon-btn:active{ transform: scale(0.94); }
+  .icon-btn-wrap{ position:relative; display:inline-block; }
+  .lang-badge{
+    position:absolute; bottom:-3px; right:-5px;
+    width:18px; height:18px; border-radius:50%;
+    background: #FFFDF8;
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; line-height:1;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
 
   header{ text-align:center; margin: 4px 0 26px; }
   header .logo{
@@ -216,7 +225,10 @@
 
   <div id="page">
     <div class="topbar">
-      <button class="icon-btn" id="langBtn" aria-label="Language">🌍</button>
+      <span class="icon-btn-wrap">
+        <button class="icon-btn" id="langBtn" aria-label="Language">🌍</button>
+        <span class="lang-badge" id="langBadge">🇮🇹</span>
+      </span>
     </div>
 
     <header>
@@ -319,6 +331,7 @@ const HOME_STRINGS = {
 let language = 'it';
 const els = {
   langBtn: document.getElementById('langBtn'),
+  langBadge: document.getElementById('langBadge'),
   languageOverlay: document.getElementById('languageOverlay'),
   languageList: document.getElementById('languageList'),
 };
@@ -331,6 +344,7 @@ function applyTranslations() {
     const val = t()[el.dataset.i18n];
     if (typeof val === 'string') el.textContent = val;
   });
+  els.langBadge.textContent = LANGUAGES[language].flag;
 }
 
 function renderLanguageList() {
