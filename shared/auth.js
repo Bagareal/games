@@ -26,7 +26,7 @@
   // ogni gioco che salva progresso va elencato qui, non solo quelli con una
   // chiave localStorage "storica" in GAME_LOCAL_KEYS — altrimenti il suo
   // progresso da ospite non viene mai migrato quando si crea un account
-  const KNOWN_GAMES = ['wordio', 'boing'];
+  const KNOWN_GAMES = ['wordio', 'boing', 'blokko'];
 
   // ---------------- testi (it/en/fr) ----------------
   const STR = {

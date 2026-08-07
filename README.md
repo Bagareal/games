@@ -24,9 +24,11 @@ A brick-breaker: bounce the ball off your paddle to clear every brick. 3 lives, 
 
 **[freeforreal.app/boing](https://freeforreal.app/boing/)**
 
-### Blokko *(coming soon)*
+### [Blokko](blokko/)
 
-A falling-blocks puzzle game — clear lines before they stack up.
+A falling-blocks puzzle: rotate and slide the pieces to fill complete rows before the stack reaches the top. 9 piece shapes (two of them our own), 3 difficulty levels, and a neon arcade look of its own. Touch controls: tap to rotate, drag to move, hold to drop fast, swipe down to slam. Play it at:
+
+**[freeforreal.app/blokko](https://freeforreal.app/blokko/)**
 
 ## Suggest a game
 

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Blokko</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- sfondo: cabinato arcade al neon — orizzonte luminoso + griglia prospettica
+     in movimento. Nessuna somiglianza con gli altri giochi del sito: ognuno ha
+     una sua identità grafica. -->
+<div id="bgLayer">
+  <div class="neon-sun"></div>
+  <div class="grid-floor"></div>
+</div>
+<div id="scanlines"></div>
+
+<div id="app">
+
+  <div id="loadingScreen">
+    <div class="loading-title">BLOKKO</div>
+    <div class="spinner"></div>
+  </div>
+
+  <div class="topbar">
+    <div class="icon-group">
+      <a class="icon-btn" href="../" aria-label="Home">⬅️</a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
+      <button class="icon-btn" id="pauseBtn" aria-label="Pausa">⏸️</button>
+    </div>
+    <div class="level-display"><span class="lv-label">LV.</span><span id="levelValue">1</span></div>
+    <div class="lines-display"><span class="lines-icon">≡</span><span id="linesValue">0</span></div>
+  </div>
+
+  <div class="hud-row">
+    <div class="score-block">
+      <div class="hud-label" data-i18n="scoreLabel">PUNTI</div>
+      <div id="scoreValue">0</div>
+    </div>
+    <div class="next-block">
+      <div class="hud-label" data-i18n="nextLabel">PROSSIMI</div>
+      <div class="next-slots" id="nextSlots"></div>
+    </div>
+  </div>
+
+  <div class="title-wrap">
+    <h1>BLOKKO</h1>
+  </div>
+
+  <div class="game-zone" id="gameZone">
+    <div class="board-frame" id="boardFrame">
+      <canvas id="gameCanvas"></canvas>
+    </div>
+    <div class="center-toast hidden" id="centerToast"></div>
+  </div>
+
+  <div class="overlay" id="difficultyOverlay">
+    <div class="card">
+      <h2 data-i18n="chooseDifficulty">Scegli la difficoltà</h2>
+      <p data-i18n="chooseDifficultySub">Puoi cambiarla ogni volta che inizi una partita</p>
+      <div class="difficulty-list">
+        <button class="difficulty-option" data-difficulty="easy" data-i18n="easy">Facile</button>
+        <button class="difficulty-option" data-difficulty="medium" data-i18n="medium">Medio</button>
+        <button class="difficulty-option" data-difficulty="hard" data-i18n="hard">Difficile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- pausa: riprendi / cambio difficoltà / ricomincia -->
+  <div class="overlay" id="pauseOverlay">
+    <div class="card">
+      <div class="big-icon">⏸️</div>
+      <h2 data-i18n="paused">Pausa</h2>
+      <button class="primary-btn" id="resumeBtn" data-i18n="resume">Riprendi ▶</button>
+
+      <p class="menu-section-label" data-i18n="difficultyLabel">Difficoltà</p>
+      <div class="difficulty-list">
+        <button class="difficulty-option" data-difficulty="easy" data-i18n="easy">Facile</button>
+        <button class="difficulty-option" data-difficulty="medium" data-i18n="medium">Medio</button>
+        <button class="difficulty-option" data-difficulty="hard" data-i18n="hard">Difficile</button>
+      </div>
+
+      <button class="secondary-btn" id="restartBtn" data-i18n="restart">Ricomincia</button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <!-- impostazioni: lingua / istruzioni / classifica -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="card">
+      <h2 data-i18n="settingsTitle">⚙️ Impostazioni</h2>
+      <div class="menu-list">
+        <button class="menu-row" id="openLanguageBtn">🌍 <span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openTutorialBtn">🎮 <span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn">🏆 <span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+      </div>
+      <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="tutorialOverlay">
+    <div class="card tutorial-card">
+      <h2 data-i18n="tutorialTitle">Come si gioca</h2>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">👆</span>
+        <p data-i18n="tutorialTap">Tocca lo schermo per ruotare il pezzo</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">↔️</span>
+        <p data-i18n="tutorialSwipe">Trascina il dito a destra o a sinistra per spostarlo</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">✋</span>
+        <p data-i18n="tutorialHold">Tieni premuto per farlo scendere veloce</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">⬇️</span>
+        <p data-i18n="tutorialDrop">Scorri verso il basso per farlo cadere di colpo</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">≡</span>
+        <p data-i18n="tutorialLines">Riempi una riga intera e sparisce. Quattro righe in un colpo solo = BLOKKO!</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">⌨️</span>
+        <p data-i18n="tutorialKeys">Da computer: ← → per muovere, ↑ per ruotare, ↓ per scendere, spazio per la caduta immediata</p>
+      </div>
+      <button class="primary-btn" id="closeTutorialBtn" data-i18n="gotIt">Ho capito!</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="gameOverOverlay">
+    <div class="card">
+      <div class="big-icon">💥</div>
+      <h2 data-i18n="gameOver">Game Over</h2>
+      <p id="gameOverSub"></p>
+      <button class="primary-btn" id="retryBtn" data-i18n="playAgain">Rigioca</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageOverlay">
+    <div class="card">
+      <h2 data-i18n="languageTitle">🌍 Lingua</h2>
+      <p data-i18n="languageSub">Scegli la lingua dell'interfaccia</p>
+      <div class="language-list" id="languageList"></div>
+      <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="leaderboardOverlay">
+    <div class="card">
+      <div class="big-icon">🏆</div>
+      <h2 data-i18n="leaderboardTitle">Classifica</h2>
+      <div class="lb-tabs" id="leaderboardTabs">
+        <button class="lb-tab" data-difficulty="easy" data-i18n="easy">Facile</button>
+        <button class="lb-tab" data-difficulty="medium" data-i18n="medium">Medio</button>
+        <button class="lb-tab" data-difficulty="hard" data-i18n="hard">Difficile</button>
+      </div>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+      <button class="secondary-btn" id="closeLeaderboardBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+</div>
+
+<script>window.FFR_AUTH_HEADLESS = true;</script>
+<script src="../shared/auth.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

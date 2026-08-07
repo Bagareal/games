@@ -111,7 +111,18 @@
     box-shadow: 0 4px 0 rgba(0,0,0,0.2);
   }
   .game-icon.wordio{ background: radial-gradient(circle at 32% 28%, #4FC3D9, #0B4F6C); }
-  .game-icon.blokko{ background: radial-gradient(circle at 32% 28%, #F4B740, #C1651F); }
+  .game-icon.blokko{ background: radial-gradient(circle at 32% 28%, #3B1080, #10032E); }
+  /* colonnine al neon: richiamano la palette di Blokko senza disegnare un pezzo */
+  .blokko-icon{ display:flex; align-items:flex-end; gap:3px; height:26px; }
+  .blokko-icon i{
+    display:block; width:5px; border-radius:2px;
+    background: var(--c);
+    box-shadow: 0 0 6px var(--c);
+  }
+  .blokko-icon i:nth-child(1){ height:11px; }
+  .blokko-icon i:nth-child(2){ height:20px; }
+  .blokko-icon i:nth-child(3){ height:7px; }
+  .blokko-icon i:nth-child(4){ height:15px; }
   .game-icon.boing{ background: radial-gradient(circle at 32% 28%, #F2622E, #A2380F); }
   .boing-icon{ position:relative; width:26px; height:26px; }
   .boing-icon .boing-ball{
@@ -247,14 +258,14 @@
         <span class="badge play" data-i18n="play">Gioca</span>
       </a>
 
-      <div class="game-card disabled">
-        <div class="game-icon blokko">🧱</div>
+      <a class="game-card" href="blokko/">
+        <div class="game-icon blokko"><span class="blokko-icon"><i style="--c:#FF2E88"></i><i style="--c:#00E5FF"></i><i style="--c:#B14CFF"></i><i style="--c:#FFE14D"></i></span></div>
         <div class="game-info">
           <h2>Blokko</h2>
           <p data-i18n="blokkoDesc">Incastra i blocchi che cadono prima che si accumulino troppo.</p>
         </div>
-        <span class="badge" data-i18n="comingSoon">In arrivo</span>
-      </div>
+        <span class="badge play" data-i18n="play">Gioca</span>
+      </a>
 
       <a class="game-card" href="boing/">
         <div class="game-icon boing"><span class="boing-icon"><span class="boing-ball"></span><span class="boing-paddle"></span></span></div>
