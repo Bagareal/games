@@ -92,7 +92,17 @@
     font-size:15px;
     font-weight:700;
     color: rgba(255,255,255,0.9);
-    margin:8px 0 0;
+    margin:2px 0 0;
+  }
+  /* nota sull'uso senza connessione: sta sotto al sottotitolo, più piccola e
+     più tenue — è un'informazione utile, non un secondo slogan */
+  header .offline-note{
+    font-size:12.5px;
+    font-weight:600;
+    color: rgba(255,255,255,0.75);
+    margin:10px auto 0;
+    max-width: 300px;
+    line-height:1.4;
   }
 
   .games{
@@ -190,8 +200,12 @@
   }
   .badge.play{ background: linear-gradient(180deg, #14A085, #0d6e5c); }
 
+  /* il piè di pagina resta in fondo alla schermata anche quando i giochi non la
+     riempiono tutta: senza `auto` risaliva ad attaccarsi all'ultima scheda,
+     lasciando una fascia vuota sotto */
   footer{
-    margin-top:32px;
+    margin-top:auto;
+    padding-top:32px;
     text-align:center;
     font-size:12px;
     font-weight:700;
@@ -286,6 +300,7 @@
       <div class="logo">🕹️</div>
       <h1>Free For Real</h1>
       <p data-i18n="tagline">Giochi gratis. Per davvero.</p>
+      <p class="offline-note" data-i18n="offlineNote">📶 Apri il gioco con la connessione: da lì in poi puoi giocare anche senza internet.</p>
     </header>
 
     <div class="games">
@@ -367,6 +382,7 @@ const LANGUAGES = {
 const HOME_STRINGS = {
   it: {
     tagline: 'Giochi gratis. Per davvero.',
+    offlineNote: '📶 Apri il gioco con la connessione: da lì in poi puoi giocare anche senza internet.',
     wordioDesc: 'Componi tutte le parole usando le lettere sulla ruota. Italiano, inglese, francese.',
     blokkoDesc: 'Incastra i blocchi che cadono prima che si accumulino troppo.',
     boingDesc: 'Rompi tutti i mattoncini rimbalzando la pallina col paddle. 3 vite, potenziamenti e 3 livelli di difficoltà.',
@@ -382,6 +398,7 @@ const HOME_STRINGS = {
   },
   en: {
     tagline: 'Free games. For real.',
+    offlineNote: '📶 Open a game while you are online: from then on you can keep playing with no connection.',
     wordioDesc: 'Spell out every word using the letters on a wheel. Italian, English, French.',
     blokkoDesc: 'Clear the falling blocks before they stack up.',
     boingDesc: 'Bounce the ball off your paddle to clear every brick. 3 lives, power-ups, and 3 difficulty levels.',
@@ -397,6 +414,7 @@ const HOME_STRINGS = {
   },
   fr: {
     tagline: 'Jeux gratuits. Pour de vrai.',
+    offlineNote: '📶 Ouvre le jeu avec la connexion : ensuite tu peux jouer même sans internet.',
     wordioDesc: "Compose tous les mots avec les lettres sur la roue. Italien, anglais, français.",
     blokkoDesc: "Range les blocs qui tombent avant qu'ils ne s'accumulent.",
     boingDesc: 'Casse toutes les briques en faisant rebondir la balle sur ta raquette. 3 vies, bonus et 3 niveaux de difficulté.',

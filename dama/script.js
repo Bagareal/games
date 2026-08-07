@@ -45,7 +45,7 @@ const UI_STRINGS = {
     modeComputerSub: 'Tre livelli di difficoltà',
 
     creatorTitle: 'Giocherai contro TheCreator',
-    creatorSub: 'il genio dietro questo progetto.',
+    creatorSub: 'il genio dietro questa bellissima app.',
     chooseDifficulty: 'Scegli la difficoltà',
     diffStupido: 'Stupido',
     diffNormale: 'Normale',
@@ -115,7 +115,7 @@ const UI_STRINGS = {
     modeComputerSub: 'Three difficulty levels',
 
     creatorTitle: "You'll play against TheCreator",
-    creatorSub: 'the genius behind this project.',
+    creatorSub: 'the genius behind this beautiful app.',
     chooseDifficulty: 'Choose the difficulty',
     diffStupido: 'Dumb',
     diffNormale: 'Normal',
@@ -185,7 +185,7 @@ const UI_STRINGS = {
     modeComputerSub: 'Trois niveaux de difficulté',
 
     creatorTitle: 'Tu joueras contre TheCreator',
-    creatorSub: 'le génie derrière ce projet.',
+    creatorSub: 'le génie derrière cette superbe appli.',
     chooseDifficulty: 'Choisis la difficulté',
     diffStupido: 'Bête',
     diffNormale: 'Normal',

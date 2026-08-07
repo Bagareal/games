@@ -73,8 +73,8 @@ body{
 }
 #loadingScreen.hidden{ display:none; }
 .loading-title{
-  font-family:'Playfair Display', serif;
-  font-weight:700; font-size:34px; letter-spacing:3px;
+  font-family:'Merriweather', serif;
+  font-weight:700; font-size:30px; letter-spacing:2px;
   color: var(--ivory);
 }
 .spinner{
@@ -122,8 +122,8 @@ body{
 
 .title-wrap{ padding: 10px 16px 0; }
 .title-wrap h1{
-  font-family:'Playfair Display', serif;
-  font-weight:700; font-size:26px; letter-spacing:2px;
+  font-family:'Merriweather', serif;
+  font-weight:700; font-size:23px; letter-spacing:1px;
   margin:0;
   color: var(--ivory);
   text-align:center;
@@ -156,8 +156,8 @@ body{
 .player-plate.flipped{ transform: rotate(180deg); }
 .player-plate.is-turn{ border-color: var(--brass); background: rgba(201,162,39,0.12); }
 .plate-name{
-  font-family:'Playfair Display', serif;
-  font-weight:600; font-size:15px;
+  font-family:'Merriweather', serif;
+  font-weight:700; font-size:14px;
   color: var(--ivory);
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
@@ -338,8 +338,8 @@ body{
   box-shadow: 0 18px 40px rgba(0,0,0,0.55);
 }
 .card h2{
-  font-family:'Playfair Display', serif;
-  font-weight:700; font-size:21px;
+  font-family:'Merriweather', serif;
+  font-weight:700; font-size:19px;
   margin:0 0 8px;
   color: var(--ivory);
 }
@@ -409,7 +409,7 @@ body{
 .choice-btn:active{ transform: translateY(1px); }
 .choice-icon{ font-size:26px; flex:0 0 auto; }
 .choice-text{ display:flex; flex-direction:column; gap:2px; min-width:0; }
-.choice-title{ font-family:'Playfair Display', serif; font-weight:600; font-size:16px; color: var(--ivory); }
+.choice-title{ font-family:'Merriweather', serif; font-weight:700; font-size:15px; color: var(--ivory); }
 .choice-sub{ font-size:12px; font-weight:400; color: var(--text-dim); }
 
 .difficulty-list{ display:flex; flex-direction:column; gap:8px; }
@@ -503,7 +503,7 @@ body{
    e la misura vera la calcola comunque il codice sullo spazio rimasto */
 @media (min-width: 700px){
   #app{ max-width: 640px; }
-  .title-wrap h1{ font-size:30px; }
+  .title-wrap h1{ font-size:27px; }
   .plate-name{ font-size:17px; }
 }
 @media (min-width: 900px){
@@ -511,5 +511,5 @@ body{
 }
 @media (min-width: 1200px){
   #app{ max-width: 780px; }
-  .title-wrap h1{ font-size:34px; }
+  .title-wrap h1{ font-size:30px; }
 }
