@@ -86,6 +86,15 @@
       saving: 'Un attimo…',
       showPassword: 'Mostra la password',
       hidePassword: 'Nascondi la password',
+      langTitle: '🌍 Che lingua vuoi?',
+      langSub: 'Scegli la lingua del sito',
+      langHint: 'Si può cambiare quando vuoi, dall\'icona 🌍 in alto o dalle impostazioni di ogni gioco: vale per tutto il sito.',
+      signedOutTitle: 'Non sei più collegato al tuo account',
+      signedOutBody: 'I progressi di questa partita restano su questo dispositivo.',
+      offlineTitle: 'Non riusciamo a raggiungere il server',
+      offlineBody: 'Si può continuare a giocare: i progressi restano su questo dispositivo e ripartono verso il tuo account appena la connessione torna.',
+      signedOutLogin: 'Accedi',
+      bannerClose: 'Chiudi l\'avviso',
     },
     en: {
       welcomeTitle: 'Welcome!',
@@ -142,6 +151,15 @@
       saving: 'One moment…',
       showPassword: 'Show password',
       hidePassword: 'Hide password',
+      langTitle: '🌍 Which language?',
+      langSub: 'Choose the site language',
+      langHint: 'You can change it whenever you like, from the 🌍 icon at the top or from any game\'s settings: it applies to the whole site.',
+      signedOutTitle: 'You\'re no longer connected to your account',
+      signedOutBody: 'This game\'s progress stays on this device.',
+      offlineTitle: 'We can\'t reach the server',
+      offlineBody: 'You can keep playing: your progress stays on this device and goes back to your account as soon as the connection returns.',
+      signedOutLogin: 'Log in',
+      bannerClose: 'Dismiss',
     },
     fr: {
       welcomeTitle: 'Bienvenue !',
@@ -198,10 +216,41 @@
       saving: 'Un instant…',
       showPassword: 'Afficher le mot de passe',
       hidePassword: 'Masquer le mot de passe',
+      langTitle: '🌍 Quelle langue ?',
+      langSub: 'Choisis la langue du site',
+      langHint: 'Tu peux la changer quand tu veux, avec l\'icône 🌍 en haut ou dans les réglages de chaque jeu : elle vaut pour tout le site.',
+      signedOutTitle: 'Tu n\'es plus connecté à ton compte',
+      signedOutBody: 'La progression de cette partie reste sur cet appareil.',
+      offlineTitle: 'Le serveur est injoignable',
+      offlineBody: 'Tu peux continuer à jouer : ta progression reste sur cet appareil et repart vers ton compte dès que la connexion revient.',
+      signedOutLogin: 'Se connecter',
+      bannerClose: 'Fermer l\'avis',
     },
   };
+  // le tre lingue offerte alla prima visita: le stesse tre di home e giochi
+  const LANGUAGE_OPTIONS = [
+    { code: 'it', flag: '🇮🇹', label: 'Italiano' },
+    { code: 'en', flag: '🇬🇧', label: 'English' },
+    { code: 'fr', flag: '🇫🇷', label: 'Français' },
+  ];
+  const LS_LANGUAGE = 'ffr-language';
   function getSiteLanguage() {
-    try { const v = localStorage.getItem('ffr-language'); return (v && STR[v]) ? v : 'it'; } catch (e) { return 'it'; }
+    try { const v = localStorage.getItem(LS_LANGUAGE); return (v && STR[v]) ? v : 'it'; } catch (e) { return 'it'; }
+  }
+  // C'è una lingua SCELTA, o stiamo solo ripiegando sull'italiano? Serve a
+  // sapere se chiedere: getSiteLanguage() risponde 'it' in entrambi i casi.
+  function hasChosenLanguage() {
+    try { const v = localStorage.getItem(LS_LANGUAGE); return !!(v && STR[v]); } catch (e) { return false; }
+  }
+  function setSiteLanguage(code) {
+    try { localStorage.setItem(LS_LANGUAGE, code); } catch (e) { /* ignora */ }
+  }
+  // lingua suggerita dal browser: si preseleziona, ma la domanda si fa lo stesso
+  function browserLanguage() {
+    try {
+      const raw = (navigator.language || '').slice(0, 2).toLowerCase();
+      return STR[raw] ? raw : 'it';
+    } catch (e) { return 'it'; }
   }
   function tt(key) {
     const lang = getSiteLanguage();
@@ -277,10 +326,16 @@
           if (!currentNickname) currentNickname = cachedNickname();
           notify();
         } else if (event === 'SIGNED_OUT') {
+          const hadAccount = !!(currentUser || cachedNickname());
           currentUser = null;
           currentNickname = null;
           cacheNickname(null);
           notify();
+          // Uscita non voluta (token scaduto, sessione chiusa da un'altra
+          // scheda): senza un avviso, nelle pagine di gioco non c'è NIENTE che
+          // lo dica — l'icona account lì non c'è — e si continua a giocare
+          // convinti che i punteggi stiano andando in classifica.
+          if (hadAccount && !deliberateLogout) showAuthBanner('signedOut');
         }
       });
     } catch (e) { console.error('[FFR] onAuthStateChange non agganciato:', e); }
@@ -289,6 +344,9 @@
   // ---------------- stato ----------------
   let currentUser = null;
   let currentNickname = null;
+  // vero solo mentre parte un'uscita chiesta dall'utente col pulsante "Esci":
+  // quella non è un problema da segnalare, è quello che ha appena voluto
+  let deliberateLogout = false;
   const listeners = [];
   function notify() {
     listeners.forEach(fn => { try { fn({ user: currentUser, nickname: currentNickname }); } catch (e) { /* ignora listener rotto */ } });
@@ -518,6 +576,33 @@
         justify-content:center; background:rgba(255,255,255,0.22); border:1.5px solid rgba(255,255,255,0.4);
         backdrop-filter:blur(6px); color:#fff; font-size:17px; cursor:pointer; flex:0 0 auto; }
       .ffr-auth-icon-btn:active{ transform:scale(0.94); }
+      .ffr-lang-option{ display:flex; align-items:center; gap:12px; width:100%; background:#fff;
+        border:none; border-radius:14px; padding:13px 16px; margin-bottom:10px; cursor:pointer;
+        box-shadow:0 3px 0 #E2D2A5; font-family:'Baloo 2', sans-serif; font-weight:700; font-size:16px;
+        color:#0B2B3C; text-align:left; }
+      .ffr-lang-option:active{ transform:translateY(2px); box-shadow:none; }
+      .ffr-lang-option.suggested{ outline:3px solid #14A085; outline-offset:-3px; }
+      .ffr-lang-flag{ font-size:22px; line-height:1; }
+      /* Nastro "non sei più collegato": vive nelle pagine di gioco, dove non
+         c'è l'icona account. Non blocca la partita — si posa in alto, si può
+         chiudere, e sta sopra a tutto tranne i pannelli di questo file. */
+      .ffr-auth-banner{ position:fixed; top:0; left:0; right:0; z-index:9998;
+        display:flex; align-items:center; gap:10px; padding:10px 12px;
+        background:#FBEBC9; color:#0B2B3C; font-family:'Nunito', sans-serif;
+        box-shadow:0 4px 14px rgba(0,0,0,0.35);
+        transform:translateY(-100%); transition:transform 0.25s ease; }
+      .ffr-auth-banner.show{ transform:translateY(0); }
+      .ffr-auth-banner-text{ flex:1; text-align:left; font-size:12.5px; font-weight:600; line-height:1.35; }
+      .ffr-auth-banner-text strong{ display:block; font-family:'Baloo 2', sans-serif; font-size:14px; }
+      .ffr-auth-banner-btn{ flex:0 0 auto; background:linear-gradient(180deg,#14A085,#0d6e5c); color:#fff;
+        border:none; border-radius:12px; padding:9px 14px; cursor:pointer;
+        font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px; box-shadow:0 3px 0 #0a5747; }
+      .ffr-auth-banner-btn:active{ transform:translateY(2px); box-shadow:none; }
+      .ffr-auth-banner-x{ flex:0 0 auto; width:34px; height:34px; padding:0; background:none; border:none;
+        cursor:pointer; color:#4a6270; font-size:20px; line-height:1; }
+      @media (prefers-reduced-motion: reduce){
+        .ffr-auth-banner{ transition:none; }
+      }
     `;
     document.head.appendChild(style);
   }
@@ -544,9 +629,10 @@
     return el.querySelector('.ffr-auth-card');
   }
   // La X in alto (shared/modal-x.js) va solo sui pannelli che si possono
-  // chiudere senza perdere niente. Restano senza: la scelta iniziale
-  // ospite/account, l'avviso "stai giocando come ospite" e soprattutto il codice
-  // di recupero, che si vede una volta sola e va salvato prima di chiudere.
+  // chiudere senza perdere niente. Restano senza: la scelta della lingua alla
+  // prima visita, la scelta ospite/account, l'avviso "stai giocando come
+  // ospite" e soprattutto il codice di recupero, che si vede una volta sola e
+  // va salvato prima di chiudere.
   function addCloseX(card) {
     if (window.FFR && window.FFR.addModalX && card && card.parentElement) {
       window.FFR.addModalX(card.parentElement);
@@ -560,7 +646,74 @@
     document.querySelectorAll('.ffr-auth-overlay').forEach(el => el.classList.remove('show'));
   }
 
+  // ---------------- nastro "non sei più collegato" ----------------
+  // Sta fuori dagli overlay perché non deve fermare la partita: dice quello che
+  // è successo, offre di rientrare, e si può ignorare.
+  function showAuthBanner(kind) {
+    if (!document.body) return; // arrivato prima della pagina: niente da mostrare
+    // di solito gli stili ci sono già (li mette init), ma l'uscita può arrivare
+    // dall'ascoltatore prima che init sia partito: senza questa riga il nastro
+    // comparirebbe come testo nudo in cima alla pagina
+    injectStyles();
+    const isOffline = kind === 'offline';
+    let el = document.getElementById('ffr-auth-banner');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'ffr-auth-banner';
+      el.className = 'ffr-auth-banner';
+      el.setAttribute('role', 'status');
+      document.body.appendChild(el);
+    }
+    el.innerHTML = `
+      <div class="ffr-auth-banner-text">
+        <strong>${isOffline ? tt('offlineTitle') : tt('signedOutTitle')}</strong>
+        ${isOffline ? tt('offlineBody') : tt('signedOutBody')}
+      </div>
+      ${isOffline ? '' : `<button class="ffr-auth-banner-btn" data-act="login">${tt('signedOutLogin')}</button>`}
+      <button class="ffr-auth-banner-x" data-act="close" aria-label="${tt('bannerClose')}">✕</button>
+    `;
+    const loginBtn = el.querySelector('[data-act="login"]');
+    if (loginBtn) loginBtn.onclick = () => { hideAuthBanner(); openLoginModal(); };
+    el.querySelector('[data-act="close"]').onclick = hideAuthBanner;
+    // un fotogramma di ritardo: se si aggiunge la classe nello stesso momento in
+    // cui l'elemento nasce, il browser non ha uno stato "prima" da cui animare
+    requestAnimationFrame(() => el.classList.add('show'));
+  }
+  function hideAuthBanner() {
+    const el = document.getElementById('ffr-auth-banner');
+    if (el) el.classList.remove('show');
+  }
+
   // ---------------- modali ----------------
+  // Prima visita: si sceglie la lingua PRIMA di tutto il resto, altrimenti il
+  // pannello ospite/account arriva in italiano d'ufficio a chiunque.
+  function openFirstLanguageModal(done) {
+    const suggested = browserLanguage();
+    const card = showOverlay('ffr-lang-overlay', false);
+    card.innerHTML = `
+      <h2>${tt('langTitle')}</h2>
+      <p>${tt('langSub')}</p>
+      ${LANGUAGE_OPTIONS.map(o => `
+        <button class="ffr-lang-option${o.code === suggested ? ' suggested' : ''}" data-lang="${o.code}">
+          <span class="ffr-lang-flag">${o.flag}</span><span>${o.label}</span>
+        </button>
+      `).join('')}
+      <p style="font-size:11px;text-align:center;color:#7a6a4a;margin-top:4px;">${tt('langHint')}</p>
+    `;
+    card.querySelectorAll('.ffr-lang-option').forEach(btn => {
+      btn.onclick = () => {
+        setSiteLanguage(btn.dataset.lang);
+        // la pagina sotto è già disegnata nella lingua di prima: la home
+        // espone questo aggancio per ridisegnarsi senza ricaricare
+        if (typeof window.FFR_APPLY_LANGUAGE === 'function') {
+          try { window.FFR_APPLY_LANGUAGE(btn.dataset.lang); } catch (e) { /* ignora */ }
+        }
+        hideOverlay('ffr-lang-overlay');
+        if (done) done();
+      };
+    });
+  }
+
   function openWelcomeModal() {
     const card = showOverlay('ffr-welcome-overlay', false);
     card.innerHTML = `
@@ -884,13 +1037,23 @@
         <button class="ffr-auth-btn" data-act="logout">${tt('logoutBtn')}</button>
       `;
       card.querySelector('[data-act="logout"]').onclick = async () => {
-        const client = await getClient();
-        await client.auth.signOut();
-        currentUser = null;
-        currentNickname = null;
-        cacheNickname(null);
-        hideOverlay('ffr-panel-overlay');
-        notify();
+        // segnalato PRIMA di signOut: l'evento SIGNED_OUT arriva da solo e
+        // senza questa bandiera farebbe comparire il nastro "sei stato
+        // disconnesso" a chi ha appena premuto "Esci" di sua volontà
+        deliberateLogout = true;
+        try {
+          const client = await getClient();
+          await client.auth.signOut();
+          currentUser = null;
+          currentNickname = null;
+          cacheNickname(null);
+          hideOverlay('ffr-panel-overlay');
+          notify();
+        } finally {
+          // non subito: l'evento SIGNED_OUT può arrivare un attimo dopo che
+          // signOut() ha già restituito, e troverebbe la bandiera già rimessa
+          setTimeout(() => { deliberateLogout = false; }, 3000);
+        }
       };
       card.querySelector('[data-act="regen"]').onclick = async () => {
         const client = await getClient();
@@ -942,12 +1105,21 @@
   }
 
   // ---------------- avvio ----------------
+  // Com'è finito il ripristino della sessione. Sono tre casi diversi e vanno
+  // detti in modo diverso: 'ok' sei dentro, 'signedOut' la sessione è finita,
+  // 'offline' non siamo riusciti a chiederlo (rete, CDN, server giù) — e questo
+  // terzo caso NON è un logout, anche se prima si vedeva uguale: "Ospite".
+  let restoreOutcome = 'guest';
   async function restoreSession() {
     try {
       const client = await getClient();
       const { data, error } = await client.auth.getSession();
-      if (error) console.error('[FFR] getSession fallita:', error);
+      if (error) {
+        console.error('[FFR] getSession fallita:', error);
+        restoreOutcome = 'offline';
+      }
       if (data && data.session && data.session.user) {
+        restoreOutcome = 'ok';
         currentUser = data.session.user;
         // Si avvisa SUBITO l'interfaccia, prima di chiedere il nickname al
         // database. Prima l'ordine era invertito: se quella richiesta falliva
@@ -966,8 +1138,16 @@
         } catch (e) {
           console.error('[FFR] nickname non recuperato, resta quello salvato sul dispositivo:', e);
         }
+      } else if (restoreOutcome !== 'offline') {
+        // nessuna sessione e nessun errore: la sessione è finita davvero
+        restoreOutcome = 'signedOut';
       }
-    } catch (e) { console.error('[FFR] ripristino sessione fallito:', e); }
+    } catch (e) {
+      // la libreria non si è caricata o il server non risponde: NON è un
+      // logout, e infatti il nickname salvato sul dispositivo si tiene
+      console.error('[FFR] ripristino sessione fallito:', e);
+      restoreOutcome = 'offline';
+    }
   }
 
   // parte subito, non aspetta il DOM: le pagine di gioco fanno `await
@@ -983,10 +1163,25 @@
     injectStyles();
     if (!HEADLESS) injectAccountIcon();
     sessionReady.then(() => {
-      if (HEADLESS) return; // niente popup ospite/account nei giochi, solo in home
+      // Chi aveva un account su questo dispositivo e ora non risulta collegato
+      // va avvisato: nei giochi non c'è l'icona account, quindi senza questo
+      // nastro non c'è alcun modo di accorgersene.
+      if (cachedNickname() && restoreOutcome !== 'ok') {
+        setTimeout(() => showAuthBanner(restoreOutcome === 'offline' ? 'offline' : 'signedOut'), 600);
+      }
+      if (HEADLESS) return; // niente popup lingua e ospite/account nei giochi, solo in home
+
       let choice = null;
       try { choice = localStorage.getItem(LS_CHOICE); } catch (e) { /* ignora */ }
-      if (!choice) setTimeout(openWelcomeModal, 400);
+      const askWelcome = () => { if (!choice) openWelcomeModal(); };
+
+      if (hasChosenLanguage()) { setTimeout(askWelcome, 400); return; }
+      // Chi il sito lo usa già (ha superato la scelta ospite/account) non si
+      // vede arrivare una domanda nuova per un aggiornamento: teneva
+      // l'italiano e continua a tenerlo, cambiabile dall'icona 🌍 come prima.
+      if (choice) { setSiteLanguage(getSiteLanguage()); return; }
+      // prima visita vera: prima la lingua, poi il benvenuto già tradotto
+      setTimeout(() => openFirstLanguageModal(askWelcome), 400);
     });
   }
 

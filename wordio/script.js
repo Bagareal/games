@@ -35,6 +35,7 @@ const UI_STRINGS = {
     confirm: 'Conferma',
     languageTitle: '🌍 Lingua',
     languageSub: 'Scegli la lingua delle parole',
+    languageOnlyHere: 'Vale solo per Wordio: la lingua del resto del sito non cambia.',
     languageChangeTitle: 'Cambiare lingua?',
     wordsToFind: n => `${n} parole da trovare`,
     wordFoundToast: w => '✓ ' + w.toUpperCase(),
@@ -87,6 +88,7 @@ const UI_STRINGS = {
     confirm: 'Confirm',
     languageTitle: '🌍 Language',
     languageSub: 'Choose the words language',
+    languageOnlyHere: 'This applies to Wordio only: the rest of the site keeps its language.',
     languageChangeTitle: 'Change language?',
     wordsToFind: n => `${n} words to find`,
     wordFoundToast: w => '✓ ' + w.toUpperCase(),
@@ -139,6 +141,7 @@ const UI_STRINGS = {
     confirm: 'Confirmer',
     languageTitle: '🌍 Langue',
     languageSub: 'Choisis la langue des mots',
+    languageOnlyHere: 'Vaut seulement pour Wordio : la langue du reste du site ne change pas.',
     languageChangeTitle: 'Changer de langue ?',
     wordsToFind: n => `${n} mots à trouver`,
     wordFoundToast: w => '✓ ' + w.toUpperCase(),
@@ -452,17 +455,29 @@ const els = {
 // per lingua, così cambiando lingua si riprende da dove si era rimasti
 // invece di perdere il progresso di quella lingua.
 
-// "ffr-language" è condivisa con l'HOME PAGE e con tutti gli altri giochi del
-// sito: cambiando lingua qui o da lì, la scelta vale ovunque.
+// "ffr-language" è la lingua del sito, condivisa con la home e con tutti gli
+// altri giochi. Wordio è l'UNICA eccezione del sito: qui la lingua non è
+// l'etichetta dei pulsanti, sono le parole da trovare — chi si allena con
+// l'inglese non deve per questo ritrovarsi la home e gli altri giochi in
+// inglese. Quindi Wordio ha una chiave sua, e la regola è: eredita la lingua
+// del sito finché non la si cambia da qui; da quel momento va per conto suo e
+// "ffr-language" non la tocca più.
 const SITE_LANGUAGE_KEY = 'ffr-language';
+const GAME_LANGUAGE_KEY = 'ffr-language:wordio';
 function getSiteLanguage() {
   try {
     const v = localStorage.getItem(SITE_LANGUAGE_KEY);
     return v && LANGUAGES[v] ? v : null;
   } catch (e) { return null; }
 }
-function setSiteLanguage(code) {
-  try { localStorage.setItem(SITE_LANGUAGE_KEY, code); } catch (e) { /* ignora */ }
+function getGameLanguage() {
+  try {
+    const v = localStorage.getItem(GAME_LANGUAGE_KEY);
+    return v && LANGUAGES[v] ? v : null;
+  } catch (e) { return null; }
+}
+function setGameLanguage(code) {
+  try { localStorage.setItem(GAME_LANGUAGE_KEY, code); } catch (e) { /* ignora */ }
 }
 
 function snapshotCurrentProgress() {
@@ -495,13 +510,31 @@ function bestLevelReached() {
   }
   return best;
 }
+// Quale lingua apre Wordio, in ordine di precedenza:
+//   1. la scelta fatta qui dentro su questo dispositivo (chiave del gioco)
+//   2. la stessa scelta salvata nell'account, così ti segue su tablet e telefono
+//   3. la lingua del sito — è il caso di chi non ha mai cambiato niente qui,
+//      cioè di tutti quelli che aggiornano oggi: riaprono esattamente com'erano
+//   4. la lingua dell'ultimo salvataggio, e in ultimo l'italiano
+function pickLanguage(data) {
+  const own = getGameLanguage();
+  if (own) return own;
+  const fromAccount = data && data.langOverride;
+  if (fromAccount && LANGUAGES[fromAccount]) {
+    setGameLanguage(fromAccount); // così questo dispositivo se la ricorda da solo
+    return fromAccount;
+  }
+  const site = getSiteLanguage();
+  if (site) return site;
+  if (data && data.language && LANGUAGES[data.language]) return data.language;
+  return 'it';
+}
 async function loadProgress() {
-  const siteLanguage = getSiteLanguage(); // ha sempre la precedenza: riflette l'ultima scelta fatta ovunque sul sito
   try {
     if (window.FFR && window.FFR.auth && window.FFR.auth.ready) await window.FFR.auth.ready;
     const data = (window.FFR && window.FFR.auth) ? await window.FFR.auth.loadProgress('wordio') : null;
     if (data) {
-      state.language = siteLanguage || (data.language && LANGUAGES[data.language] ? data.language : 'it');
+      state.language = pickLanguage(data);
       state.coins = data.coins != null ? data.coins : 60;
       state.extraFoundTotal = data.extraFoundTotal || 0;
       state.hintsAvailable = data.hintsAvailable || 0;
@@ -509,11 +542,11 @@ async function loadProgress() {
       state.usedAnchorsByLanguage = data.usedAnchors || {};
       applyLanguageProgress(state.progressByLanguage[state.language]);
     } else {
-      state.language = siteLanguage || 'it';
+      state.language = pickLanguage(null);
       state.coins = 60; // bonus di benvenuto per i nuovi giocatori
     }
   } catch (e) {
-    state.language = siteLanguage || 'it';
+    state.language = pickLanguage(null);
     state.coins = 60; // bonus di benvenuto (nessun progresso salvato disponibile)
   }
 }
@@ -522,6 +555,10 @@ async function saveProgress() {
     state.progressByLanguage[state.language] = snapshotCurrentProgress();
     const payload = {
       language: state.language,
+      // campo nuovo: la lingua scelta dentro Wordio, che vale solo per Wordio.
+      // Chi non l'ha mai cambiata non ce l'ha, e per lui non cambia niente —
+      // i salvataggi vecchi restano leggibili identici.
+      langOverride: getGameLanguage() || null,
       coins: state.coins,
       extraFoundTotal: state.extraFoundTotal,
       hintsAvailable: state.hintsAvailable,
@@ -544,7 +581,9 @@ async function saveProgress() {
 function switchToLanguage(code) {
   state.progressByLanguage[state.language] = snapshotCurrentProgress();
   state.language = code;
-  setSiteLanguage(code);
+  // solo la chiave di Wordio: la lingua del sito (home e altri giochi) resta
+  // quella che era. È l'eccezione voluta, vedi la nota su GAME_LANGUAGE_KEY
+  setGameLanguage(code);
   applyLanguageProgress(state.progressByLanguage[code]);
   startLevel(state.level, true);
   saveProgress();

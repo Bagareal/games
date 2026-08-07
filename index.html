@@ -426,7 +426,7 @@ const HOME_STRINGS = {
   },
   fr: {
     tagline: 'Jeux gratuits. Pour de vrai.',
-    offlineNote: '📶 Tu peux aussi jouer hors ligne : il suffit d'avoir ouvert le jeu une fois avec la connexion.',
+    offlineNote: "📶 Tu peux aussi jouer hors ligne : il suffit d'avoir ouvert le jeu une fois avec la connexion.",
     wordioDesc: "Compose tous les mots avec les lettres sur la roue. Italien, anglais, français.",
     blokkoDesc: "Range les blocs qui tombent avant qu'ils ne s'accumulent.",
     boingDesc: 'Casse toutes les briques en faisant rebondir la balle sur ta raquette. 3 vies, bonus et 3 niveaux de difficulté.',
@@ -485,6 +485,16 @@ function selectLanguage(code) {
   if (window.FFR && window.FFR.auth && window.FFR.auth.refreshLabel) window.FFR.auth.refreshLabel();
   closeLanguageModal();
 }
+// Aggancio per shared/auth.js: alla PRIMA visita la lingua la chiede lui, prima
+// del pannello ospite/account. A quel punto questa pagina è già disegnata nella
+// lingua di ripiego, e va ridisegnata — senza ricaricare, che alla prima
+// apertura del sito sarebbe la cosa peggiore da vedere.
+window.FFR_APPLY_LANGUAGE = function (code) {
+  if (!LANGUAGES[code]) return;
+  language = code;
+  applyTranslations();
+  if (window.FFR && window.FFR.auth && window.FFR.auth.refreshLabel) window.FFR.auth.refreshLabel();
+};
 
 try {
   const saved = localStorage.getItem('ffr-language');

@@ -516,6 +516,14 @@
     display:flex; flex-direction:column; gap:10px;
     padding: 4px 0 18px;
   }
+  /* qui la lingua sono le parole da trovare, non le etichette: la nota
+     ricorda che questa scelta non trascina con sé il resto del sito */
+  /* .card p è più specifico di .language-note da solo: senza il .card davanti
+     questa regola non vincerebbe e la nota resterebbe grande come un titolo */
+  .card p.language-note{
+    font-size:12px; color:#7a6a4a; font-weight:600;
+    margin:-8px 0 14px; text-align:center; line-height:1.4;
+  }
   .language-option{
     display:flex; align-items:center; gap:12px;
     width:100%;

@@ -11,6 +11,9 @@
   --brass: #C9A227;
   --brass-soft: rgba(201, 162, 39, 0.34);
   --brass-faint: rgba(201, 162, 39, 0.14);
+  /* ottone acceso: SOLO per i segni che rispondono al tocco (dove posso
+     andare, cosa ho selezionato, cosa devo mangiare). L'arredo resta --brass */
+  --brass-hot: #FFD54A;
 
   --sq-light: #C6A778;
   --sq-dark: #5B3A21;
@@ -219,6 +222,11 @@ body{
 .square.last-move{ box-shadow: inset 0 0 0 2px rgba(201,162,39,0.55); }
 
 /* ---------- segni: dove posso andare ---------- */
+/* Questi segni usano --brass-hot, non --brass: l'ottone del tavolo è colore
+   d'arredo (cornice, filetti, corona) e accendendolo si accendeva anche la
+   grafica ferma. I segni che rispondono al dito hanno un ottone tutto loro,
+   più chiaro, così si staccano dal legno senza cambiare il tono del gioco.
+   Si anima solo transform e opacity: il pulsare non costa un ridisegno. */
 .mark{
   position:absolute;
   width: var(--cell); height: var(--cell);
@@ -229,30 +237,66 @@ body{
   content:'';
   width: calc(var(--cell) * 0.28); height: calc(var(--cell) * 0.28);
   border-radius:50%;
-  background: rgba(201,162,39,0.75);
-  box-shadow: 0 0 8px rgba(201,162,39,0.5);
+  background: var(--brass-hot);
+  /* l'anello scuro sottile è quello che salva la lettura sulle caselle
+     chiare: là il solo alone dorato spariva dentro il legno */
+  box-shadow:
+    0 0 0 calc(var(--cell) * 0.018) rgba(26,15,9,0.5),
+    0 0 12px rgba(255,213,74,0.8);
+  animation: markDot 1.2s ease-in-out infinite;
 }
 /* una mossa che mangia si vede diversa da una mossa tranquilla */
 .mark.capture::after{
   width: calc(var(--cell) * 0.62); height: calc(var(--cell) * 0.62);
-  background: transparent;
-  border:3px solid var(--brass);
-  box-shadow: 0 0 10px rgba(201,162,39,0.55);
+  background: rgba(255,213,74,0.1);
+  border:3px solid var(--brass-hot);
+  box-shadow:
+    0 0 0 1px rgba(26,15,9,0.45),
+    0 0 14px rgba(255,213,74,0.7);
+  animation: markRing 1.5s ease-in-out infinite;
 }
 .mark.selected::after{
   width: calc(var(--cell) * 0.9); height: calc(var(--cell) * 0.9);
   border-radius:4px;
-  background: rgba(201,162,39,0.18);
-  border:2px solid var(--brass);
-  box-shadow:none;
+  background: rgba(255,213,74,0.24);
+  border:3px solid var(--brass-hot);
+  box-shadow: 0 0 12px rgba(255,213,74,0.55);
+  animation: markSelected 2s ease-in-out infinite;
 }
 /* pezzo che DEVE muovere (presa obbligatoria) */
 .mark.must::after{
   width: calc(var(--cell) * 0.94); height: calc(var(--cell) * 0.94);
   border-radius:4px;
   background: transparent;
-  border:2px dashed rgba(201,162,39,0.6);
+  border:3px dashed var(--brass-hot);
   box-shadow:none;
+  animation: markMust 1.8s ease-in-out infinite;
+}
+/* ritmi diversi di proposito: all'unisono sembrano un difetto dello schermo,
+   sfasati si legge la gerarchia (dove vado > cosa ho in mano > cosa devo) */
+@keyframes markDot{
+  0%, 100%{ transform: scale(1); opacity:0.85; }
+  50%{ transform: scale(1.28); opacity:1; }
+}
+@keyframes markRing{
+  0%, 100%{ transform: scale(1); opacity:0.9; }
+  50%{ transform: scale(1.09); opacity:1; }
+}
+@keyframes markSelected{
+  0%, 100%{ opacity:0.82; }
+  50%{ opacity:1; }
+}
+@keyframes markMust{
+  0%, 100%{ opacity:0.65; }
+  50%{ opacity:1; }
+}
+/* chi ha chiesto meno movimento al telefono tiene comunque i colori accesi:
+   si spegne il pulsare, non la visibilità */
+@media (prefers-reduced-motion: reduce){
+  .mark::after,
+  .mark.capture::after,
+  .mark.selected::after,
+  .mark.must::after{ animation:none; opacity:1; }
 }
 
 /* ---------- pezzi ---------- */
