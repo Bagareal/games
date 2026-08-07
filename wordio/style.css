@@ -563,7 +563,8 @@
     box-shadow: 0 3px 0 #E2D2A5;
     font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px; color:var(--navy-text);
   }
-  .leaderboard-rank{ flex:0 0 auto; width:24px; text-align:center; color:#8A7A55; }
+  /* larghezza pensata per "N.20": i 24px di prima bastavano solo al numero nudo */
+  .leaderboard-rank{ flex:0 0 auto; min-width:42px; text-align:left; color:#8A7A55; }
   .leaderboard-name{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
   .leaderboard-score{ flex:0 0 auto; color: var(--coral-dark); }
   .leaderboard-empty{ font-size:13px; color:#777; font-weight:600; padding: 6px 4px 16px; line-height:1.4; }

@@ -1038,11 +1038,15 @@ async function openLeaderboard() {
     els.leaderboardList.innerHTML = `<div class="leaderboard-empty">${t().leaderboardEmpty}</div>`;
     return;
   }
+  // "N." davanti alla posizione e "LV." davanti al livello: i numeri nudi non
+  // si capivano (quello a destra sembrava un punteggio, ma in Wordio è il
+  // livello raggiunto). Entrambe le sigle restano uguali in tutte le lingue,
+  // come già "LV." nell'intestazione del gioco.
   els.leaderboardList.innerHTML = rows.map((row, i) => `
     <div class="leaderboard-row">
-      <span class="leaderboard-rank">${i + 1}</span>
+      <span class="leaderboard-rank">N.${i + 1}</span>
       <span class="leaderboard-name">${escapeHtml(row.nickname)}</span>
-      <span class="leaderboard-score">${row.score}</span>
+      <span class="leaderboard-score">LV.${row.score}</span>
     </div>
   `).join('');
 }

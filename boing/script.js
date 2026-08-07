@@ -697,11 +697,20 @@ function openTutorial() {
   els.settingsOverlay.classList.remove('show');
   els.tutorialOverlay.classList.add('show');
 }
+// partita salvata nel cloud trovata all'avvio mentre era in corso il tutorial:
+// si riprende alla sua chiusura, invece di mandare alla scelta difficoltà
+let pendingResume = null;
 function closeTutorial() {
   els.tutorialOverlay.classList.remove('show');
   try { localStorage.setItem('boing-tutorial-seen', '1'); } catch (e) { /* ignora */ }
   if (state.difficulty == null) {
-    els.difficultyOverlay.classList.add('show'); // primo avvio: dopo il tutorial si sceglie la difficoltà
+    if (pendingResume) {
+      const saved = pendingResume;
+      pendingResume = null;
+      resumeFromSaved(saved); // account con progressi già fatti, su un dispositivo nuovo
+    } else {
+      els.difficultyOverlay.classList.add('show'); // primo avvio vero: si sceglie la difficoltà
+    }
   } else {
     els.settingsOverlay.classList.add('show'); // riaperto dal menu impostazioni durante una partita
   }
@@ -835,15 +844,20 @@ async function init() {
   // o si va alla scelta della difficoltà se non c'è nessun progresso salvato
   let tutorialSeen = false;
   try { tutorialSeen = !!localStorage.getItem('boing-tutorial-seen'); } catch (e) { /* ignora */ }
+  // il progresso va caricato SEMPRE, anche quando si mostra il tutorial:
+  // `boing-tutorial-seen` è una chiave localStorage per-dispositivo, quindi su
+  // un secondo dispositivo il tutorial ricompare anche per un giocatore che ha
+  // già un account con progressi nel cloud. Caricandolo solo nel ramo "else"
+  // (com'era prima) quel giocatore ripartiva da zero: il progresso non veniva
+  // proprio richiesto, e dopo il tutorial si finiva sulla scelta difficoltà.
+  const saved = await loadBoingProgress();
   if (!tutorialSeen) {
+    pendingResume = (saved && saved.difficulty) ? saved : null;
     els.tutorialOverlay.classList.add('show');
+  } else if (saved && saved.difficulty) {
+    resumeFromSaved(saved);
   } else {
-    const saved = await loadBoingProgress();
-    if (saved && saved.difficulty) {
-      resumeFromSaved(saved);
-    } else {
-      els.difficultyOverlay.classList.add('show');
-    }
+    els.difficultyOverlay.classList.add('show');
   }
 
   setTimeout(() => {
