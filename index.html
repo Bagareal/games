@@ -123,6 +123,12 @@
   .blokko-icon i:nth-child(2){ height:20px; }
   .blokko-icon i:nth-child(3){ height:7px; }
   .blokko-icon i:nth-child(4){ height:15px; }
+  .game-icon.addy{ background: radial-gradient(circle at 32% 28%, #17495B, #061A22); }
+  /* mini reticolo da disegno tecnico con una tessera stampata dentro:
+     richiama la grafica di Addy senza scrivere un numero */
+  .addy-icon{ display:grid; grid-template-columns:1fr 1fr; gap:3px; width:26px; height:26px; }
+  .addy-icon i{ display:block; border:1px solid rgba(143,182,196,0.5); border-radius:2px; }
+  .addy-icon i.on{ background:#E8622C; border-color:#F0894F; }
   .game-icon.boing{ background: radial-gradient(circle at 32% 28%, #F2622E, #A2380F); }
   .boing-icon{ position:relative; width:26px; height:26px; }
   .boing-icon .boing-ball{
@@ -285,6 +291,15 @@
         </div>
         <span class="badge play" data-i18n="play">Gioca</span>
       </a>
+
+      <a class="game-card" href="addy/">
+        <div class="game-icon addy"><span class="addy-icon"><i></i><i></i><i></i><i class="on"></i></span></div>
+        <div class="game-info">
+          <h2>Addy</h2>
+          <p data-i18n="addyDesc">Fai scivolare i numeri e somma quelli uguali fino ad arrivare a 2048.</p>
+        </div>
+        <span class="badge play" data-i18n="play">Gioca</span>
+      </a>
     </div>
 
     <footer>
@@ -322,6 +337,7 @@ const HOME_STRINGS = {
     wordioDesc: 'Componi tutte le parole usando le lettere sulla ruota. Italiano, inglese, francese.',
     blokkoDesc: 'Incastra i blocchi che cadono prima che si accumulino troppo.',
     boingDesc: 'Rompi tutti i mattoncini rimbalzando la pallina col paddle. 3 vite, potenziamenti e 3 livelli di difficoltà.',
+    addyDesc: 'Fai scivolare i numeri e somma quelli uguali fino ad arrivare a 2048.',
     play: 'Gioca',
     comingSoon: 'In arrivo',
     footer: 'Niente pubblicità · Niente pagamenti — mai. Account facoltativo, solo nickname+password.',
@@ -335,6 +351,7 @@ const HOME_STRINGS = {
     wordioDesc: 'Spell out every word using the letters on a wheel. Italian, English, French.',
     blokkoDesc: 'Clear the falling blocks before they stack up.',
     boingDesc: 'Bounce the ball off your paddle to clear every brick. 3 lives, power-ups, and 3 difficulty levels.',
+    addyDesc: 'Slide the numbers around and add up the matching ones until you reach 2048.',
     play: 'Play',
     comingSoon: 'Coming soon',
     footer: 'No ads · No payments — ever. Account optional, just nickname+password.',
@@ -348,6 +365,7 @@ const HOME_STRINGS = {
     wordioDesc: "Compose tous les mots avec les lettres sur la roue. Italien, anglais, français.",
     blokkoDesc: "Range les blocs qui tombent avant qu'ils ne s'accumulent.",
     boingDesc: 'Casse toutes les briques en faisant rebondir la balle sur ta raquette. 3 vies, bonus et 3 niveaux de difficulté.',
+    addyDesc: "Fais glisser les nombres et additionne ceux qui sont identiques jusqu'à 2048.",
     play: 'Jouer',
     comingSoon: 'Bientôt',
     footer: 'Pas de pubs · Jamais de paiement. Compte facultatif, juste pseudo+mot de passe.',

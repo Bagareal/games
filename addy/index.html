@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Addy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- sfondo: foglio da disegno tecnico — blu petrolio, reticolo millimetrato e
+     riquadro di squadratura. Niente in comune con gli altri giochi del sito:
+     ognuno ha la sua identità grafica. -->
+<div id="bgLayer">
+  <div class="blueprint-grid"></div>
+  <div class="blueprint-vignette"></div>
+</div>
+
+<div id="app">
+
+  <div id="loadingScreen">
+    <div class="loading-title">ADDY</div>
+    <div class="spinner"></div>
+  </div>
+
+  <div class="topbar">
+    <div class="icon-group">
+      <a class="icon-btn" href="../" aria-label="Home">⬅️</a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
+    </div>
+    <div class="goal-display">
+      <span class="goal-label" data-i18n="goalLabel">OBIETTIVO</span>
+      <span class="goal-value">2048</span>
+    </div>
+  </div>
+
+  <div class="hud-row">
+    <div class="hud-box">
+      <div class="hud-label" data-i18n="scoreLabel">PUNTI</div>
+      <div class="hud-value" id="scoreValue">0</div>
+    </div>
+    <div class="hud-box">
+      <div class="hud-label" data-i18n="bestLabel">RECORD</div>
+      <div class="hud-value" id="bestValue">0</div>
+    </div>
+  </div>
+
+  <div class="title-wrap">
+    <h1>ADDY</h1>
+    <div class="title-rule"></div>
+  </div>
+
+  <div class="game-zone" id="gameZone">
+    <div class="board-frame" id="boardFrame">
+      <div class="board-cells" id="boardCells"></div>
+      <div class="board-tiles" id="boardTiles"></div>
+    </div>
+  </div>
+
+  <div class="action-row">
+    <button class="action-btn" id="undoBtn">
+      <span class="action-icon">↺</span>
+      <span data-i18n="undo">Annulla</span>
+      <span class="undo-count" id="undoCount">3</span>
+    </button>
+    <button class="action-btn" id="newGameBtn">
+      <span class="action-icon">✚</span>
+      <span data-i18n="newGame">Nuova partita</span>
+    </button>
+  </div>
+
+  <!-- impostazioni: lingua / istruzioni -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="card">
+      <h2 data-i18n="settingsTitle">⚙️ Impostazioni</h2>
+      <div class="menu-list">
+        <button class="menu-row" id="openLanguageBtn">🌍 <span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openTutorialBtn">❓ <span data-i18n="commands">Istruzioni</span></button>
+      </div>
+      <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="tutorialOverlay">
+    <div class="card tutorial-card">
+      <h2 data-i18n="tutorialTitle">Come si gioca</h2>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">👆</span>
+        <p data-i18n="tutorialSwipe">Scorri il dito in una direzione: tutte le tessere scivolano fin dove possono</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">＝</span>
+        <p data-i18n="tutorialMerge">Due tessere con lo stesso numero che si scontrano diventano una sola, col doppio</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">🎯</span>
+        <p data-i18n="tutorialGoal">Arriva a 2048. Se ci riesci puoi continuare a giocare</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">↺</span>
+        <p data-i18n="tutorialUndo">Hai 3 annulla per partita, per rimediare a una mossa partita male</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon">⌨️</span>
+        <p data-i18n="tutorialKeys">Da computer: le frecce della tastiera</p>
+      </div>
+      <button class="primary-btn" id="closeTutorialBtn" data-i18n="gotIt">Ho capito!</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageOverlay">
+    <div class="card">
+      <h2 data-i18n="languageTitle">🌍 Lingua</h2>
+      <p data-i18n="languageSub">Scegli la lingua dell'interfaccia</p>
+      <div class="language-list" id="languageList"></div>
+      <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="winOverlay">
+    <div class="card">
+      <div class="big-icon">2048</div>
+      <h2 data-i18n="winTitle">Ce l'hai fatta!</h2>
+      <p data-i18n="winSub">Hai costruito la tessera 2048. Da qui in poi si gioca per il record.</p>
+      <button class="primary-btn" id="keepPlayingBtn" data-i18n="keepPlaying">Continua</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="gameOverOverlay">
+    <div class="card">
+      <div class="big-icon">✕</div>
+      <h2 data-i18n="gameOver">Niente più mosse</h2>
+      <p id="gameOverSub"></p>
+      <button class="primary-btn" id="retryBtn" data-i18n="playAgain">Rigioca</button>
+      <!-- se restano annulli, da qui si torna indietro di una mossa invece di
+           buttare via la partita: altrimenti gli annulli sarebbero inutili
+           proprio nel momento in cui servono -->
+      <button class="secondary-btn" id="gameOverUndoBtn" data-i18n="undoLastMove">↺ Annulla l'ultima mossa</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="confirmOverlay">
+    <div class="card">
+      <h2 data-i18n="confirmNewTitle">Ricominciare?</h2>
+      <p data-i18n="confirmNewSub">La partita in corso viene persa, il record resta.</p>
+      <button class="primary-btn" id="confirmNewBtn" data-i18n="confirmYes">Sì, ricomincia</button>
+      <button class="secondary-btn" id="cancelNewBtn" data-i18n="confirmNo">No, continuo</button>
+    </div>
+  </div>
+
+</div>
+
+<script>window.FFR_AUTH_HEADLESS = true;</script>
+<script src="../shared/auth.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
