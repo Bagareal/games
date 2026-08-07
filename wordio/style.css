@@ -614,7 +614,14 @@
     #app{ max-width: min(92vw, 1200px); }
     .title-wrap h1{ font-size:22px; }
     .level-display #levelLabel, .lv-label{ font-size:32px; }
-    .words-card{ padding: 14px 16px; }
+    /* niente più tetto in vh indovinato (il 30vh era tarato sul telefono e,
+       con le tessere ingrandite, faceva scorrere l'elenco dentro la card):
+       la ruota tiene la sua taglia naturale e la card si prende TUTTO lo
+       spazio verticale che avanza davvero. renderWordsList() rimpicciolisce
+       le tessere se anche così non basterebbero, così non si scrolla mai. */
+    .words-card-wrap{ flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+    .words-card{ padding: 14px 16px; flex: 1 1 auto; min-height: 0; max-height: none; }
+    .wheel-zone{ flex: 0 0 auto; }
     #wheelContainer{ width:min(58vw, 58vh, 560px); height:min(58vw, 58vh, 560px); }
     .life-ring{ width:min(49vw, 49vh, 473px); height:min(49vw, 49vh, 473px); }
     .tile{ width:min(12vw, 12vh, 116px); height:min(12vw, 12vh, 116px); font-size:min(4.8vw, 4.8vh, 46px); }

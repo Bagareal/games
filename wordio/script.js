@@ -551,6 +551,7 @@ function renderWordsList() {
   const availableWidth = els.wordsList.clientWidth || Math.min(420, (window.innerWidth || 380) - 60);
   let tileSize = Math.floor(availableWidth / maxLen) - 4;
   tileSize = Math.max(20, Math.min(64, tileSize));
+
   els.wordsList.style.setProperty('--tile-size', tileSize + 'px');
 
   els.wordsList.innerHTML = '';
@@ -568,6 +569,32 @@ function renderWordsList() {
     }
     els.wordsList.appendChild(row);
   });
+
+  fitWordsListToHeight(tileSize, data.targets.length);
+}
+
+// La larghezza da sola non basta: c'è una riga per parola, quindi con molte
+// parole (o poco spazio verticale, es. tablet in orizzontale) l'elenco
+// sborderebbe e la card si metterebbe a scorrere col dito — cosa che Ivan non
+// vuole. Qui si rimpiccioliscono le tessere quel tanto che basta a farle
+// stare tutte a schermo.
+// NB: va chiamata DOPO aver inserito le righe nel DOM. Misurare prima non
+// funziona: la card è `flex:1 1 auto`, quindi da vuota è alta quasi zero e
+// il calcolo darebbe uno spazio disponibile inesistente (bug visto dal vivo:
+// le tessere restavano a 64px dentro una card da 249px, con 5 righe da 344px).
+const WORDS_ROW_GAP = 6; // deve restare allineato al `gap` di #wordsList in style.css
+function fitWordsListToHeight(currentTileSize, rows) {
+  const card = els.wordsList.parentElement;
+  if (!card || rows <= 0) return;
+  const cs = getComputedStyle(card);
+  const available = card.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  if (!(available > 0)) return;
+  const needed = currentTileSize * rows + WORDS_ROW_GAP * (rows - 1);
+  if (needed <= available) return; // ci sta già: niente da rimpicciolire
+  const fitted = Math.floor((available - WORDS_ROW_GAP * (rows - 1)) / rows);
+  if (fitted > 0 && fitted < currentTileSize) {
+    els.wordsList.style.setProperty('--tile-size', Math.max(20, fitted) + 'px');
+  }
 }
 
 // ---------- Rendering ruota lettere ----------
