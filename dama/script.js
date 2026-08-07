@@ -1049,7 +1049,11 @@ async function init() {
   els.friendPlayBtn.addEventListener('click', () => { startNewBoard(); });
 
   els.restartBtn.addEventListener('click', () => {
-    if (!state.started && !state.over) return;
+    // fuori da una partita (o a partita finita) questo pulsante è la via di
+    // ritorno: riporta alla scelta della modalità. Serve perché ora i pannelli
+    // si possono chiudere con la X, e senza di lui chi chiude la scelta iniziale
+    // resterebbe davanti a una scacchiera che non risponde.
+    if (!state.started || state.over) { goToMode(); return; }
     els.restartOverlay.classList.add('show');
   });
   els.cancelRestartBtn.addEventListener('click', () => els.restartOverlay.classList.remove('show'));
@@ -1065,7 +1069,12 @@ async function init() {
   els.settingsOverlay.addEventListener('click', (e) => {
     if (e.target === els.settingsOverlay) els.settingsOverlay.classList.remove('show');
   });
-  els.openRulesBtn.addEventListener('click', () => showOnly(els.rulesOverlay));
+  // riaperte dal menu, le istruzioni hanno anche la X: al primo avvio no, lì si
+  // chiudono con "Ho capito!" ed è l'inizio del giro di scelte
+  els.openRulesBtn.addEventListener('click', () => {
+    els.rulesOverlay.classList.remove('x-off');
+    showOnly(els.rulesOverlay);
+  });
   els.openLanguageBtn.addEventListener('click', openLanguageModal);
   els.closeLanguageBtn.addEventListener('click', closeLanguageModal);
   els.languageOverlay.addEventListener('click', (e) => {

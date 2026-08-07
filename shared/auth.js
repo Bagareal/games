@@ -543,6 +543,15 @@
     }
     return el.querySelector('.ffr-auth-card');
   }
+  // La X in alto (shared/modal-x.js) va solo sui pannelli che si possono
+  // chiudere senza perdere niente. Restano senza: la scelta iniziale
+  // ospite/account, l'avviso "stai giocando come ospite" e soprattutto il codice
+  // di recupero, che si vede una volta sola e va salvato prima di chiudere.
+  function addCloseX(card) {
+    if (window.FFR && window.FFR.addModalX && card && card.parentElement) {
+      window.FFR.addModalX(card.parentElement);
+    }
+  }
   function hideOverlay(id) {
     const el = document.getElementById(id);
     if (el) el.classList.remove('show');
@@ -660,6 +669,7 @@
     pwInput.addEventListener('input', renderRules);
     renderRules();
     attachPasswordEyes(card);
+    addCloseX(card);
 
     card.querySelector('[data-act="login"]').onclick = (e) => { e.preventDefault(); hideOverlay('ffr-create-overlay'); openLoginModal(); };
     card.querySelector('[data-act="submit"]').onclick = () => handleCreateAccount(card);
@@ -764,6 +774,7 @@
       </p>
     `;
     attachPasswordEyes(card);
+    addCloseX(card);
     card.querySelector('[data-act="forgot"]').onclick = (e) => { e.preventDefault(); hideOverlay('ffr-login-overlay'); openForgotModal(); };
     card.querySelector('[data-act="create"]').onclick = (e) => { e.preventDefault(); hideOverlay('ffr-login-overlay'); openCreateAccountModal(); };
     card.querySelector('[data-act="submit"]').onclick = () => handleLogin(card);
@@ -828,6 +839,7 @@
     pwInput.addEventListener('input', renderRules);
     renderRules();
     attachPasswordEyes(card);
+    addCloseX(card);
     card.querySelector('[data-act="back"]').onclick = (e) => { e.preventDefault(); hideOverlay('ffr-forgot-overlay'); openLoginModal(); };
     card.querySelector('[data-act="submit"]').onclick = () => handleForgot(card);
   }
@@ -897,6 +909,7 @@
       card.querySelector('[data-act="create"]').onclick = () => { hideOverlay('ffr-panel-overlay'); openCreateAccountModal(); };
       card.querySelector('[data-act="login"]').onclick = () => { hideOverlay('ffr-panel-overlay'); openLoginModal(); };
     }
+    addCloseX(card);
   }
 
   function updateAccountLabel() {

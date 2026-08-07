@@ -935,7 +935,11 @@ function hideAllOverlays() {
   document.querySelectorAll('.overlay').forEach(el => el.classList.remove('show'));
 }
 function openPause() {
-  if (!state.difficulty || state.gameOver) return;
+  // Senza difficoltà scelta (o a partita finita) non c'è niente da mettere in
+  // pausa, ma il pulsante deve comunque servire a qualcosa: da quando i pannelli
+  // si possono chiudere con la X, è lui a riportare alla scelta della difficoltà,
+  // che qui vuol dire anche "inizia una partita nuova".
+  if (!state.difficulty || state.gameOver) { els.difficultyOverlay.classList.add('show'); return; }
   state.paused = true;
   releaseTouch();
   saveProgress();
@@ -1313,3 +1317,12 @@ async function init() {
   }, 350);
 }
 init();
+
+// La X dei pannelli (shared/modal-x.js) chiude e basta: qui si rimette in moto
+// la partita, perché aprire la pausa o le impostazioni la aveva messa in pausa.
+window.FFR_ON_MODAL_CLOSE = function (id) {
+  const resumes = ['pauseOverlay', 'settingsOverlay', 'tutorialOverlay', 'languageOverlay', 'leaderboardOverlay'];
+  if (resumes.indexOf(id) !== -1 && state.difficulty && !state.gameOver) {
+    state.paused = false;
+  }
+};

@@ -348,7 +348,11 @@ function startNewGame(difficultyKey) {
 
 // ---------- Pausa (riprendi / difficoltà / reset livello) ----------
 function openPause() {
-  if (state.difficulty == null) return; // niente da mettere in pausa prima di scegliere la difficoltà
+  // Prima di aver scelto la difficoltà non c'è niente da mettere in pausa, ma il
+  // pulsante deve comunque servire a qualcosa: da quando i pannelli si possono
+  // chiudere con la X, è lui a riportare alla scelta della difficoltà — altrimenti
+  // chi la chiude resta davanti a un campo vuoto senza modo di ricominciare.
+  if (state.difficulty == null) { els.difficultyOverlay.classList.add('show'); return; }
   state.paused = true;
   document.querySelectorAll('#pauseOverlay .difficulty-option').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.difficulty === state.difficulty);
@@ -965,3 +969,12 @@ async function init() {
   }, 350);
 }
 init();
+
+// La X dei pannelli (shared/modal-x.js) chiude e basta: qui si rimette in moto
+// la partita, perché aprire la pausa o le impostazioni la aveva messa in pausa.
+// Fuori da questo elenco resta com'è: dopo un game over il campo deve restare
+// fermo, e da lì si riparte dal menu di pausa.
+window.FFR_ON_MODAL_CLOSE = function (id) {
+  const resumes = ['pauseOverlay', 'settingsOverlay', 'tutorialOverlay', 'languageOverlay', 'leaderboardOverlay'];
+  if (resumes.indexOf(id) !== -1 && state.difficulty != null) state.paused = false;
+};
