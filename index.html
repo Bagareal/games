@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Free For Real</title>
+<!-- icona del sito: è lo stesso joystick che sta sopra al titolo qui in home.
+     Il .ico serve ai browser vecchi (e a chi chiede /favicon.ico da solo), i PNG
+     ai browser moderni, apple-touch-icon a "Aggiungi a schermata Home" su iOS. -->
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#4FC3D9">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -129,6 +138,21 @@
   .addy-icon{ display:grid; grid-template-columns:1fr 1fr; gap:3px; width:26px; height:26px; }
   .addy-icon i{ display:block; border:1px solid rgba(143,182,196,0.5); border-radius:2px; }
   .addy-icon i.on{ background:#E8622C; border-color:#F0894F; }
+  .game-icon.dama{ background: radial-gradient(circle at 32% 28%, #5B3A21, #1A0F09); }
+  /* quattro caselle di legno con due pezzi sopra: richiama la grafica della Dama
+     (noce e ottone) senza copiare niente da nessuno */
+  .dama-icon{
+    display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;
+    width:26px; height:26px; border-radius:3px; overflow:hidden;
+    box-shadow: 0 0 0 1px rgba(201,162,39,0.5);
+  }
+  .dama-icon i{ display:block; position:relative; background:#C6A778; }
+  .dama-icon i:nth-child(1), .dama-icon i:nth-child(4){ background:#5B3A21; }
+  .dama-icon i.p::after{
+    content:''; position:absolute; inset:2px;
+    border-radius:50%; background: var(--p);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.4);
+  }
   .game-icon.boing{ background: radial-gradient(circle at 32% 28%, #F2622E, #A2380F); }
   .boing-icon{ position:relative; width:26px; height:26px; }
   .boing-icon .boing-ball{
@@ -292,6 +316,15 @@
         <span class="badge play" data-i18n="play">Gioca</span>
       </a>
 
+      <a class="game-card" href="dama/">
+        <div class="game-icon dama"><span class="dama-icon"><i class="p" style="--p:#F3E7CC"></i><i></i><i></i><i class="p" style="--p:#8E3230"></i></span></div>
+        <div class="game-info">
+          <h2>Dama</h2>
+          <p data-i18n="damaDesc">Muovi in diagonale e mangia tutti i pezzi dell'avversario. Contro il computer o in due sullo stesso dispositivo.</p>
+        </div>
+        <span class="badge play" data-i18n="play">Gioca</span>
+      </a>
+
       <a class="game-card" href="addy/">
         <div class="game-icon addy"><span class="addy-icon"><i></i><i></i><i></i><i class="on"></i></span></div>
         <div class="game-info">
@@ -338,6 +371,7 @@ const HOME_STRINGS = {
     blokkoDesc: 'Incastra i blocchi che cadono prima che si accumulino troppo.',
     boingDesc: 'Rompi tutti i mattoncini rimbalzando la pallina col paddle. 3 vite, potenziamenti e 3 livelli di difficoltà.',
     addyDesc: 'Fai scivolare i numeri e somma quelli uguali fino ad arrivare a 2048.',
+    damaDesc: "Muovi in diagonale e mangia tutti i pezzi dell'avversario. Contro il computer o in due sullo stesso dispositivo.",
     play: 'Gioca',
     comingSoon: 'In arrivo',
     footer: 'Niente pubblicità · Niente pagamenti — mai. Account facoltativo, solo nickname+password.',
@@ -352,6 +386,7 @@ const HOME_STRINGS = {
     blokkoDesc: 'Clear the falling blocks before they stack up.',
     boingDesc: 'Bounce the ball off your paddle to clear every brick. 3 lives, power-ups, and 3 difficulty levels.',
     addyDesc: 'Slide the numbers around and add up the matching ones until you reach 2048.',
+    damaDesc: "Move diagonally and capture all the other player's pieces. Against the computer or two of you on one device.",
     play: 'Play',
     comingSoon: 'Coming soon',
     footer: 'No ads · No payments — ever. Account optional, just nickname+password.',
@@ -366,6 +401,7 @@ const HOME_STRINGS = {
     blokkoDesc: "Range les blocs qui tombent avant qu'ils ne s'accumulent.",
     boingDesc: 'Casse toutes les briques en faisant rebondir la balle sur ta raquette. 3 vies, bonus et 3 niveaux de difficulté.',
     addyDesc: "Fais glisser les nombres et additionne ceux qui sont identiques jusqu'à 2048.",
+    damaDesc: "Déplace-toi en diagonale et mange toutes les pièces adverses. Contre l'ordinateur ou à deux sur le même appareil.",
     play: 'Jouer',
     comingSoon: 'Bientôt',
     footer: 'Pas de pubs · Jamais de paiement. Compte facultatif, juste pseudo+mot de passe.',

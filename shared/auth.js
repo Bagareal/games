@@ -27,7 +27,7 @@
   // ogni gioco che salva progresso va elencato qui, non solo quelli con una
   // chiave localStorage "storica" in GAME_LOCAL_KEYS — altrimenti il suo
   // progresso da ospite non viene mai migrato quando si crea un account
-  const KNOWN_GAMES = ['wordio', 'boing', 'blokko', 'addy'];
+  const KNOWN_GAMES = ['wordio', 'boing', 'blokko', 'addy', 'dama'];
 
   // ---------------- testi (it/en/fr) ----------------
   const STR = {
@@ -84,6 +84,8 @@
       errLoginFailed: 'Nickname o password sbagliati.',
       errInvalidCode: 'Nickname o codice di recupero non corretti.',
       saving: 'Un attimo…',
+      showPassword: 'Mostra la password',
+      hidePassword: 'Nascondi la password',
     },
     en: {
       welcomeTitle: 'Welcome!',
@@ -138,6 +140,8 @@
       errLoginFailed: 'Wrong nickname or password.',
       errInvalidCode: 'Wrong nickname or recovery code.',
       saving: 'One moment…',
+      showPassword: 'Show password',
+      hidePassword: 'Hide password',
     },
     fr: {
       welcomeTitle: 'Bienvenue !',
@@ -192,6 +196,8 @@
       errLoginFailed: 'Pseudo ou mot de passe incorrect.',
       errInvalidCode: 'Pseudo ou code de récupération incorrect.',
       saving: 'Un instant…',
+      showPassword: 'Afficher le mot de passe',
+      hidePassword: 'Masquer le mot de passe',
     },
   };
   function getSiteLanguage() {
@@ -476,9 +482,22 @@
       .ffr-auth-btn.ghost{ background:transparent; box-shadow:none; color:#0B4F6C; text-decoration:underline; font-size:14px; padding:6px; }
       .ffr-auth-field{ text-align:left; margin-bottom:12px; }
       .ffr-auth-field label{ display:block; font-weight:700; font-size:13px; margin-bottom:4px; }
-      .ffr-auth-field input{ width:100%; padding:11px 12px; border-radius:10px; border:2px solid #EAD3A0;
+      /* box-sizing esplicito: questi campi sono larghi al 100% e hanno il loro
+         bordo e imbottitura, e non tutte le pagine che includono questo file
+         azzerano il box-sizing per conto proprio */
+      .ffr-auth-field input{ box-sizing:border-box; width:100%; padding:11px 12px; border-radius:10px; border:2px solid #EAD3A0;
         font-size:15px; font-family:'Nunito', sans-serif; background:#fff; color:#0B2B3C; }
       .ffr-auth-field input:focus{ outline:none; border-color:#14A085; }
+      /* occhio "mostra password": area di tocco 44x44 (la misura minima perché
+         un dito poco preciso la prenda al primo colpo) sovrapposta al campo,
+         che in cambio si tiene libero lo spazio a destra */
+      .ffr-auth-pw{ position:relative; }
+      .ffr-auth-pw input{ padding-right:48px; }
+      .ffr-auth-eye{ position:absolute; top:50%; right:2px; transform:translateY(-50%);
+        width:44px; height:44px; padding:0; display:flex; align-items:center; justify-content:center;
+        background:none; border:none; cursor:pointer; color:#4a6270; }
+      .ffr-auth-eye:active{ transform:translateY(-50%) scale(0.92); }
+      .ffr-auth-eye svg{ display:block; }
       .ffr-auth-hint{ font-size:11px; color:#7a6a4a; margin-top:3px; font-weight:600; }
       .ffr-auth-rules{ list-style:none; padding:0; margin:6px 0 14px; font-size:12px; font-weight:700; text-align:left; }
       .ffr-auth-rules li{ padding:2px 0; color:#a04a2a; }
@@ -561,6 +580,44 @@
     card.querySelector('[data-act="switch"]').onclick = () => { hideOverlay('ffr-guestwarn-overlay'); openCreateAccountModal(); };
   }
 
+  // Occhietto per rivedere quello che si è scritto: senza, l'unico modo di
+  // accorgersi di un refuso è il messaggio d'errore dopo aver premuto il
+  // pulsante. Va su OGNI campo password del sito (creazione, conferma, accesso,
+  // nuova password nel recupero), non solo su quelli della creazione.
+  const EYE_OPEN = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.2"/></svg>';
+  const EYE_OFF = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.2"/><path d="M3 3l18 18"/></svg>';
+  function attachPasswordEyes(card) {
+    card.querySelectorAll('input[type="password"]').forEach(input => {
+      if (input.parentElement && input.parentElement.classList.contains('ffr-auth-pw')) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'ffr-auth-pw';
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ffr-auth-eye';
+      btn.innerHTML = EYE_OPEN;
+      btn.setAttribute('aria-label', tt('showPassword'));
+      btn.title = tt('showPassword');
+      btn.onclick = () => {
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.innerHTML = show ? EYE_OFF : EYE_OPEN;
+        const label = tt(show ? 'hidePassword' : 'showPassword');
+        btn.setAttribute('aria-label', label);
+        btn.title = label;
+        // il focus torna al campo con il cursore dov'era: su telefono il
+        // passaggio nascosto→visibile altrimenti chiude la tastiera e riporta
+        // il cursore in fondo, e chi stava correggendo una lettera si perde
+        const pos = input.value.length;
+        input.focus();
+        try { input.setSelectionRange(pos, pos); } catch (e) { /* alcuni browser non lo permettono su type=text appena cambiato */ }
+      };
+      wrap.appendChild(btn);
+    });
+  }
+
   function renderPasswordRules(pw) {
     const c = passwordChecks(pw);
     return `
@@ -602,6 +659,7 @@
     const renderRules = () => { rulesBox.innerHTML = renderPasswordRules(pwInput.value); };
     pwInput.addEventListener('input', renderRules);
     renderRules();
+    attachPasswordEyes(card);
 
     card.querySelector('[data-act="login"]').onclick = (e) => { e.preventDefault(); hideOverlay('ffr-create-overlay'); openLoginModal(); };
     card.querySelector('[data-act="submit"]').onclick = () => handleCreateAccount(card);
@@ -705,6 +763,7 @@
         ${tt('noAccountYet')} <a href="#" data-act="create" style="color:#0B4F6C;font-weight:700;">${tt('createLink')}</a>
       </p>
     `;
+    attachPasswordEyes(card);
     card.querySelector('[data-act="forgot"]').onclick = (e) => { e.preventDefault(); hideOverlay('ffr-login-overlay'); openForgotModal(); };
     card.querySelector('[data-act="create"]').onclick = (e) => { e.preventDefault(); hideOverlay('ffr-login-overlay'); openCreateAccountModal(); };
     card.querySelector('[data-act="submit"]').onclick = () => handleLogin(card);
@@ -768,6 +827,7 @@
     const renderRules = () => { rulesBox.innerHTML = renderPasswordRules(pwInput.value); };
     pwInput.addEventListener('input', renderRules);
     renderRules();
+    attachPasswordEyes(card);
     card.querySelector('[data-act="back"]').onclick = (e) => { e.preventDefault(); hideOverlay('ffr-forgot-overlay'); openLoginModal(); };
     card.querySelector('[data-act="submit"]').onclick = () => handleForgot(card);
   }

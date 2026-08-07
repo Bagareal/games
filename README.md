@@ -44,6 +44,12 @@ A slide-and-add puzzle: swipe and every tile slides as far as it can, and two ti
 
 **[freeforreal.app/addy](https://freeforreal.app/addy/)**
 
+### [Dama](dama/)
+
+Draughts is a traditional game, centuries old, with no author and no owner — its rules belong to everyone, like those of chess. Ours is the classic 8×8 variant: men capture forwards and backwards, kings fly along the whole diagonal, and capturing is compulsory. Play against the computer — three levels, from a genuinely careless one to a search that looks several moves ahead — or against a friend on the same device, laid flat on the table between you, so the board never rotates. Walnut-and-brass club-table look of its own. Play it at:
+
+**[freeforreal.app/dama](https://freeforreal.app/dama/)**
+
 ## Credits
 
 **Addy** follows a set of rules made popular by [**2048**](https://github.com/gabrielecirulli/2048), written by [**Gabriele Cirulli**](https://github.com/gabrielecirulli) and released openly under the MIT licence. Addy's code, graphics and text are entirely our own — not a single line is taken from that project, so there is nothing here we are required to credit. We credit it anyway: putting the work out in the open, for free, for anyone to read and build on, is the same thing this whole site is trying to do. Thank you.

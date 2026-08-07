@@ -1,0 +1,515 @@
+/* ============ DAMA — identità grafica: tavolo da circolo ============
+   Ogni gioco del sito ha una grafica propria: qui niente pixel art (è di Boing),
+   niente neon indaco (è di Blokko), niente foglio da disegno (è di Addy), niente
+   laguna e sabbia (è di Wordio). La Dama è un tavolo di legno di noce sotto la
+   lampada di un circolo: venatura scura, filetti d'ottone, titoli in graziato e
+   pezzi tornati fra avorio e granata. */
+:root{
+  --wood-deep: #1A0F09;
+  --wood: #2A1B12;
+  --wood-2: #3A2718;
+  --brass: #C9A227;
+  --brass-soft: rgba(201, 162, 39, 0.34);
+  --brass-faint: rgba(201, 162, 39, 0.14);
+
+  --sq-light: #C6A778;
+  --sq-dark: #5B3A21;
+
+  --ivory: #F3E7CC;
+  --oxblood: #8E3230;
+
+  --text: #EDE0C8;
+  --text-dim: rgba(237, 224, 200, 0.62);
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+html,body{ height:100%; }
+body{
+  margin:0; padding:0; min-height:100%;
+  font-family:'Karla', sans-serif;
+  background: var(--wood);
+  color: var(--text);
+  overscroll-behavior: none;
+}
+
+/* ---------- sfondo ---------- */
+/* tutto statico: non c'è niente da animare qui, e uno sfondo fermo non costa
+   nemmeno un fotogramma mentre si gioca */
+#bgLayer{
+  position:fixed; inset:0; z-index:0;
+  pointer-events:none;
+  background: linear-gradient(175deg, var(--wood-2) 0%, var(--wood) 45%, var(--wood-deep) 100%);
+}
+.wood-grain{
+  position:absolute; inset:0;
+  opacity:0.5;
+  background-image:
+    repeating-linear-gradient(96deg, rgba(0,0,0,0.22) 0 2px, rgba(0,0,0,0) 2px 9px),
+    repeating-linear-gradient(94deg, rgba(255,214,150,0.05) 0 1px, rgba(0,0,0,0) 1px 17px);
+}
+.lamp-glow{
+  position:absolute; inset:0;
+  background: radial-gradient(70% 45% at 50% 12%, rgba(255, 214, 140, 0.16) 0%, rgba(255,214,140,0) 70%);
+}
+
+#app{
+  position:relative; z-index:1;
+  width:100%;
+  min-height:100vh;
+  min-height:100dvh;
+  max-width:480px;
+  margin:0 auto;
+  display:flex; flex-direction:column;
+  overflow-x:hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ---------- caricamento ---------- */
+#loadingScreen{
+  position:fixed; inset:0; z-index:60;
+  background: var(--wood);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
+  transition: opacity 0.3s ease;
+}
+#loadingScreen.hidden{ display:none; }
+.loading-title{
+  font-family:'Playfair Display', serif;
+  font-weight:700; font-size:34px; letter-spacing:3px;
+  color: var(--ivory);
+}
+.spinner{
+  width:30px; height:30px;
+  border:2px solid rgba(201,162,39,0.22);
+  border-top-color: var(--brass);
+  border-radius:50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* ---------- topbar ---------- */
+.topbar{
+  position:relative; z-index:5;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding: max(10px, env(safe-area-inset-top)) 16px 2px;
+}
+.icon-group{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+.icon-btn{
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background: rgba(201,162,39,0.09);
+  border: 1px solid var(--brass-soft);
+  color: var(--text);
+  font-size:16px; line-height:1;
+  cursor:pointer;
+  text-decoration:none;
+  flex:0 0 auto;
+}
+.icon-btn:active{ transform: scale(0.94); }
+/* di chi è il turno: la riga più importante dell'interfaccia, sempre in alto */
+.turn-pill{
+  font-size:12px; font-weight:700;
+  letter-spacing:0.4px;
+  color: var(--text);
+  background: rgba(201,162,39,0.1);
+  border:1px solid var(--brass-soft);
+  border-radius:999px;
+  padding:6px 12px;
+  text-align:right;
+  min-width:0;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.turn-pill.thinking{ color: var(--brass); border-color: var(--brass); }
+
+.title-wrap{ padding: 10px 16px 0; }
+.title-wrap h1{
+  font-family:'Playfair Display', serif;
+  font-weight:700; font-size:26px; letter-spacing:2px;
+  margin:0;
+  color: var(--ivory);
+  text-align:center;
+}
+.title-rule{
+  position:relative;
+  height:1px; margin-top:7px;
+  background: linear-gradient(90deg, rgba(201,162,39,0) 0%, var(--brass-soft) 20%, var(--brass-soft) 80%, rgba(201,162,39,0) 100%);
+}
+.title-rule::before{
+  content:'◆';
+  position:absolute; left:50%; top:-9px; transform:translateX(-50%);
+  font-size:10px; color: var(--brass);
+  background: var(--wood);
+  padding:0 6px;
+}
+
+/* ---------- targhe dei due giocatori ---------- */
+/* stanno attaccate alla scacchiera, sopra e sotto, e sono larghe quanto lei:
+   sono i due posti a tavola, non due barre appiccicate ai bordi dello schermo */
+.player-plate{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  width:100%; max-width: var(--board, 320px);
+  padding:7px 12px;
+  border:1px solid var(--brass-faint);
+  border-radius:8px;
+  background: rgba(0,0,0,0.18);
+}
+/* chi gioca dall'altro lato del tavolo legge sottosopra: la sua targa è girata */
+.player-plate.flipped{ transform: rotate(180deg); }
+.player-plate.is-turn{ border-color: var(--brass); background: rgba(201,162,39,0.12); }
+.plate-name{
+  font-family:'Playfair Display', serif;
+  font-weight:600; font-size:15px;
+  color: var(--ivory);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+/* pezzi mangiati all'avversario */
+.plate-count{
+  flex:0 0 auto;
+  font-size:12px; font-weight:700;
+  color: var(--brass);
+  border:1px solid var(--brass-soft);
+  border-radius:999px;
+  padding:1px 9px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- scacchiera ---------- */
+.game-zone{
+  position:relative;
+  /* base 0, non auto: l'altezza di questa zona è "quello che avanza" e basta, e
+     NON dipende da quanto è grande la scacchiera che ci sta dentro. Con base
+     auto la misura è circolare — la scacchiera decide l'altezza della zona e la
+     zona decide la misura della scacchiera — e dopo un cambio di orientamento
+     resta tarata su quella di prima, sforando in fondo alla pagina. */
+  flex:1 1 0;
+  display:flex; align-items:center; justify-content:center;
+  padding: 10px 16px max(12px, env(safe-area-inset-bottom));
+  min-height:0;
+  touch-action: manipulation;
+}
+.table-stack{
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  width:100%;
+}
+.board-frame{
+  position:relative;
+  width: var(--board, 320px);
+  height: var(--board, 320px);
+  border:2px solid #1C1109;
+  border-radius:4px;
+  /* cornice d'ottone attorno al legno */
+  box-shadow:
+    0 0 0 1px var(--brass-soft),
+    0 14px 26px rgba(0,0,0,0.45);
+  background: var(--sq-dark);
+  overflow:hidden;
+}
+.board-squares, .board-marks, .board-pieces{ position:absolute; inset:0; }
+.square{
+  position:absolute;
+  width: var(--cell); height: var(--cell);
+}
+.square.light{ background: var(--sq-light); }
+.square.dark{ background: var(--sq-dark); }
+/* venatura leggera anche sulle caselle, così il legno si vede da vicino */
+.square.dark::after, .square.light::after{
+  content:''; position:absolute; inset:0;
+  background: repeating-linear-gradient(101deg, rgba(0,0,0,0.07) 0 1px, rgba(0,0,0,0) 1px 6px);
+}
+/* ultima mossa giocata: si segue anche quella dell'avversario */
+.square.last-move{ box-shadow: inset 0 0 0 2px rgba(201,162,39,0.55); }
+
+/* ---------- segni: dove posso andare ---------- */
+.mark{
+  position:absolute;
+  width: var(--cell); height: var(--cell);
+  display:flex; align-items:center; justify-content:center;
+  pointer-events:none;
+}
+.mark::after{
+  content:'';
+  width: calc(var(--cell) * 0.28); height: calc(var(--cell) * 0.28);
+  border-radius:50%;
+  background: rgba(201,162,39,0.75);
+  box-shadow: 0 0 8px rgba(201,162,39,0.5);
+}
+/* una mossa che mangia si vede diversa da una mossa tranquilla */
+.mark.capture::after{
+  width: calc(var(--cell) * 0.62); height: calc(var(--cell) * 0.62);
+  background: transparent;
+  border:3px solid var(--brass);
+  box-shadow: 0 0 10px rgba(201,162,39,0.55);
+}
+.mark.selected::after{
+  width: calc(var(--cell) * 0.9); height: calc(var(--cell) * 0.9);
+  border-radius:4px;
+  background: rgba(201,162,39,0.18);
+  border:2px solid var(--brass);
+  box-shadow:none;
+}
+/* pezzo che DEVE muovere (presa obbligatoria) */
+.mark.must::after{
+  width: calc(var(--cell) * 0.94); height: calc(var(--cell) * 0.94);
+  border-radius:4px;
+  background: transparent;
+  border:2px dashed rgba(201,162,39,0.6);
+  box-shadow:none;
+}
+
+/* ---------- pezzi ---------- */
+.piece{
+  position:absolute;
+  width: var(--cell); height: var(--cell);
+  display:flex; align-items:center; justify-content:center;
+  /* si anima solo transform: la scheda grafica la gestisce da sola, senza
+     obbligare il browser a ridisegnare il pezzo a ogni fotogramma */
+  transition: transform 0.22s ease-in-out;
+  will-change: transform;
+}
+.piece::before{
+  content:'';
+  position:absolute;
+  width: calc(var(--cell) * 0.78); height: calc(var(--cell) * 0.78);
+  border-radius:50%;
+  background: var(--disc);
+  border:1px solid var(--disc-edge);
+  box-shadow:
+    0 calc(var(--cell) * 0.045) 0 var(--disc-side),
+    0 calc(var(--cell) * 0.07) calc(var(--cell) * 0.08) rgba(0,0,0,0.45),
+    inset 0 0 0 calc(var(--cell) * 0.055) var(--disc-ring);
+}
+.piece.light{
+  --disc: radial-gradient(circle at 34% 28%, #FDF6E6 0%, #F0E1BE 45%, #D8C094 100%);
+  --disc-edge: #A8905E;
+  --disc-side: #A8905E;
+  --disc-ring: rgba(168,144,94,0.35);
+}
+.piece.dark{
+  --disc: radial-gradient(circle at 34% 28%, #B4514A 0%, #8E3230 45%, #5E1D1C 100%);
+  --disc-edge: #40100F;
+  --disc-side: #40100F;
+  --disc-ring: rgba(255,220,190,0.16);
+}
+/* la corona della dama: incisa in ottone al centro del pezzo */
+.piece .crown{
+  position:relative; z-index:1;
+  font-size: calc(var(--cell) * 0.34);
+  line-height:1;
+  color: var(--brass);
+  text-shadow: 0 1px 1px rgba(0,0,0,0.55);
+  display:none;
+}
+.piece.king .crown{ display:block; }
+/* sull'avorio l'ottone chiaro si legge poco: sui pezzi chiari la corona è più scura */
+.piece.light .crown{ color:#8A6A12; text-shadow:0 1px 0 rgba(255,255,255,0.35); }
+.piece.king::before{ --disc-ring: rgba(201,162,39,0.75); }
+.piece.selectable{ cursor:pointer; }
+.piece.is-selected::before{ filter: brightness(1.18); }
+/* pezzo mangiato: sparisce sul posto invece di svanire di colpo */
+.piece.captured{
+  transition: transform 0.22s ease-in-out, opacity 0.22s ease-out;
+  opacity:0;
+  pointer-events:none;
+}
+.piece.just-promoted::before{ animation: promote 0.5s ease-out; }
+@keyframes promote{
+  0%{ filter: brightness(1); }
+  40%{ filter: brightness(1.6); }
+  100%{ filter: brightness(1); }
+}
+
+/* ---------- overlay e pannelli ---------- */
+.overlay{
+  position:fixed; inset:0; z-index:50;
+  background: rgba(12, 7, 4, 0.82);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  opacity:0; pointer-events:none; transition: opacity 0.2s ease;
+}
+.overlay.show{ opacity:1; pointer-events:auto; }
+.card{
+  position:relative;
+  width:100%; max-width:340px;
+  max-height:88vh; overflow-y:auto;
+  background: linear-gradient(170deg, var(--wood-2) 0%, var(--wood) 100%);
+  border:1px solid var(--brass-soft);
+  border-radius:10px;
+  padding:24px 20px 20px;
+  text-align:center;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+}
+.card h2{
+  font-family:'Playfair Display', serif;
+  font-weight:700; font-size:21px;
+  margin:0 0 8px;
+  color: var(--ivory);
+}
+.card p{
+  font-size:14px; font-weight:400; line-height:1.5;
+  color: var(--text-dim);
+  margin:0 0 16px;
+}
+.section-label{
+  font-size:11px !important; font-weight:700 !important;
+  letter-spacing:2px; text-transform:uppercase;
+  color: var(--brass) !important;
+  margin:16px 0 10px !important;
+}
+.end-icon, .creator-badge{
+  font-size:30px; line-height:1;
+  color: var(--brass);
+  margin-bottom:8px;
+}
+.taunt-name{
+  font-size:11px !important; font-weight:700 !important;
+  letter-spacing:2px; text-transform:uppercase;
+  color: var(--brass) !important;
+  margin:0 0 6px !important;
+}
+.taunt-line{ font-style:italic; }
+.table-figure{ width:100%; max-width:210px; height:auto; margin:0 auto 14px; display:block; }
+
+.primary-btn, .secondary-btn, .menu-row, .language-option, .difficulty-option, .choice-btn, .lb-tab{
+  font-family:'Karla', sans-serif;
+  font-weight:700;
+  cursor:pointer;
+  border-radius:8px;
+}
+.primary-btn{
+  display:block; width:100%;
+  font-size:15px;
+  padding:13px 16px;
+  margin-bottom:8px;
+  color:#2A1B12;
+  background: linear-gradient(180deg, #E0BC4A, #C9A227);
+  border:1px solid #E7CB6C;
+}
+.primary-btn:active{ transform: translateY(1px); }
+.secondary-btn{
+  display:block; width:100%;
+  font-size:13px;
+  padding:11px 16px;
+  margin-top:6px;
+  color: var(--text);
+  background: rgba(201,162,39,0.08);
+  border:1px solid var(--brass-soft);
+}
+.secondary-btn:active{ transform: translateY(1px); }
+
+/* scelta modalità: due bottoni grandi, leggibili anche da lontano */
+.choice-btn{
+  display:flex; align-items:center; gap:14px;
+  width:100%;
+  padding:14px 16px;
+  margin-bottom:10px;
+  text-align:left;
+  color: var(--text);
+  background: rgba(201,162,39,0.08);
+  border:1px solid var(--brass-soft);
+}
+.choice-btn:active{ transform: translateY(1px); }
+.choice-icon{ font-size:26px; flex:0 0 auto; }
+.choice-text{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.choice-title{ font-family:'Playfair Display', serif; font-weight:600; font-size:16px; color: var(--ivory); }
+.choice-sub{ font-size:12px; font-weight:400; color: var(--text-dim); }
+
+.difficulty-list{ display:flex; flex-direction:column; gap:8px; }
+.difficulty-option{
+  width:100%;
+  font-size:15px;
+  padding:12px 16px;
+  color: var(--text);
+  background: rgba(201,162,39,0.08);
+  border:1px solid var(--brass-soft);
+}
+.difficulty-option:active{ transform: translateY(1px); }
+
+.menu-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
+.menu-row{
+  display:flex; align-items:center; gap:10px;
+  width:100%;
+  font-size:14px; font-weight:600;
+  padding:12px 14px;
+  color: var(--text);
+  background: rgba(201,162,39,0.08);
+  border:1px solid var(--brass-soft);
+  text-align:left;
+}
+.menu-row:active{ transform: translateY(1px); }
+
+.rules-card{ max-width:370px; }
+.rule-row{
+  display:flex; align-items:flex-start; gap:12px;
+  text-align:left;
+  margin-bottom:13px;
+}
+.rule-icon{ font-size:17px; line-height:1.4; flex:0 0 24px; text-align:center; color: var(--brass); }
+.rule-row p{ margin:0; font-size:14px; color: var(--text); }
+
+/* lingua */
+.language-list{ display:flex; flex-direction:column; gap:8px; }
+.language-option{
+  display:flex; align-items:center; gap:12px;
+  width:100%;
+  font-size:14px; font-weight:600;
+  padding:11px 14px;
+  color: var(--text);
+  background: rgba(201,162,39,0.08);
+  border:1px solid var(--brass-soft);
+  text-align:left;
+}
+.language-option:active{ transform: translateY(1px); }
+.language-option.active{ border-color: var(--brass); background: rgba(201,162,39,0.16); }
+.language-flag{ font-size:19px; }
+
+/* classifica */
+.lb-note{ font-size:12px !important; margin-bottom:12px !important; }
+.lb-tabs{ display:flex; gap:6px; margin-bottom:12px; }
+.lb-tab{
+  flex:1 1 0;
+  font-size:12px;
+  padding:8px 4px;
+  color: var(--text-dim);
+  background: rgba(201,162,39,0.06);
+  border:1px solid var(--brass-faint);
+}
+.lb-tab.active{ color: var(--wood); background: var(--brass); border-color: var(--brass); }
+.leaderboard-list{
+  display:flex; flex-direction:column; gap:6px;
+  max-height:246px; overflow-y:auto;
+  margin-bottom:6px;
+}
+.leaderboard-row{
+  display:flex; align-items:center; gap:10px;
+  padding:8px 10px;
+  border-radius:6px;
+  background: rgba(0,0,0,0.22);
+  border:1px solid var(--brass-faint);
+  font-size:13px;
+}
+.leaderboard-row.is-me{ border-color: var(--brass); background: rgba(201,162,39,0.14); }
+.leaderboard-rank{ flex:0 0 auto; font-weight:700; color: var(--brass); min-width:34px; text-align:left; }
+.leaderboard-name{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
+.leaderboard-score{ flex:0 0 auto; font-weight:700; font-variant-numeric: tabular-nums; }
+.leaderboard-empty{ font-size:13px; color: var(--text-dim); padding:16px 6px; }
+
+/* schermi bassi: la scacchiera vale più del titolo */
+@media (max-height: 680px){
+  .title-wrap{ display:none; }
+  .player-plate{ padding:5px 10px; }
+  .plate-name{ font-size:14px; }
+}
+/* tablet e desktop: la scacchiera è quadrata, quindi in verticale è la
+   LARGHEZZA a decidere quanto può crescere; i limiti si alzano per gradi,
+   e la misura vera la calcola comunque il codice sullo spazio rimasto */
+@media (min-width: 700px){
+  #app{ max-width: 640px; }
+  .title-wrap h1{ font-size:30px; }
+  .plate-name{ font-size:17px; }
+}
+@media (min-width: 900px){
+  #app{ max-width: 720px; }
+}
+@media (min-width: 1200px){
+  #app{ max-width: 780px; }
+  .title-wrap h1{ font-size:34px; }
+}

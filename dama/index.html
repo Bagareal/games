@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Dama</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<meta name="theme-color" content="#2A1B12">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- sfondo: tavolo da circolo in legno di noce, con la venatura disegnata a
+     righe e l'alone caldo della lampada sopra. Niente in comune con gli altri
+     giochi del sito: ognuno ha la sua identità grafica. -->
+<div id="bgLayer">
+  <div class="wood-grain"></div>
+  <div class="lamp-glow"></div>
+</div>
+
+<div id="app">
+
+  <div id="loadingScreen">
+    <div class="loading-title">Dama</div>
+    <div class="spinner"></div>
+  </div>
+
+  <div class="topbar">
+    <div class="icon-group">
+      <a class="icon-btn" href="../" aria-label="Home">⬅️</a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
+      <button class="icon-btn" id="restartBtn" aria-label="Ricomincia">↻</button>
+    </div>
+    <div class="turn-pill" id="turnPill">—</div>
+  </div>
+
+  <div class="title-wrap">
+    <h1>Dama</h1>
+    <div class="title-rule"></div>
+  </div>
+
+  <!-- il tavolo: le due targhe stanno attaccate alla scacchiera, sopra e sotto,
+       come i due giocatori seduti ai lati. Quella in alto è ruotata di 180°
+       quando si gioca in due: chi sta di fronte legge sottosopra. -->
+  <div class="game-zone" id="gameZone">
+    <div class="table-stack" id="tableStack">
+      <div class="player-plate top" id="plateTop">
+        <span class="plate-name" id="plateTopName">—</span>
+        <span class="plate-count" id="plateTopCount">0</span>
+      </div>
+
+      <div class="board-frame" id="boardFrame">
+        <div class="board-squares" id="boardSquares"></div>
+        <div class="board-marks" id="boardMarks"></div>
+        <div class="board-pieces" id="boardPieces"></div>
+      </div>
+
+      <div class="player-plate bottom" id="plateBottom">
+        <span class="plate-name" id="plateBottomName">—</span>
+        <span class="plate-count" id="plateBottomCount">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- regole: si aprono a ogni avvio ---------------- -->
+  <div class="overlay" id="rulesOverlay">
+    <div class="card rules-card">
+      <h2 data-i18n="rulesTitle">Come si gioca</h2>
+      <div class="rule-row">
+        <span class="rule-icon">◇</span>
+        <p data-i18n="rule1">Si gioca solo sulle caselle scure. Le pedine si muovono in diagonale, di una casella, sempre in avanti.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">✕</span>
+        <p data-i18n="rule2">Si mangia saltando una pedina avversaria vicina, se dietro c'è una casella libera. Le pedine possono mangiare anche all'indietro.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">⚠</span>
+        <p data-i18n="rule3">Mangiare è obbligatorio: se puoi mangiare, devi farlo. Se dopo il salto puoi mangiare ancora con la stessa pedina, devi continuare.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">♛</span>
+        <p data-i18n="rule4">Una pedina che arriva in fondo diventa dama e il turno finisce. La dama scorre lungo tutta la diagonale, avanti e indietro, e mangia anche da lontano.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">🏁</span>
+        <p data-i18n="rule5">Vince chi mangia tutti i pezzi dell'avversario o chi lo lascia senza mosse.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">👆</span>
+        <p data-i18n="rule6">Tocca un tuo pezzo per vedere dove può andare, poi tocca la casella dove vuoi portarlo.</p>
+      </div>
+      <button class="primary-btn" id="closeRulesBtn" data-i18n="gotIt">Ho capito!</button>
+    </div>
+  </div>
+
+  <!-- ---------------- scelta modalità ---------------- -->
+  <div class="overlay" id="modeOverlay">
+    <div class="card">
+      <h2 data-i18n="modeTitle">Come vuoi giocare?</h2>
+      <button class="choice-btn" id="modeFriendBtn">
+        <span class="choice-icon">👥</span>
+        <span class="choice-text">
+          <span class="choice-title" data-i18n="modeFriend">Con un amico</span>
+          <span class="choice-sub" data-i18n="modeFriendSub">Sullo stesso dispositivo, a turni</span>
+        </span>
+      </button>
+      <button class="choice-btn" id="modeComputerBtn">
+        <span class="choice-icon">🤖</span>
+        <span class="choice-text">
+          <span class="choice-title" data-i18n="modeComputer">Contro il computer</span>
+          <span class="choice-sub" data-i18n="modeComputerSub">Tre livelli di difficoltà</span>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ---------------- difficoltà ---------------- -->
+  <div class="overlay" id="difficultyOverlay">
+    <div class="card">
+      <div class="creator-badge">🤖</div>
+      <h2 data-i18n="creatorTitle">Giocherai contro TheCreator</h2>
+      <p data-i18n="creatorSub">il genio dietro questo progetto.</p>
+      <p class="section-label" data-i18n="chooseDifficulty">Scegli la difficoltà</p>
+      <div class="difficulty-list">
+        <button class="difficulty-option" data-difficulty="stupido" data-i18n="diffStupido">Stupido</button>
+        <button class="difficulty-option" data-difficulty="normale" data-i18n="diffNormale">Normale</button>
+        <button class="difficulty-option" data-difficulty="master" data-i18n="diffMaster">Master</button>
+      </div>
+      <button class="secondary-btn" id="backToModeBtn" data-i18n="back">Indietro</button>
+    </div>
+  </div>
+
+  <!-- ---------------- sfottò della difficoltà scelta ---------------- -->
+  <div class="overlay" id="tauntOverlay">
+    <div class="card">
+      <div class="creator-badge">🤖</div>
+      <p class="taunt-name">TheCreator</p>
+      <h2 class="taunt-line" id="tauntLine">—</h2>
+      <button class="primary-btn" id="tauntPlayBtn" data-i18n="play">Gioca</button>
+      <button class="secondary-btn" id="tauntBackBtn" data-i18n="back">Indietro</button>
+    </div>
+  </div>
+
+  <!-- ---------------- consiglio per giocare in due ---------------- -->
+  <div class="overlay" id="friendTipOverlay">
+    <div class="card">
+      <h2 data-i18n="friendTipTitle">Uno di fronte all'altro</h2>
+      <!-- il tavolo visto dall'alto: il dispositivo appoggiato in mezzo e i due
+           giocatori seduti ai lati opposti -->
+      <svg class="table-figure" viewBox="0 0 200 140" role="img" aria-hidden="true">
+        <ellipse cx="100" cy="70" rx="92" ry="60" fill="rgba(201,162,39,0.07)" stroke="rgba(201,162,39,0.35)" stroke-width="1.5"/>
+        <rect x="72" y="40" width="56" height="60" rx="7" fill="#2A1B12" stroke="#C9A227" stroke-width="2"/>
+        <g fill="none" stroke="rgba(232,213,176,0.5)" stroke-width="1">
+          <line x1="72" y1="55" x2="128" y2="55"/><line x1="72" y1="70" x2="128" y2="70"/><line x1="72" y1="85" x2="128" y2="85"/>
+          <line x1="86" y1="40" x2="86" y2="100"/><line x1="100" y1="40" x2="100" y2="100"/><line x1="114" y1="40" x2="114" y2="100"/>
+        </g>
+        <circle cx="93" cy="48" r="4.5" fill="#EFE0C0"/><circle cx="107" cy="92" r="4.5" fill="#8E3230"/>
+        <g fill="#E8D5B0">
+          <circle cx="100" cy="16" r="9"/><path d="M84 32c0-9 7-13 16-13s16 4 16 13z"/>
+        </g>
+        <g fill="#C9A227">
+          <circle cx="100" cy="124" r="9"/><path d="M84 140c0-9 7-13 16-13s16 4 16 13z"/>
+        </g>
+      </svg>
+      <p data-i18n="friendTipBody">Appoggia il dispositivo su un tavolo, in mezzo a voi due. La scacchiera non gira mai: ognuno gioca dal suo lato, come su una vera dama.</p>
+      <button class="primary-btn" id="friendPlayBtn" data-i18n="play">Gioca</button>
+      <button class="secondary-btn" id="friendBackBtn" data-i18n="back">Indietro</button>
+    </div>
+  </div>
+
+  <!-- ---------------- conferma ricomincia ---------------- -->
+  <div class="overlay" id="restartOverlay">
+    <div class="card">
+      <h2 data-i18n="restartTitle">Ricominciare la partita?</h2>
+      <p data-i18n="restartBody">La partita in corso viene persa e si riparte dalla posizione iniziale, con la stessa modalità.</p>
+      <button class="primary-btn" id="confirmRestartBtn" data-i18n="restartYes">Sì, ricomincia</button>
+      <button class="secondary-btn" id="cancelRestartBtn" data-i18n="restartNo">No, continuo</button>
+    </div>
+  </div>
+
+  <!-- ---------------- fine partita ---------------- -->
+  <div class="overlay" id="endOverlay">
+    <div class="card">
+      <div class="end-icon" id="endIcon">♛</div>
+      <h2 id="endTitle">—</h2>
+      <p id="endSub"></p>
+      <button class="primary-btn" id="playAgainBtn" data-i18n="playAgain">Rigioca</button>
+      <button class="secondary-btn" id="changeModeBtn" data-i18n="changeMode">Cambia modalità</button>
+    </div>
+  </div>
+
+  <!-- ---------------- impostazioni ---------------- -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="card">
+      <h2 data-i18n="settingsTitle">⚙️ Impostazioni</h2>
+      <div class="menu-list">
+        <button class="menu-row" id="openLanguageBtn">🌍 <span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openRulesBtn">❓ <span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn">🏆 <span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+      </div>
+      <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageOverlay">
+    <div class="card">
+      <h2 data-i18n="languageTitle">🌍 Lingua</h2>
+      <p data-i18n="languageSub">Scegli la lingua dell'interfaccia</p>
+      <div class="language-list" id="languageList"></div>
+      <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="leaderboardOverlay">
+    <div class="card">
+      <div class="end-icon">🏆</div>
+      <h2 data-i18n="leaderboardTitle">Classifica</h2>
+      <p class="lb-note" data-i18n="leaderboardNote">Contano solo le partite vinte contro il computer.</p>
+      <div class="lb-tabs" id="leaderboardTabs">
+        <button class="lb-tab" data-difficulty="stupido" data-i18n="diffStupido">Stupido</button>
+        <button class="lb-tab" data-difficulty="normale" data-i18n="diffNormale">Normale</button>
+        <button class="lb-tab" data-difficulty="master" data-i18n="diffMaster">Master</button>
+      </div>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+      <button class="secondary-btn" id="closeLeaderboardBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+</div>
+
+<script>window.FFR_AUTH_HEADLESS = true;</script>
+<script src="../shared/auth.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
