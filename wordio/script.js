@@ -394,9 +394,14 @@ const els = {
   coinLabel: document.getElementById('coinLabel'),
   subLabel: document.getElementById('subLabel'),
   wordsList: document.getElementById('wordsList'),
+  wordsCard: document.querySelector('.words-card'),
   extraCount: document.getElementById('extraCount'),
   extraCounterBtn: document.getElementById('extraCounterBtn'),
   wheelContainer: document.getElementById('wheelContainer'),
+  wheelZone: document.querySelector('.wheel-zone'),
+  topbar: document.querySelector('.topbar'),
+  titleWrap: document.querySelector('.title-wrap'),
+  infoRow: document.querySelector('.info-row'),
   wheelSvg: document.getElementById('wheelSvgLayer'),
   composeOverlay: document.getElementById('composeOverlay'),
   composeText: document.getElementById('composeText'),
@@ -602,10 +607,57 @@ function fitWordsListToHeight(currentTileSize, rows) {
 }
 
 // ---------- Rendering ruota lettere ----------
-// la geometria si calcola dalla taglia REALE del contenitore (non da
-// costanti fisse) così la ruota segue automaticamente gli ingrandimenti
-// per tablet definiti in style.css (vedi i breakpoint di #wheelContainer)
+// la geometria si calcola dalla taglia REALE del contenitore (non da costanti
+// fisse), così le lettere seguono automaticamente la taglia decisa da fitWheel()
 let tileEls = [];
+
+// ---------- Quanto è grande la ruota ----------
+// Si misura lo spazio verticale che resta DAVVERO sotto topbar, titolo, elenco
+// parole e riga "extra", e la ruota prende quello (limitata anche dalla
+// larghezza, per lasciar posto ai due pulsanti laterali).
+//
+// Prima le taglie erano percentuali della larghezza schermo (58vw e simili),
+// tarate su un telefono. Un iPad è proporzionalmente più largo e basso: quella
+// stessa percentuale diventava una ruota troppo alta per lo spazio rimasto, e
+// siccome la ruota non si restringeva mai, le lettere finivano sotto il bordo
+// dello schermo e bisognava scorrere. Misurando, invece, la ruota cede quando
+// deve cedere, e ogni schermo — anche modelli che non esistono ancora — porta
+// la sua taglia giusta senza aggiungere regole su misura.
+const WHEEL_MIN = 190, WHEEL_MAX = 560;
+const SIDE_BTN_RATIO = 0.216;          // quanto largo è ogni pulsante laterale rispetto alla ruota
+const CARD_MIN_PX = 130;        // sotto questa altezza l'elenco parole non va mai
+const CARD_MAX_SHARE = 0.42;    // e non si prende più di così dello schermo
+const BOTTOM_SAFETY = 12;       // qualche pixel di respiro: mai finire incollati al bordo
+function fitWheel() {
+  const zone = els.wheelZone;
+  if (!els.app || !zone) return;
+  const num = v => parseFloat(v) || 0;
+  // Altezza che l'app PUÒ occupare. Non si misura la sua altezza attuale: su
+  // schermi larghi l'app è un riquadro centrato alto quanto il suo contenuto,
+  // quindi misurarla vorrebbe dire "la ruota è piccola perché l'app è bassa,
+  // e l'app è bassa perché la ruota è piccola" — si rimpiccioliva da sola.
+  const appMaxH = parseFloat(getComputedStyle(els.app).maxHeight);
+  const usableH = Math.min(window.innerHeight, isFinite(appMaxH) && appMaxH > 0 ? appMaxH : window.innerHeight);
+  const cs = getComputedStyle(zone);
+  const padV = num(cs.paddingTop) + num(cs.paddingBottom);
+  const padH = num(cs.paddingLeft) + num(cs.paddingRight);
+  const gaps = num(cs.columnGap || cs.gap) * 2;
+
+  // quanto serve DAVVERO all'elenco parole, misurato sul suo contenuto: darlo
+  // per scontato non funziona, perché dipende da quante parole ha il livello
+  const cardStyle = els.wordsCard ? getComputedStyle(els.wordsCard) : null;
+  const cardPad = cardStyle ? num(cardStyle.paddingTop) + num(cardStyle.paddingBottom) : 0;
+  const cardNatural = (els.wordsList ? els.wordsList.scrollHeight : 0) + cardPad;
+  const cardNeeded = Math.min(Math.max(CARD_MIN_PX, cardNatural), usableH * CARD_MAX_SHARE);
+
+  const above = els.topbar.offsetHeight + els.titleWrap.offsetHeight + els.infoRow.offsetHeight;
+  const byHeight = usableH - above - cardNeeded - padV - BOTTOM_SAFETY;
+  const byWidth = (zone.clientWidth - padH - gaps) / (1 + SIDE_BTN_RATIO * 2);
+
+  const size = Math.round(Math.max(WHEEL_MIN, Math.min(byHeight, byWidth, WHEEL_MAX)));
+  els.app.style.setProperty('--wheel', size + 'px');
+}
+
 const WHEEL_RADIUS_RATIO = 75 / 232; // stessa proporzione della taglia base (232px, raggio 75px)
 const TILE_HIT_RADIUS_RATIO = 30 / 232;
 function wheelGeometry() {
@@ -618,6 +670,7 @@ function slotPosition(i, n) {
   return { x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
 }
 function renderWheel() {
+  fitWheel();
   const data = state.currentLevelData;
   els.wheelContainer.querySelectorAll('.tile').forEach(t => t.remove());
   tileEls = [];
@@ -1218,6 +1271,9 @@ async function init() {
   });
 
   window.addEventListener('resize', () => { renderWordsList(); renderWheel(); });
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => { renderWordsList(); renderWheel(); }, 250);
+  });
 
   setTimeout(hideLoadingScreen, 350);
 }

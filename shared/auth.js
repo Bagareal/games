@@ -19,6 +19,7 @@
   const EMAIL_DOMAIN = '@ffr-games.local';
   const RECOVER_FN_URL = SUPABASE_URL + '/functions/v1/recover-account';
   const LS_CHOICE = 'ffr-account-choice'; // 'guest' | 'account'
+  const LS_NICKNAME = 'ffr-nickname';     // copia locale, usata se il database non risponde
 
   // chiavi localStorage già usate dai singoli giochi per il progresso locale
   const GAME_LOCAL_KEYS = { wordio: 'wordio-progress' };
@@ -244,10 +245,39 @@
     if (!readyPromise) {
       readyPromise = loadSupabaseLib().then(() => {
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        attachAuthListener(supabaseClient);
         return supabaseClient;
+      }).catch(err => {
+        // NON tenersi il fallimento: il risultato di questa promessa viene
+        // riusato da tutte le chiamate successive, quindi memorizzando un
+        // errore un singolo intoppo di rete durante l'apertura della pagina
+        // condannava login, salvataggi e classifiche per tutta la visita,
+        // senza riprovare mai. Azzerando, la prossima chiamata riprova.
+        readyPromise = null;
+        throw err;
       });
     }
     return readyPromise;
+  }
+
+  // Tiene allineato lo stato quando la sessione cambia da sola: rinnovo del
+  // token, accesso o uscita fatti in un'altra scheda. Senza questo l'interfaccia
+  // resta ferma a com'era al caricamento della pagina.
+  function attachAuthListener(client) {
+    try {
+      client.auth.onAuthStateChange((event, session) => {
+        if (session && session.user) {
+          currentUser = session.user;
+          if (!currentNickname) currentNickname = cachedNickname();
+          notify();
+        } else if (event === 'SIGNED_OUT') {
+          currentUser = null;
+          currentNickname = null;
+          cacheNickname(null);
+          notify();
+        }
+      });
+    } catch (e) { console.error('[FFR] onAuthStateChange non agganciato:', e); }
   }
 
   // ---------------- stato ----------------
@@ -262,6 +292,19 @@
     const client = await getClient();
     const { data } = await client.from('profiles').select('nickname').eq('id', userId).maybeSingle();
     return data ? data.nickname : null;
+  }
+
+  // Copia del nickname sul dispositivo. Serve come ripiego immediato: appena si
+  // sa che sei loggato l'interfaccia può già scrivere il tuo nome, senza dover
+  // aspettare (o veder fallire) la richiesta al database.
+  function cacheNickname(n) {
+    try {
+      if (n) localStorage.setItem(LS_NICKNAME, n);
+      else localStorage.removeItem(LS_NICKNAME);
+    } catch (e) { /* ignora */ }
+  }
+  function cachedNickname() {
+    try { return localStorage.getItem(LS_NICKNAME); } catch (e) { return null; }
   }
 
   // ---------------- progresso: locale + cloud ----------------
@@ -292,29 +335,73 @@
     }
   }
 
+  // Data dell'ultimo salvataggio locale, in una chiave a parte: così i
+  // salvataggi già presenti sui dispositivi restano leggibili tali e quali
+  // (la loro forma non cambia) e chi aggiorna non perde niente.
+  function stampKeyFor(game) { return localKeyFor(game) + '-at'; }
+  function readStamp(game) {
+    try { return Date.parse(localStorage.getItem(stampKeyFor(game)) || '') || null; } catch (e) { return null; }
+  }
+
   async function saveProgress(game, data, score) {
-    try { localStorage.setItem(localKeyFor(game), JSON.stringify(data)); } catch (e) { /* storage pieno/negato: pazienza */ }
+    // stessa data per il salvataggio locale e per quello nel cloud: se il
+    // secondo non va a buon fine, il locale risulta più recente ed è
+    // esattamente quello che vogliamo sapere al prossimo caricamento
+    const stamp = new Date().toISOString();
+    try {
+      localStorage.setItem(localKeyFor(game), JSON.stringify(data));
+      localStorage.setItem(stampKeyFor(game), stamp);
+    } catch (e) { /* storage pieno/negato: pazienza */ }
     if (!currentUser) return;
     try {
       const client = await getClient();
       const { error } = await client.from('game_progress').upsert(
-        { user_id: currentUser.id, game, data, score: (score == null ? null : score), updated_at: new Date().toISOString() },
+        { user_id: currentUser.id, game, data, score: (score == null ? null : score), updated_at: stamp },
         { onConflict: 'user_id,game' }
       );
       if (error) console.error('[FFR] saveProgress(' + game + ') fallito:', error);
     } catch (e) { console.error('[FFR] saveProgress(' + game + ') fallito (rete/offline):', e); }
   }
 
+  // Prima vinceva SEMPRE il cloud, senza guardare le date: chi giocava una
+  // partita mentre la connessione (o il caricamento della libreria) non
+  // funzionava la salvava solo sul dispositivo, e al primo caricamento
+  // riuscito il cloud — più vecchio — gliela cancellava sopra. Ora si
+  // confrontano le due date e vince la più recente.
   async function loadProgress(game) {
     let local = null;
     try { const raw = localStorage.getItem(localKeyFor(game)); if (raw) local = JSON.parse(raw); } catch (e) { /* ignora */ }
     if (!currentUser) return local;
     try {
       const client = await getClient();
-      const { data, error } = await client.from('game_progress').select('data').eq('user_id', currentUser.id).eq('game', game).maybeSingle();
+      const { data, error } = await client.from('game_progress')
+        .select('data, score, updated_at').eq('user_id', currentUser.id).eq('game', game).maybeSingle();
       if (error) { console.error('[FFR] loadProgress(' + game + ') fallito:', error); return local; }
       if (!data) return local; // nessun progresso cloud salvato ancora per questo utente/gioco: normale
-      try { localStorage.setItem(localKeyFor(game), JSON.stringify(data.data)); } catch (e) { /* ignora */ }
+
+      const localStamp = readStamp(game);
+      const cloudStamp = Date.parse(data.updated_at || '') || null;
+      // NB: senza data locale (salvataggi fatti prima di questo aggiornamento)
+      // vince il cloud, come faceva prima — è la scelta prudente, evita di
+      // spedire in cloud roba vecchia rimasta su un dispositivo poco usato
+      if (local && localStamp && cloudStamp && localStamp > cloudStamp) {
+        console.warn('[FFR] loadProgress(' + game + '): il dispositivo ha dati più recenti del cloud, li tengo e li mando su');
+        try {
+          // si riscrive nel cloud tenendo il punteggio che c'era già: qui non
+          // sappiamo quale sia quello giusto e non va mai azzerato
+          const { error: upErr } = await client.from('game_progress').upsert(
+            { user_id: currentUser.id, game, data: local, score: data.score, updated_at: new Date(localStamp).toISOString() },
+            { onConflict: 'user_id,game' }
+          );
+          if (upErr) console.error('[FFR] loadProgress(' + game + '): rinvio al cloud fallito:', upErr);
+        } catch (e) { console.error('[FFR] loadProgress(' + game + '): rinvio al cloud fallito:', e); }
+        return local;
+      }
+
+      try {
+        localStorage.setItem(localKeyFor(game), JSON.stringify(data.data));
+        if (data.updated_at) localStorage.setItem(stampKeyFor(game), data.updated_at);
+      } catch (e) { /* ignora */ }
       return data.data;
     } catch (e) { console.error('[FFR] loadProgress(' + game + ') fallito (rete/offline):', e); return local; }
   }
@@ -555,6 +642,7 @@
       const userId = data.user.id;
       currentUser = data.user;
       currentNickname = nickname;
+      cacheNickname(nickname);
       try { localStorage.setItem(LS_CHOICE, 'account'); } catch (e) { /* ignora */ }
       await migrateGuestProgressToAccount(userId);
 
@@ -640,6 +728,7 @@
       if (error) return showError(card, errBox, tt('errLoginFailed'));
       currentUser = data.user;
       currentNickname = nickname;
+      cacheNickname(nickname);
       try { localStorage.setItem(LS_CHOICE, 'account'); } catch (e) { /* ignora */ }
       hideOverlay('ffr-login-overlay');
       notify();
@@ -727,6 +816,7 @@
         await client.auth.signOut();
         currentUser = null;
         currentNickname = null;
+        cacheNickname(null);
         hideOverlay('ffr-panel-overlay');
         notify();
       };
@@ -782,13 +872,29 @@
   async function restoreSession() {
     try {
       const client = await getClient();
-      const { data } = await client.auth.getSession();
+      const { data, error } = await client.auth.getSession();
+      if (error) console.error('[FFR] getSession fallita:', error);
       if (data && data.session && data.session.user) {
         currentUser = data.session.user;
-        currentNickname = await fetchNickname(currentUser.id);
+        // Si avvisa SUBITO l'interfaccia, prima di chiedere il nickname al
+        // database. Prima l'ordine era invertito: se quella richiesta falliva
+        // si finiva nel catch e notify() non veniva mai eseguito, così restavi
+        // etichettato "Ospite" per tutta la visita pur essendo loggato (e senza
+        // nickname saltava anche la tua riga evidenziata in classifica).
+        currentNickname = cachedNickname();
         notify();
+        try {
+          const fresh = await fetchNickname(currentUser.id);
+          if (fresh) {
+            currentNickname = fresh;
+            cacheNickname(fresh);
+            notify();
+          }
+        } catch (e) {
+          console.error('[FFR] nickname non recuperato, resta quello salvato sul dispositivo:', e);
+        }
       }
-    } catch (e) { /* niente sessione, resta ospite */ }
+    } catch (e) { console.error('[FFR] ripristino sessione fallito:', e); }
   }
 
   // parte subito, non aspetta il DOM: le pagine di gioco fanno `await

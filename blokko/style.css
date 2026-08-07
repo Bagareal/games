@@ -50,7 +50,7 @@ body{
   transform: translate(-50%, 50%);
   border-radius:50%;
   background: radial-gradient(circle, rgba(255,46,136,0.42) 0%, rgba(177,76,255,0.18) 42%, rgba(177,76,255,0) 68%);
-  filter: blur(2px);
+  will-change: opacity;
   animation: sun-pulse 6s ease-in-out infinite;
 }
 @keyframes sun-pulse{
@@ -64,23 +64,27 @@ body{
   background-image:
     repeating-linear-gradient(to right, rgba(0,229,255,0.35) 0 1px, transparent 1px 64px),
     repeating-linear-gradient(to bottom, rgba(255,46,136,0.4) 0 1px, transparent 1px 48px);
-  transform: perspective(320px) rotateX(72deg);
   transform-origin: bottom center;
   mask-image: linear-gradient(to bottom, transparent 0%, #000 45%, #000 100%);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 45%, #000 100%);
+  will-change: transform;
   animation: grid-scroll 3.2s linear infinite;
 }
+/* si muove la trasformazione, non la posizione dello sfondo: la prima la fa la
+   scheda grafica, la seconda obbliga a ridipingere tutto lo schermo 60 volte
+   al secondo mentre stai giocando */
 @keyframes grid-scroll{
-  from{ background-position: 0 0, 0 0; }
-  to{ background-position: 0 0, 0 48px; }
+  from{ transform: perspective(320px) rotateX(72deg) translateY(0); }
+  to{ transform: perspective(320px) rotateX(72deg) translateY(48px); }
 }
 /* righe orizzontali finissime, come su un monitor a tubo catodico */
+/* Niente mix-blend-mode qui: obbligava il browser a ricomporre l'intera
+   pagina a ogni fotogramma ed era il singolo pezzo più caro di tutta la
+   grafica. Righe nere semitrasparenti danno lo stesso effetto a costo zero. */
 #scanlines{
   position:fixed; inset:0; z-index:40;
   pointer-events:none;
-  background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.22) 0 1px, transparent 1px 3px);
-  opacity:0.55;
-  mix-blend-mode: multiply;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,0.16) 0 1px, transparent 1px 3px);
 }
 
 #app{

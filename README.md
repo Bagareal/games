@@ -10,6 +10,12 @@ Everything here is free to play, forever. There are no in-app purchases that unl
 
 **About accounts**: since no email is attached to your account, if you lose both your password *and* your recovery code, there is no way to recover your account or its progress — save your recovery code somewhere safe when you create an account.
 
+## Original games
+
+Every game here is written from scratch and is meant to stand on its own. These are old, well-worn genres — falling blocks, brick-breakers, word puzzles — and the rules of a genre belong to everyone, but the way a specific game *looks* does not. So each of ours gets its own board dimensions, its own palette, its own piece and level design, its own name and its own visual identity, deliberately chosen to be different rather than familiar. No artwork, sound, text or code is taken from anyone else's game.
+
+The full source is right here, so you can check any of that for yourself. If you believe something on this site crosses a line, write to **honest.support@freeforreal.app** and we'll look at it and fix it.
+
 ## Games
 
 ### [Wordio](wordio/)

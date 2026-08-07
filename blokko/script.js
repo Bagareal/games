@@ -389,6 +389,7 @@ function lockPiece() {
     if (by < 0) { endGame(); return; } // impilati fino a sopra il bordo
     state.grid[by][bx] = p.type;
   }
+  markStackDirty();
   state.piece = null;
   state.softDropping = false;
 
@@ -413,6 +414,7 @@ function finishClear() {
   }
   while (kept.length < ROWS) kept.unshift(new Array(COLS).fill(null));
   state.grid = kept;
+  markStackDirty();
 
   const n = rows.length;
   const oldLevel = state.level;
@@ -433,6 +435,7 @@ function finishClear() {
 }
 
 function endGame() {
+  markStackDirty();
   state.gameOver = true;
   state.paused = true;
   state.piece = null;
@@ -463,6 +466,7 @@ function startNewGame(difficultyKey) {
   const saved = state.byDifficulty[difficultyKey];
   state.best = (saved && saved.best) || 0;
   addStartRows(preset().startRows);
+  markStackDirty();
   spawnNext();
   resizeCanvas();
   updateHUD();
@@ -595,12 +599,59 @@ function blockSprite(color, size) {
   spriteCache.set(key, sprite);
   return sprite;
 }
-function drawCell(gx, gy, color, alpha) {
+function drawCell(g, gx, gy, color, alpha) {
   const s = blockSprite(color, cell);
-  if (alpha != null) ctx.globalAlpha = alpha;
-  ctx.drawImage(s.canvas, gx * cell - s.bleed, gy * cell - s.bleed,
+  if (alpha != null) g.globalAlpha = alpha;
+  g.drawImage(s.canvas, gx * cell - s.bleed, gy * cell - s.bleed,
     cell + s.bleed * 2, cell + s.bleed * 2);
-  if (alpha != null) ctx.globalAlpha = 1;
+  if (alpha != null) g.globalAlpha = 1;
+}
+
+// La pila di blocchi già posati non si muove: ridisegnarla a ogni fotogramma
+// (fino a 180 blocchi con il loro alone) era il 97% del lavoro, buttato. Ora
+// vive su una tela nascosta, ridisegnata solo quando cambia davvero; a ogni
+// fotogramma si ricopia quella e si disegnano solo i pochi quadretti del pezzo
+// che sta cadendo. È questo a togliere sia gli scatti sia il ritardo dei
+// comandi: finché un fotogramma costa troppo, il dito risponde in ritardo.
+const stackCanvas = document.createElement('canvas');
+const stackCtx = stackCanvas.getContext('2d');
+let stackDirty = true;
+function markStackDirty() { stackDirty = true; needsRedraw = true; }
+function redrawStack(w, h) {
+  const pxW = Math.round(w * renderScale), pxH = Math.round(h * renderScale);
+  if (stackCanvas.width !== pxW || stackCanvas.height !== pxH) {
+    stackCanvas.width = pxW; stackCanvas.height = pxH;
+  }
+  stackCtx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
+  stackCtx.clearRect(0, 0, w, h);
+
+  // reticolo di sfondo appena accennato, per capire dove cadranno i pezzi
+  stackCtx.strokeStyle = 'rgba(177, 76, 255, 0.10)';
+  stackCtx.lineWidth = 1;
+  stackCtx.beginPath();
+  for (let x = 1; x < COLS; x++) { stackCtx.moveTo(x * cell + 0.5, 0); stackCtx.lineTo(x * cell + 0.5, h); }
+  for (let y = 1; y < ROWS; y++) { stackCtx.moveTo(0, y * cell + 0.5); stackCtx.lineTo(w, y * cell + 0.5); }
+  stackCtx.stroke();
+
+  const flashing = state.clearing ? (Math.floor(state.clearing.t / 55) % 2 === 0) : false;
+  for (let y = 0; y < ROWS; y++) {
+    const isClearing = state.clearing && state.clearing.rows.indexOf(y) !== -1;
+    for (let x = 0; x < COLS; x++) {
+      const type = state.grid[y][x];
+      if (!type) continue;
+      if (isClearing) {
+        if (flashing) {
+          stackCtx.fillStyle = 'rgba(255,255,255,0.92)';
+          roundRect(stackCtx, x * cell + 2, y * cell + 2, cell - 4, cell - 4, Math.max(2, cell * 0.2));
+          stackCtx.fill();
+        } else {
+          drawCell(stackCtx, x, y, PIECES[type].color, 0.45);
+        }
+      } else {
+        drawCell(stackCtx, x, y, PIECES[type].color);
+      }
+    }
+  }
 }
 
 function resizeCanvas() {
@@ -623,49 +674,27 @@ function resizeCanvas() {
   els.canvas.width = Math.round(w * renderScale);
   els.canvas.height = Math.round(h * renderScale);
   ctx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
+  markStackDirty();
   renderNext();
 }
 
 function render() {
   const w = cell * COLS, h = cell * ROWS;
+  // durante il lampeggio delle righe piene anche i blocchi fermi cambiano
+  if (state.clearing) stackDirty = true;
+  if (stackDirty) { redrawStack(w, h); stackDirty = false; }
+
   ctx.clearRect(0, 0, w, h);
-
-  // reticolo di sfondo appena accennato, per capire dove cadranno i pezzi
-  ctx.strokeStyle = 'rgba(177, 76, 255, 0.10)';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  for (let x = 1; x < COLS; x++) { ctx.moveTo(x * cell + 0.5, 0); ctx.lineTo(x * cell + 0.5, h); }
-  for (let y = 1; y < ROWS; y++) { ctx.moveTo(0, y * cell + 0.5); ctx.lineTo(w, y * cell + 0.5); }
-  ctx.stroke();
-
-  const flashing = state.clearing
-    ? (Math.floor(state.clearing.t / 55) % 2 === 0)
-    : false;
-  for (let y = 0; y < ROWS; y++) {
-    const isClearing = state.clearing && state.clearing.rows.indexOf(y) !== -1;
-    for (let x = 0; x < COLS; x++) {
-      const type = state.grid[y][x];
-      if (!type) continue;
-      if (isClearing) {
-        if (flashing) {
-          ctx.fillStyle = 'rgba(255,255,255,0.92)';
-          roundRect(ctx, x * cell + 2, y * cell + 2, cell - 4, cell - 4, Math.max(2, cell * 0.2));
-          ctx.fill();
-        } else {
-          drawCell(x, y, PIECES[type].color, 0.45);
-        }
-      } else {
-        drawCell(x, y, PIECES[type].color);
-      }
-    }
-  }
+  ctx.drawImage(stackCanvas, 0, 0, w, h);
 
   const p = state.piece;
   if (p) {
     const color = PIECES[p.type].color;
     const gy = landingY();
     // Segnale di atterraggio: non una copia sbiadita del pezzo, ma una barra
-    // luminosa sotto ogni sua colonna, dove andrà a posarsi.
+    // luminosa sotto ogni sua colonna, dove andrà a posarsi. L'alone è fatto
+    // con tre rettangoli sovrapposti invece che con shadowBlur: calcolare una
+    // sfocatura vera a ogni fotogramma costa molto più di quanto renda.
     if (gy > p.y) {
       const cells = stateCells(p.type, p.rot);
       const bottomByCol = new Map();
@@ -674,25 +703,24 @@ function render() {
         bottomByCol.set(col, Math.max(bottomByCol.has(col) ? bottomByCol.get(col) : -99, cy));
       });
       const barH = Math.max(3, Math.round(cell * 0.13));
-      ctx.save();
       bottomByCol.forEach((cy, col) => {
         const by = gy + cy;
         // corridoio appena colorato: fa capire in quale colonna sta scendendo
         ctx.fillStyle = withAlpha(color, 0.12);
         ctx.fillRect(col * cell + 2, (p.y + cy + 1) * cell, cell - 4, (by - p.y - cy) * cell);
-        // barra luminosa dove il pezzo si poserà
+        const baseY = (by + 1) * cell - barH - 2;
+        ctx.fillStyle = withAlpha(color, 0.22);
+        ctx.fillRect(col * cell, baseY - barH, cell, barH * 3);
+        ctx.fillStyle = withAlpha(color, 0.45);
+        ctx.fillRect(col * cell + 1, baseY - barH / 2, cell - 2, barH * 2);
         ctx.fillStyle = color;
-        ctx.shadowColor = color;
-        ctx.shadowBlur = Math.max(8, cell * 0.4);
-        roundRect(ctx, col * cell + 3, (by + 1) * cell - barH - 2, cell - 6, barH, barH / 2);
+        roundRect(ctx, col * cell + 3, baseY, cell - 6, barH, barH / 2);
         ctx.fill();
-        ctx.fill(); // due passate: l'alone da solo resta troppo timido
       });
-      ctx.restore();
     }
     stateCells(p.type, p.rot).forEach(([cx, cy]) => {
       const by = p.y + cy;
-      if (by >= 0) drawCell(p.x + cx, by, color);
+      if (by >= 0) drawCell(ctx, p.x + cx, by, color);
     });
   }
 }
@@ -743,6 +771,10 @@ function renderNext() {
 }
 
 let lastTime = null;
+// In pausa (o con un menu aperto) non cambia niente da un fotogramma all'altro:
+// si disegna una volta e poi si sta fermi, invece di ridipingere lo stesso
+// quadro sessanta volte al secondo con il telefono in mano.
+let needsRedraw = true;
 function loop(timestamp) {
   if (lastTime == null) lastTime = timestamp;
   const dt = Math.min(80, timestamp - lastTime);
@@ -750,9 +782,34 @@ function loop(timestamp) {
   if (isPlaying()) {
     checkHoldToSoftDrop();
     update(dt);
+    render();
+    needsRedraw = true;
+  } else if (needsRedraw) {
+    render();
+    needsRedraw = false;
   }
-  render();
+  countFrame(timestamp);
   requestAnimationFrame(loop);
+}
+
+// Contatore di fotogrammi, spento salvo che l'indirizzo finisca con ?fps=1:
+// serve a misurare la fluidità sul dispositivo vero, non a occhio.
+const FPS_ON = /[?&]fps=1/.test(location.search);
+let fpsBox = null, fpsFrames = 0, fpsSince = 0;
+function countFrame(timestamp) {
+  if (!FPS_ON) return;
+  if (!fpsBox) {
+    fpsBox = document.createElement('div');
+    fpsBox.style.cssText = 'position:fixed;top:4px;right:4px;z-index:9999;background:rgba(0,0,0,0.7);' +
+      'color:#39FF6A;font:12px monospace;padding:3px 7px;border-radius:6px;pointer-events:none;';
+    document.body.appendChild(fpsBox);
+    fpsSince = timestamp;
+  }
+  fpsFrames++;
+  if (timestamp - fpsSince >= 1000) {
+    fpsBox.textContent = Math.round((fpsFrames * 1000) / (timestamp - fpsSince)) + ' fps';
+    fpsFrames = 0; fpsSince = timestamp;
+  }
 }
 
 // ---------- Comandi touch ----------
@@ -1127,6 +1184,7 @@ function resumeFromSaved(saved) {
   state.difficulty = key;
   state.best = run.best || 0;
   state.grid = grid;
+  markStackDirty();
   state.score = run.score;
   state.lines = run.lines;
   state.level = run.level;

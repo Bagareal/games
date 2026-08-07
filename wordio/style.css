@@ -318,12 +318,20 @@
   .extra-counter:active{ transform: scale(0.96); }
 
   /* wheel area */
+  /* Zona della ruota. Tutto quello che ci sta dentro (ruota, anello, lettere,
+     pulsanti laterali) è una proporzione di --wheel, e --wheel lo calcola
+     fitWheel() in script.js misurando lo spazio verticale che resta davvero.
+     Prima le taglie erano percentuali della LARGHEZZA schermo: sugli iPad,
+     proporzionalmente più larghi e bassi dei telefoni, veniva fuori una ruota
+     troppo alta per lo spazio disponibile e le lettere finivano sotto il bordo.
+     Niente più min-height fisso qui: era proprio lui a impedire alla zona di
+     stringersi quando lo spazio non bastava. */
   .wheel-zone{
     position:relative; z-index:5;
     flex: 1 1 auto;
     display:flex; align-items:center; justify-content:center;
     gap: 2px;
-    min-height: 250px;
+    min-height: 0;
     padding: 4px 4px max(10px, env(safe-area-inset-bottom));
   }
   #wheelSvgLayer{
@@ -332,26 +340,26 @@
   }
   #wheelContainer{
     position:relative;
-    width: 232px; height:232px;
+    width: var(--wheel, 232px); height: var(--wheel, 232px);
     touch-action: none;
     flex: 0 0 auto;
   }
   .life-ring{
     position:absolute; top:50%; left:50%;
-    width: 196px; height:196px;
+    width: calc(var(--wheel, 232px) * 0.845); height: calc(var(--wheel, 232px) * 0.845);
     transform:translate(-50%,-50%);
     border-radius:50%;
-    border: 12px solid rgba(255,255,255,0.14);
+    border: calc(var(--wheel, 232px) * 0.052) solid rgba(255,255,255,0.14);
     box-shadow: inset 0 0 0 4px rgba(255,255,255,0.10);
   }
   .tile{
     position:absolute;
-    width: 48px; height:48px;
+    width: calc(var(--wheel, 232px) * 0.207); height: calc(var(--wheel, 232px) * 0.207);
     border-radius:50%;
     display:flex; align-items:center; justify-content:center;
     font-family:'Baloo 2', sans-serif;
     font-weight:700;
-    font-size: 20px;
+    font-size: calc(var(--wheel, 232px) * 0.086);
     color: var(--white);
     background: radial-gradient(circle at 32% 28%, var(--tile-purple) 0%, var(--tile-purple-dark) 100%);
     box-shadow: 0 4px 0 var(--tile-shadow), 0 8px 14px rgba(0,0,0,0.35);
@@ -369,17 +377,17 @@
   .side-btn{
     display:flex; flex-direction:column; align-items:center; gap:2px;
     background:none; border:none; color: var(--white);
-    font-family:'Nunito'; font-weight:800; font-size:10px;
+    font-family:'Nunito'; font-weight:800; font-size: calc(var(--wheel, 232px) * 0.043);
     cursor:pointer;
-    width: 50px;
+    width: calc(var(--wheel, 232px) * 0.216);
     flex: 0 0 auto;
   }
   .side-btn .circle{
-    width:40px; height:40px; border-radius:50%;
+    width: calc(var(--wheel, 232px) * 0.172); height: calc(var(--wheel, 232px) * 0.172); border-radius:50%;
     background: rgba(255,255,255,0.16);
     border: 2px solid rgba(255,255,255,0.4);
     display:flex; align-items:center; justify-content:center;
-    font-size:17px;
+    font-size: calc(var(--wheel, 232px) * 0.073);
     box-shadow: 0 4px 0 rgba(0,0,0,0.15);
     margin: 0 auto;
   }
@@ -632,12 +640,8 @@
        le tessere se anche così non basterebbero, così non si scrolla mai. */
     .words-card-wrap{ flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
     .words-card{ padding: 14px 16px; flex: 1 1 auto; min-height: 0; max-height: none; }
-    .wheel-zone{ flex: 0 0 auto; }
-    #wheelContainer{ width:min(58vw, 58vh, 560px); height:min(58vw, 58vh, 560px); }
-    .life-ring{ width:min(49vw, 49vh, 473px); height:min(49vw, 49vh, 473px); }
-    .tile{ width:min(12vw, 12vh, 116px); height:min(12vw, 12vh, 116px); font-size:min(4.8vw, 4.8vh, 46px); }
-    .side-btn{ width:min(9vw, 9vh, 74px); font-size:min(2.4vw, 2.4vh, 14px); }
-    .side-btn .circle{ width:min(8vw, 8vh, 64px); height:min(8vw, 8vh, 64px); font-size:min(3.2vw, 3.2vh, 24px); }
+    /* ruota, anello, lettere e pulsanti laterali non hanno più regole qui:
+       la loro taglia arriva da --wheel, calcolato misurando lo spazio reale */
     .extra-counter{ font-size:min(2.6vw, 2.6vh, 15px); padding:5px 14px; }
   }
   /* desktop: l'app resta un riquadro "da telefono" ma centrato in verticale,
