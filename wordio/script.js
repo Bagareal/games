@@ -525,6 +525,10 @@ async function saveProgress() {
     };
     if (window.FFR && window.FFR.auth) {
       window.FFR.auth.saveProgress('wordio', payload, bestLevelReached());
+      // voce di classifica della lingua in corso: ogni lingua è una progressione
+      // separata, quindi ha la sua graduatoria (il progresso vero resta invece
+      // tutto in un'unica riga, perché monete/aiuti sono comuni alle lingue)
+      window.FFR.auth.saveScore('wordio:' + state.language, state.level);
     } else {
       localStorage.setItem('wordio-progress', JSON.stringify(payload));
     }
@@ -1029,26 +1033,45 @@ function closeTutorial() {
 }
 
 // ---------- Classifica ----------
+// Una classifica per lingua, senza bottoni: si vede quella della lingua con cui
+// stai giocando, perché ogni lingua è una progressione a sé (il livello 40 in
+// italiano non ha niente a che vedere col livello 40 in inglese).
 async function openLeaderboard() {
   els.settingsOverlay.classList.remove('show');
   els.leaderboardOverlay.classList.add('show');
   els.leaderboardList.innerHTML = '<div class="leaderboard-empty">…</div>';
-  const rows = (window.FFR && window.FFR.auth) ? await window.FFR.auth.getLeaderboard('wordio', 20) : [];
+  const auth = (window.FFR && window.FFR.auth) ? window.FFR.auth : null;
+  const gameKey = 'wordio:' + state.language;
+  const [rows, me] = await Promise.all([
+    auth ? auth.getLeaderboard(gameKey, 50) : [],
+    auth ? auth.getMyRank(gameKey) : null,
+  ]);
   if (!rows.length) {
     els.leaderboardList.innerHTML = `<div class="leaderboard-empty">${t().leaderboardEmpty}</div>`;
     return;
   }
-  // "N." davanti alla posizione e "LV." davanti al livello: i numeri nudi non
-  // si capivano (quello a destra sembrava un punteggio, ma in Wordio è il
-  // livello raggiunto). Entrambe le sigle restano uguali in tutte le lingue,
-  // come già "LV." nell'intestazione del gioco.
-  els.leaderboardList.innerHTML = rows.map((row, i) => `
-    <div class="leaderboard-row">
-      <span class="leaderboard-rank">N.${i + 1}</span>
-      <span class="leaderboard-name">${escapeHtml(row.nickname)}</span>
-      <span class="leaderboard-score">LV.${row.score}</span>
-    </div>
-  `).join('');
+  els.leaderboardList.innerHTML = buildLeaderboardRows(rows, me, auth ? auth.getNickname() : null);
+}
+
+// Righe della classifica con la regola condivisa del sito: se ne vedono 6 per
+// volta e, quando chi guarda è fuori dalle prime 5, la sua riga viene infilata
+// come 6ª (evidenziata) così si vede subito senza scorrere. Scorrendo, quella
+// riga scorre via e la lista prosegue normale (6°, 7°, ...).
+// "N." davanti alla posizione e "LV." davanti al livello: i numeri nudi non si
+// capivano (quello a destra sembrava un punteggio, ma è il livello raggiunto).
+// Le due sigle restano uguali in tutte le lingue, come già "LV." nell'header.
+function buildLeaderboardRows(rows, me, myNickname) {
+  const row = (pos, nickname, score, isMe) => `
+    <div class="leaderboard-row${isMe ? ' is-me' : ''}">
+      <span class="leaderboard-rank">N.${pos}</span>
+      <span class="leaderboard-name">${escapeHtml(nickname)}</span>
+      <span class="leaderboard-score">LV.${score}</span>
+    </div>`;
+  const html = rows.map((r, i) => row(i + 1, r.nickname, r.score, myNickname && r.nickname === myNickname));
+  if (me && me.rank > 5 && myNickname) {
+    html.splice(5, 0, row(me.rank, myNickname, me.score, true));
+  }
+  return html.join('');
 }
 function closeLeaderboard() {
   els.leaderboardOverlay.classList.remove('show');

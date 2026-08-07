@@ -284,14 +284,38 @@ body{
 }
 
 /* classifica */
-.leaderboard-list{ display:flex; flex-direction:column; gap:8px; margin: 4px 0 16px; max-height:50vh; overflow-y:auto; }
+/* schede difficoltà: ogni difficoltà ha la sua classifica */
+.lb-tabs{ display:flex; gap:6px; margin: 6px 0 12px; }
+.lb-tab{
+  flex:1 1 0; min-width:0;
+  font-family:'Press Start 2P', monospace; font-size:9px; line-height:1.3;
+  padding:9px 4px; border-radius:10px; cursor:pointer;
+  background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.lb-tab.active{
+  background: rgba(242,98,46,0.22); color: var(--white);
+  border-color: var(--coral);
+  box-shadow: 0 0 10px rgba(242,98,46,0.35);
+}
+/* regola condivisa del sito: se ne vedono 6 per volta, il resto scorrendo.
+   6 righe da 38px + 5 spazi da 8px = 268px */
+.leaderboard-list{ display:flex; flex-direction:column; gap:8px; margin: 4px 0 16px; max-height:268px; overflow-y:auto; }
 .leaderboard-row{
   display:flex; align-items:center; gap:10px;
   background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
   border-radius:12px; padding:9px 14px;
-  font-family:'Press Start 2P', monospace; font-weight:700; font-size:14px; color: var(--white);
+  font-family:'Press Start 2P', monospace; font-weight:700; font-size:11px; color: var(--white);
+  flex: 0 0 auto;
 }
-.leaderboard-rank{ flex:0 0 auto; width:24px; text-align:center; color: rgba(255,255,255,0.5); }
+/* la riga di chi sta guardando, per ritrovarsi a colpo d'occhio */
+.leaderboard-row.is-me{
+  background: rgba(242,98,46,0.2);
+  border-color: var(--coral);
+  color: var(--white);
+}
+.leaderboard-row.is-me .leaderboard-rank{ color: var(--coral); }
+.leaderboard-rank{ flex:0 0 auto; min-width:40px; text-align:left; color: rgba(255,255,255,0.5); }
 .leaderboard-name{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
 .leaderboard-score{ flex:0 0 auto; color: var(--gold); }
 .leaderboard-empty{ font-size:13px; color: rgba(255,255,255,0.6); font-weight:600; padding: 6px 4px 16px; line-height:1.4; }

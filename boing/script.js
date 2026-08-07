@@ -210,7 +210,12 @@ const state = {
   level: 1,
   lives: MAX_LIVES,
   score: 0,
-  bestScore: 0, // punteggio più alto mai raggiunto: usato per la classifica (non scende ricominciando)
+  bestScore: 0, // punteggio più alto mai raggiunto (non scende ricominciando)
+  bestLevel: 1, // livello più alto raggiunto in QUESTA difficoltà: è il valore di classifica
+  // partite messe da parte delle altre due difficoltà: cambiare difficoltà non
+  // deve più azzerare quella che stavi giocando (prima startNewGame() rimetteva
+  // tutto a zero, quindi passare da facile a difficile bruciava il progresso)
+  byDifficulty: {},
   bricks: [],
   balls: [],
   powerUps: [],
@@ -252,6 +257,7 @@ const els = {
   openLeaderboardBtn: document.getElementById('openLeaderboardBtn'),
   leaderboardOverlay: document.getElementById('leaderboardOverlay'),
   leaderboardList: document.getElementById('leaderboardList'),
+  leaderboardTabs: document.getElementById('leaderboardTabs'),
   closeLeaderboardBtn: document.getElementById('closeLeaderboardBtn'),
 };
 const ctx = els.canvas.getContext('2d');
@@ -325,19 +331,18 @@ function launchStuckBalls() {
   });
 }
 
+// Scelta/cambio difficoltà: NON si ricomincia più da zero. La partita in corso
+// viene messa da parte e si riprende quella della difficoltà scelta (o se ne
+// comincia una nuova solo se non c'è). Così si può passare da facile a
+// difficile e tornare indietro ritrovando entrambe dov'erano.
 function startNewGame(difficultyKey) {
-  state.difficulty = difficultyKey;
-  state.level = 1;
-  state.lives = MAX_LIVES;
-  state.score = 0;
-  state.paddle.width = DIFFICULTIES[difficultyKey].paddleWidth;
-  state.wideUntil = 0;
-  state.slowUntil = 0;
-  startLevel(state.level);
-  els.difficultyOverlay.classList.remove('show');
+  if (state.difficulty != null && state.difficulty !== difficultyKey) {
+    state.byDifficulty[state.difficulty] = snapshotCurrentRun();
+  }
+  const previous = state.byDifficulty[difficultyKey];
+  applyRun(difficultyKey, previous || { level: 1, lives: MAX_LIVES, score: 0, bestScore: 0, bestLevel: 1 });
   els.pauseOverlay.classList.remove('show');
   els.settingsOverlay.classList.remove('show');
-  state.paused = false;
   saveBoingProgress();
 }
 
@@ -537,7 +542,16 @@ function showGameOver() {
   state.paused = true;
   els.gameOverSub.textContent = t().gameOverSub(state.level, state.score);
   els.gameOverOverlay.classList.add('show');
-  saveBoingProgress();
+  saveBoingProgress(); // prima si registrano livello/punteggio record raggiunti
+  // poi la partita di questa difficoltà riparte pulita: senza questo, scegliendo
+  // di nuovo la stessa difficoltà si "riprenderebbe" una partita già finita
+  // (zero vite), perché ora startNewGame riprende invece di azzerare
+  if (state.difficulty != null) {
+    state.byDifficulty[state.difficulty] = {
+      level: 1, lives: MAX_LIVES, score: 0,
+      bestScore: state.bestScore, bestLevel: state.bestLevel,
+    };
+  }
 }
 
 // ---------- Rendering (pixel art volutamente piccolo e un po' spartano) ----------
@@ -717,22 +731,55 @@ function closeTutorial() {
 }
 
 // ---------- Classifica ----------
+// Una classifica per difficoltà: i punti fatti in facile non sono confrontabili
+// con quelli fatti in difficile, quindi si gareggia sul livello raggiunto e
+// ogni difficoltà ha la sua graduatoria separata.
+let leaderboardDifficulty = 'medium';
 async function openLeaderboard() {
   els.settingsOverlay.classList.remove('show');
   els.leaderboardOverlay.classList.add('show');
-  els.leaderboardList.innerHTML = '<div class="leaderboard-empty">…</div>';
-  const rows = (window.FFR && window.FFR.auth) ? await window.FFR.auth.getLeaderboard('boing', 20) : [];
+  leaderboardDifficulty = state.difficulty || 'medium'; // parte da quella che stai giocando
+  renderLeaderboardTabs();
+  loadLeaderboardFor(leaderboardDifficulty);
+}
+function renderLeaderboardTabs() {
+  els.leaderboardTabs.querySelectorAll('.lb-tab').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.difficulty === leaderboardDifficulty);
+  });
+}
+async function loadLeaderboardFor(difficultyKey) {
+  els.leaderboardList.innerHTML = `<div class="leaderboard-empty">…</div>`;
+  const auth = (window.FFR && window.FFR.auth) ? window.FFR.auth : null;
+  const gameKey = 'boing:' + difficultyKey;
+  const [rows, me] = await Promise.all([
+    auth ? auth.getLeaderboard(gameKey, 50) : [],
+    auth ? auth.getMyRank(gameKey) : null,
+  ]);
+  if (difficultyKey !== leaderboardDifficulty) return; // l'utente ha già cambiato scheda
   if (!rows.length) {
     els.leaderboardList.innerHTML = `<div class="leaderboard-empty">${t().leaderboardEmpty}</div>`;
     return;
   }
-  els.leaderboardList.innerHTML = rows.map((row, i) => `
-    <div class="leaderboard-row">
-      <span class="leaderboard-rank">${i + 1}</span>
-      <span class="leaderboard-name">${escapeHtml(row.nickname)}</span>
-      <span class="leaderboard-score">${row.score}</span>
-    </div>
-  `).join('');
+  const myNickname = auth ? auth.getNickname() : null;
+  els.leaderboardList.innerHTML = buildLeaderboardRows(rows, me, myNickname, n => 'LV.' + n);
+}
+
+// Righe della classifica con la regola condivisa del sito: se ne vedono 6 per
+// volta e, quando chi guarda è fuori dalle prime 5, la sua riga viene infilata
+// come 6ª (evidenziata) così si vede subito senza scorrere. Scorrendo, quella
+// riga scorre via e la lista prosegue normale (6°, 7°, ...).
+function buildLeaderboardRows(rows, me, myNickname, formatScore) {
+  const row = (pos, nickname, score, isMe) => `
+    <div class="leaderboard-row${isMe ? ' is-me' : ''}">
+      <span class="leaderboard-rank">N.${pos}</span>
+      <span class="leaderboard-name">${escapeHtml(nickname)}</span>
+      <span class="leaderboard-score">${formatScore(score)}</span>
+    </div>`;
+  const html = rows.map((r, i) => row(i + 1, r.nickname, r.score, myNickname && r.nickname === myNickname));
+  if (me && me.rank > 5 && myNickname) {
+    html.splice(5, 0, row(me.rank, myNickname, me.score, true));
+  }
+  return html.join('');
 }
 function closeLeaderboard() {
   els.leaderboardOverlay.classList.remove('show');
@@ -743,35 +790,77 @@ function escapeHtml(s) {
 }
 
 // ---------- Persistenza progresso (localStorage + cloud se loggato) ----------
-function saveBoingProgress() {
-  if (!(window.FFR && window.FFR.auth)) return;
-  if (state.difficulty == null) return;
-  state.bestScore = Math.max(state.bestScore, state.score);
-  window.FFR.auth.saveProgress('boing', {
-    difficulty: state.difficulty,
+// Una partita per difficoltà, tutte dentro la stessa riga 'boing'. La classifica
+// invece vuole un punteggio separato per difficoltà, quindi ognuna ha anche la
+// sua voce 'boing:<difficoltà>' (vedi saveScore in shared/auth.js).
+function snapshotCurrentRun() {
+  return {
     level: state.level,
     lives: state.lives,
     score: state.score,
     bestScore: state.bestScore,
-  }, state.bestScore);
+    bestLevel: state.bestLevel,
+  };
+}
+function saveBoingProgress() {
+  if (!(window.FFR && window.FFR.auth)) return;
+  if (state.difficulty == null) return;
+  state.bestScore = Math.max(state.bestScore, state.score);
+  state.bestLevel = Math.max(state.bestLevel || 1, state.level);
+  state.byDifficulty[state.difficulty] = snapshotCurrentRun();
+  window.FFR.auth.saveProgress('boing', {
+    current: state.difficulty,
+    byDifficulty: state.byDifficulty,
+  }, state.bestLevel);
+  // voce di classifica della difficoltà in corso: si gareggia sul livello
+  // raggiunto, non sui punti (a parità di bravura una difficoltà più facile
+  // farebbe più punti, quindi i punti non sono confrontabili fra difficoltà)
+  window.FFR.auth.saveScore('boing:' + state.difficulty, state.bestLevel);
 }
 async function loadBoingProgress() {
   if (!(window.FFR && window.FFR.auth)) return null;
   if (window.FFR.auth.ready) await window.FFR.auth.ready;
-  return window.FFR.auth.loadProgress('boing');
+  const saved = await window.FFR.auth.loadProgress('boing');
+  return normalizeSaved(saved);
 }
-function resumeFromSaved(saved) {
-  state.difficulty = saved.difficulty;
-  state.level = saved.level || 1;
-  state.lives = saved.lives != null ? saved.lives : MAX_LIVES;
-  state.score = saved.score || 0;
-  state.bestScore = saved.bestScore || state.score;
-  state.paddle.width = DIFFICULTIES[state.difficulty].paddleWidth;
+// Converte il vecchio formato (una sola partita: {difficulty, level, lives,
+// score, bestScore}) in quello nuovo, così chi giocava già non perde niente
+// — vedi la regola "i progressi devono sopravvivere agli aggiornamenti".
+function normalizeSaved(saved) {
+  if (!saved) return null;
+  if (saved.byDifficulty && saved.current) return saved; // già nel formato nuovo
+  if (!saved.difficulty) return null;
+  return {
+    current: saved.difficulty,
+    byDifficulty: {
+      [saved.difficulty]: {
+        level: saved.level || 1,
+        lives: saved.lives != null ? saved.lives : MAX_LIVES,
+        score: saved.score || 0,
+        bestScore: saved.bestScore || saved.score || 0,
+        bestLevel: saved.level || 1,
+      },
+    },
+  };
+}
+function applyRun(difficultyKey, run) {
+  state.difficulty = difficultyKey;
+  state.level = run.level || 1;
+  state.lives = run.lives != null ? run.lives : MAX_LIVES;
+  state.score = run.score || 0;
+  state.bestScore = run.bestScore || state.score;
+  state.bestLevel = run.bestLevel || state.level;
+  state.paddle.width = DIFFICULTIES[difficultyKey].paddleWidth;
   state.wideUntil = 0;
   state.slowUntil = 0;
   startLevel(state.level);
   els.difficultyOverlay.classList.remove('show');
   state.paused = false;
+}
+function resumeFromSaved(saved) {
+  state.byDifficulty = saved.byDifficulty || {};
+  const key = saved.current;
+  applyRun(key, state.byDifficulty[key] || {});
 }
 
 // ---------- Init ----------
@@ -833,6 +922,13 @@ async function init() {
 
   els.openLeaderboardBtn.addEventListener('click', openLeaderboard);
   els.closeLeaderboardBtn.addEventListener('click', closeLeaderboard);
+  els.leaderboardTabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('.lb-tab');
+    if (!btn) return;
+    leaderboardDifficulty = btn.dataset.difficulty;
+    renderLeaderboardTabs();
+    loadLeaderboardFor(leaderboardDifficulty);
+  });
   els.leaderboardOverlay.addEventListener('click', (e) => {
     if (e.target === els.leaderboardOverlay) closeLeaderboard();
   });
@@ -850,11 +946,14 @@ async function init() {
   // già un account con progressi nel cloud. Caricandolo solo nel ramo "else"
   // (com'era prima) quel giocatore ripartiva da zero: il progresso non veniva
   // proprio richiesto, e dopo il tutorial si finiva sulla scelta difficoltà.
+  // NB: si controlla `current`, non più `difficulty` — loadBoingProgress()
+  // restituisce il formato nuovo (una partita per difficoltà) anche quando
+  // sul cloud c'è ancora quello vecchio, che viene convertito al volo
   const saved = await loadBoingProgress();
   if (!tutorialSeen) {
-    pendingResume = (saved && saved.difficulty) ? saved : null;
+    pendingResume = (saved && saved.current) ? saved : null;
     els.tutorialOverlay.classList.add('show');
-  } else if (saved && saved.difficulty) {
+  } else if (saved && saved.current) {
     resumeFromSaved(saved);
   } else {
     els.difficultyOverlay.classList.add('show');

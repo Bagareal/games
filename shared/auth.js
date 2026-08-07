@@ -319,6 +319,43 @@
     } catch (e) { console.error('[FFR] loadProgress(' + game + ') fallito (rete/offline):', e); return local; }
   }
 
+  // Voce di classifica "pura": stessa tabella dei progressi ma su una chiave
+  // dedicata (es. 'boing:easy', 'wordio:en'), con il solo punteggio e nessun
+  // dato di gioco dentro. Serve perché una classifica per difficoltà/lingua ha
+  // bisogno di un punteggio separato per ognuna, mentre il progresso vero resta
+  // in un'unica riga per gioco (in Wordio monete e aiuti sono condivisi fra le
+  // lingue: spezzare quella riga li manderebbe in conflitto).
+  // A differenza di saveProgress non tocca localStorage: è roba solo di cloud,
+  // non un salvataggio da recuperare offline.
+  async function saveScore(game, score) {
+    if (!currentUser || score == null) return;
+    try {
+      const client = await getClient();
+      const { error } = await client.from('game_progress').upsert(
+        { user_id: currentUser.id, game, data: {}, score, updated_at: new Date().toISOString() },
+        { onConflict: 'user_id,game' }
+      );
+      if (error) console.error('[FFR] saveScore(' + game + ') fallito:', error);
+    } catch (e) { console.error('[FFR] saveScore(' + game + ') fallito (rete/offline):', e); }
+  }
+
+  // Posizione in classifica dell'utente loggato, anche quando è fuori dalle
+  // prime righe scaricate. Non si può calcolare lato client: le regole di
+  // sicurezza (RLS) lasciano leggere solo le PROPRIE righe di game_progress,
+  // quindi contare quanti hanno fatto meglio richiede una funzione SQL
+  // SECURITY DEFINER (get_my_rank, vedi supabase/migrations/0003_*).
+  // Restituisce null se non loggato o se non ha ancora un punteggio.
+  async function getMyRank(game) {
+    if (!currentUser) return null;
+    try {
+      const client = await getClient();
+      const { data, error } = await client.rpc('get_my_rank', { p_game: game });
+      if (error) { console.error('[FFR] getMyRank(' + game + ') fallita:', error); return null; }
+      const row = Array.isArray(data) ? data[0] : data;
+      return (row && row.rank != null) ? { rank: row.rank, score: row.score } : null;
+    } catch (e) { console.error('[FFR] getMyRank(' + game + ') fallita (rete/offline):', e); return null; }
+  }
+
   async function getLeaderboard(game, limit) {
     try {
       const client = await getClient();
@@ -790,7 +827,9 @@
     ready: sessionReady,
     saveProgress,
     loadProgress,
+    saveScore,
     getLeaderboard,
+    getMyRank,
     openAccountPanel,
     openLoginModal,
     refreshLabel: updateAccountLabel, // da richiamare quando la pagina cambia lingua (l'icona account non lo sa da sola)

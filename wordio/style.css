@@ -556,13 +556,23 @@
   .tutorial-row p{ margin:0; font-size:12.5px; line-height:1.4; color:var(--navy-text); font-weight:600; }
 
   /* classifica */
-  .leaderboard-list{ display:flex; flex-direction:column; gap:8px; margin: 4px 0 16px; max-height:50vh; overflow-y:auto; }
+  /* regola condivisa del sito: se ne vedono 6 per volta, il resto scorrendo.
+     6 righe da ~42px + 5 spazi da 8px = 292px */
+  .leaderboard-list{ display:flex; flex-direction:column; gap:8px; margin: 4px 0 16px; max-height:292px; overflow-y:auto; }
   .leaderboard-row{
     display:flex; align-items:center; gap:10px;
     background:white; border-radius:12px; padding:9px 14px;
     box-shadow: 0 3px 0 #E2D2A5;
     font-family:'Baloo 2', sans-serif; font-weight:700; font-size:14px; color:var(--navy-text);
+    flex: 0 0 auto;
   }
+  /* la riga di chi sta guardando, per ritrovarsi a colpo d'occhio */
+  .leaderboard-row.is-me{
+    background: linear-gradient(180deg, #FFF6DF, #FFE9B8);
+    box-shadow: 0 3px 0 var(--gold);
+    color: #7A4A00;
+  }
+  .leaderboard-row.is-me .leaderboard-rank{ color: #B07A00; }
   /* larghezza pensata per "N.20": i 24px di prima bastavano solo al numero nudo */
   .leaderboard-rank{ flex:0 0 auto; min-width:42px; text-align:left; color:#8A7A55; }
   .leaderboard-name{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
