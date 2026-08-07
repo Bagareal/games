@@ -4,10 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Free For Real</title>
-<!-- icona del sito: è lo stesso joystick che sta sopra al titolo qui in home.
-     Il .ico serve ai browser vecchi (e a chi chiede /favicon.ico da solo), i PNG
-     ai browser moderni, apple-touch-icon a "Aggiungi a schermata Home" su iOS. -->
+<!-- icona del sito: è lo stesso joystick che sta sopra al titolo qui in home,
+     disegnato in SVG e tutti generati da quello, su fondo trasparente.
+     Il .svg lo usano i browser moderni, il .ico quelli vecchi (e chi chiede
+     /favicon.ico da solo), i PNG stanno in mezzo. L'apple-touch-icon è l'unico
+     con lo sfondo, bianco: iOS il trasparente lo riempie di nero. -->
 <link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="icons/joystick.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -80,6 +83,7 @@
     display:flex; align-items:center; justify-content:center;
     font-size:11px; line-height:1;
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    overflow:hidden;
   }
 
   header{ text-align:center; margin: 4px 0 26px; }
@@ -142,6 +146,9 @@
     box-shadow: 0 4px 0 rgba(0,0,0,0.2);
   }
   .game-icon.wordio{ background: radial-gradient(circle at 32% 28%, #4FC3D9, #0B4F6C); }
+  /* la ruota di lettere di Wordio è già un disco: riempie la tessera invece di
+     restare un dischetto dentro un altro disco */
+  .game-icon.wordio .ffr-ico{ width:46px; height:46px; }
   .game-icon.blokko{ background: radial-gradient(circle at 32% 28%, #3B1080, #10032E); }
   /* colonnine al neon: richiamano la palette di Blokko senza disegnare un pezzo */
   .blokko-icon{ display:flex; align-items:flex-end; gap:3px; height:26px; }
@@ -303,21 +310,21 @@
   <div id="page">
     <div class="topbar">
       <span class="icon-btn-wrap">
-        <button class="icon-btn" id="langBtn" aria-label="Language">🌍</button>
-        <span class="lang-badge" id="langBadge">🇮🇹</span>
+        <button class="icon-btn" id="langBtn" aria-label="Language"><span class="ffr-ico" data-ico="languages"></span></button>
+        <span class="lang-badge" id="langBadge"></span>
       </span>
     </div>
 
     <header>
-      <div class="logo">🕹️</div>
+      <div class="logo"><span class="ffr-ico" data-ico="joystick"></span></div>
       <h1>Free For Real</h1>
       <p data-i18n="tagline">Giochi gratis. Per davvero.</p>
-      <p class="offline-note" data-i18n="offlineNote">📶 Si può giocare anche senza internet: basta aver aperto il gioco una volta con la connessione.</p>
+      <p class="offline-note" data-i18n="offlineNote">Si può giocare anche senza internet: basta aver aperto il gioco una volta con la connessione.</p>
     </header>
 
     <div class="games">
       <a class="game-card" href="wordio/">
-        <div class="game-icon wordio">🔤</div>
+        <div class="game-icon wordio"><span class="ffr-ico" data-ico="wordio"></span></div>
         <div class="game-info">
           <h2>Wordio</h2>
           <p data-i18n="wordioDesc">Componi tutte le parole usando le lettere sulla ruota. Italiano, inglese, francese.</p>
@@ -377,24 +384,27 @@
 
   <div class="overlay" id="languageOverlay">
     <div class="card">
-      <h2 data-i18n="languageTitle">🌍 Lingua</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageTitle">Lingua</span></h2>
       <p data-i18n="languageSub">Scegli la lingua del sito</p>
       <div class="language-list" id="languageList"></div>
     </div>
   </div>
 
+<!-- le icone del sito. Va prima dello script qui sotto, che usa FFR.iconMarkup
+     per la bandierina già al primo disegno della pagina. -->
+<script src="shared/icons.js"></script>
 <script>
 // lingua condivisa con tutto il sito (home page + ogni gioco): cambiandola qui
 // o dentro un gioco, la scelta vale ovunque la prossima volta che si apre una pagina
 const LANGUAGES = {
-  it: { label: 'Italiano', flag: '🇮🇹' },
-  en: { label: 'English', flag: '🇬🇧' },
-  fr: { label: 'Français', flag: '🇫🇷' },
+  it: { label: 'Italiano', flag: 'flag-it' },
+  en: { label: 'English', flag: 'flag-en' },
+  fr: { label: 'Français', flag: 'flag-fr' },
 };
 const HOME_STRINGS = {
   it: {
     tagline: 'Giochi gratis. Per davvero.',
-    offlineNote: '📶 Si può giocare anche senza internet: basta aver aperto il gioco una volta con la connessione.',
+    offlineNote: 'Si può giocare anche senza internet: basta aver aperto il gioco una volta con la connessione.',
     wordioDesc: 'Componi tutte le parole usando le lettere sulla ruota. Italiano, inglese, francese.',
     blokkoDesc: 'Incastra i blocchi che cadono prima che si accumulino troppo.',
     boingDesc: 'Rompi tutti i mattoncini rimbalzando la pallina col paddle. 3 vite, potenziamenti e 3 livelli di difficoltà.',
@@ -404,13 +414,13 @@ const HOME_STRINGS = {
     comingSoon: 'In arrivo',
     footer: 'Niente pubblicità · Niente pagamenti — mai. Account facoltativo, solo nickname+password.',
     contactLine: 'Un problema? Un bug? Vuoi un gioco nuovo? Scrivi a',
-    languageTitle: '🌍 Lingua',
+    languageTitle: 'Lingua',
     languageSub: 'Scegli la lingua del sito',
     repoLink: 'Vedi il codice sorgente',
   },
   en: {
     tagline: 'Free games. For real.',
-    offlineNote: '📶 You can play offline too: just open the game once while you are online.',
+    offlineNote: 'You can play offline too: just open the game once while you are online.',
     wordioDesc: 'Spell out every word using the letters on a wheel. Italian, English, French.',
     blokkoDesc: 'Clear the falling blocks before they stack up.',
     boingDesc: 'Bounce the ball off your paddle to clear every brick. 3 lives, power-ups, and 3 difficulty levels.',
@@ -420,13 +430,13 @@ const HOME_STRINGS = {
     comingSoon: 'Coming soon',
     footer: 'No ads · No payments — ever. Account optional, just nickname+password.',
     contactLine: 'A problem? A bug? Want a new game? Write to',
-    languageTitle: '🌍 Language',
+    languageTitle: 'Language',
     languageSub: 'Choose the site language',
     repoLink: 'See repo here',
   },
   fr: {
     tagline: 'Jeux gratuits. Pour de vrai.',
-    offlineNote: "📶 Tu peux aussi jouer hors ligne : il suffit d'avoir ouvert le jeu une fois avec la connexion.",
+    offlineNote: "Tu peux aussi jouer hors ligne : il suffit d'avoir ouvert le jeu une fois avec la connexion.",
     wordioDesc: "Compose tous les mots avec les lettres sur la roue. Italien, anglais, français.",
     blokkoDesc: "Range les blocs qui tombent avant qu'ils ne s'accumulent.",
     boingDesc: 'Casse toutes les briques en faisant rebondir la balle sur ta raquette. 3 vies, bonus et 3 niveaux de difficulté.',
@@ -436,7 +446,7 @@ const HOME_STRINGS = {
     comingSoon: 'Bientôt',
     footer: 'Pas de pubs · Jamais de paiement. Compte facultatif, juste pseudo+mot de passe.',
     contactLine: "Un problème ? Un bug ? Envie d'un nouveau jeu ? Écris à",
-    languageTitle: '🌍 Langue',
+    languageTitle: 'Langue',
     languageSub: 'Choisis la langue du site',
     repoLink: 'Voir le code source',
   },
@@ -458,16 +468,17 @@ function applyTranslations() {
     const val = t()[el.dataset.i18n];
     if (typeof val === 'string') el.textContent = val;
   });
-  els.langBadge.textContent = LANGUAGES[language].flag;
+  window.FFR.setIcon(els.langBadge, LANGUAGES[language].flag);
 }
 
 function renderLanguageList() {
   els.languageList.innerHTML = Object.entries(LANGUAGES).map(([code, info]) => `
     <button class="language-option${code === language ? ' active' : ''}" data-lang="${code}">
-      <span class="language-flag">${info.flag}</span>
+      <span class="ffr-ico language-flag" data-ico="${info.flag}"></span>
       <span class="language-name">${info.label}</span>
     </button>
   `).join('');
+  window.FFR.icons(els.languageList);
 }
 function openLanguageModal() {
   renderLanguageList();

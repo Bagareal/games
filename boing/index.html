@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Boing</title>
 <link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../icons/joystick.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16.png">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
@@ -50,9 +51,9 @@
 
   <div class="topbar">
     <div class="icon-group">
-      <a class="icon-btn" href="../" aria-label="Home">⬅️</a>
-      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
-      <button class="icon-btn" id="pauseBtn" aria-label="Pausa">⏸️</button>
+      <a class="icon-btn" href="../" aria-label="Home"><span class="ffr-ico" data-ico="back"></span></a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni"><span class="ffr-ico" data-ico="gear"></span></button>
+      <button class="icon-btn" id="pauseBtn" aria-label="Pausa"><span class="ffr-ico" data-ico="pause"></span></button>
     </div>
     <div class="level-display"><span class="lv-label">LV.</span><span id="levelValue">1</span></div>
     <canvas class="lives" id="livesCanvas" width="24" height="6"></canvas>
@@ -87,9 +88,9 @@
   <!-- pausa: riprendi / cambio difficoltà / reset livello -->
   <div class="overlay" id="pauseOverlay">
     <div class="card">
-      <div class="crown-icon">⏸️</div>
+      <div class="crown-icon"><span class="ffr-ico" data-ico="pause"></span></div>
       <h2 data-i18n="paused">Pausa</h2>
-      <button class="primary-btn" id="resumeBtn" data-i18n="resume">Riprendi ▶</button>
+      <button class="primary-btn" id="resumeBtn"><span data-i18n="resume">Riprendi</span><span class="ffr-ico ffr-ico-trail" data-ico="play"></span></button>
 
       <p class="menu-section-label" data-i18n="difficultyLabel">Difficoltà</p>
       <div class="difficulty-list">
@@ -106,11 +107,11 @@
   <!-- impostazioni: lingua / comandi -->
   <div class="overlay" id="settingsOverlay">
     <div class="card">
-      <h2 data-i18n="settingsTitle">⚙️ Impostazioni</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="gear"></span><span data-i18n="settingsTitle">Impostazioni</span></h2>
       <div class="menu-list">
-        <button class="menu-row" id="openLanguageBtn">🌍 <span data-i18n="languageMenuLabel">Lingua</span></button>
-        <button class="menu-row" id="openTutorialBtn">❓ <span data-i18n="commands">Istruzioni</span></button>
-        <button class="menu-row" id="openLeaderboardBtn">🏆 <span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+        <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openTutorialBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>
       </div>
       <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
     </div>
@@ -120,11 +121,11 @@
     <div class="card tutorial-card">
       <h2 data-i18n="tutorialTitle">Come si gioca</h2>
       <div class="tutorial-row">
-        <span class="tutorial-icon">↔️</span>
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="arrow-lr"></span></span>
         <p data-i18n="tutorialMove">Sposta il paddle: trascina il dito o muovi il mouse sull'area di gioco</p>
       </div>
       <div class="tutorial-row">
-        <span class="tutorial-icon">👆</span>
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="touch"></span></span>
         <p data-i18n="tutorialLaunch">Tocca per lanciare la pallina</p>
       </div>
       <div class="tutorial-row">
@@ -143,16 +144,15 @@
 
   <div class="overlay" id="levelCompleteOverlay" data-no-x>
     <div class="card">
-      <div class="crown-icon">🏆</div>
+      <div class="crown-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
       <h2 data-i18n="levelComplete">Livello Completato!</h2>
       <p id="levelCompleteSub"></p>
-      <button class="primary-btn" id="nextLevelBtn" data-i18n="continueBtn">Continua →</button>
+      <button class="primary-btn" id="nextLevelBtn"><span data-i18n="continueBtn">Continua</span><span class="ffr-ico ffr-ico-trail" data-ico="arrow-right"></span></button>
     </div>
   </div>
 
   <div class="overlay" id="gameOverOverlay">
     <div class="card">
-      <div class="crown-icon">💥</div>
       <h2 data-i18n="gameOver">Game Over</h2>
       <p id="gameOverSub"></p>
       <button class="primary-btn" id="retryBtn" data-i18n="playAgain">Rigioca</button>
@@ -161,7 +161,7 @@
 
   <div class="overlay" id="languageOverlay">
     <div class="card">
-      <h2 data-i18n="languageTitle">🌍 Lingua</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageTitle">Lingua</span></h2>
       <p data-i18n="languageSub">Scegli la lingua dell'interfaccia</p>
       <div class="language-list" id="languageList"></div>
       <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
@@ -170,7 +170,7 @@
 
   <div class="overlay" id="leaderboardOverlay">
     <div class="card">
-      <div class="crown-icon">🏆</div>
+      <div class="crown-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
       <h2 data-i18n="leaderboardTitle">Classifica</h2>
       <div class="lb-tabs" id="leaderboardTabs">
         <button class="lb-tab" data-difficulty="easy" data-i18n="easy">Facile</button>
@@ -184,6 +184,7 @@
 
 </div>
 
+<script src="../shared/icons.js"></script>
 <script>window.FFR_AUTH_HEADLESS = true;</script>
 <script src="../shared/auth.js"></script>
 <script src="script.js"></script>

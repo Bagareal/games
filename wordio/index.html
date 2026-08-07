@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Wordio</title>
 <link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../icons/joystick.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16.png">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
@@ -19,8 +20,7 @@
 <div id="app">
 
   <div id="loadingScreen">
-    <div class="emoji">🏝️</div>
-    <div style="font-size:22px; font-weight:800;">Wordio</div>
+        <div style="font-size:22px; font-weight:800;">Wordio</div>
     <div class="spinner"></div>
   </div>
 
@@ -90,14 +90,14 @@
 
   <div class="topbar">
     <div class="icon-group">
-      <a class="icon-btn" href="../" aria-label="Home">⬅️</a>
+      <a class="icon-btn" href="../" aria-label="Home"><span class="ffr-ico" data-ico="back"></span></a>
       <span class="icon-btn-wrap">
-        <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
-        <span class="lang-badge" id="langBadge">🇮🇹</span>
+        <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni"><span class="ffr-ico" data-ico="gear"></span></button>
+        <span class="lang-badge" id="langBadge"></span>
       </span>
     </div>
     <div class="level-display"><span class="lv-label">LV.</span><span id="levelLabel">1</span></div>
-    <button class="pill" id="coinBtn"><span class="icon-badge coin-badge">🪙</span><span id="coinLabel">0</span></button>
+    <button class="pill" id="coinBtn"><span class="icon-badge coin-badge"><span class="ffr-ico" data-ico="coin"></span></span><span id="coinLabel">0</span></button>
   </div>
 
   <div class="title-wrap">
@@ -115,18 +115,18 @@
   </div>
 
   <div class="info-row">
-    <button class="extra-counter" id="extraCounterBtn">✨ <span data-i18n="extraFound">Extra trovate</span>: <span id="extraCount">0</span></button>
+    <button class="extra-counter" id="extraCounterBtn"><span data-i18n="extraFound">Extra trovate</span>: <span id="extraCount">0</span></button>
   </div>
 
   <div class="wheel-zone">
-    <button class="side-btn" id="shuffleBtn"><span class="circle">🔀</span><span data-i18n="shuffle">Mescola</span></button>
+    <button class="side-btn" id="shuffleBtn"><span class="circle"><span class="ffr-ico" data-ico="shuffle"></span></span><span data-i18n="shuffle">Mescola</span></button>
     <div id="wheelContainer">
       <svg id="wheelSvgLayer"></svg>
       <div class="life-ring"></div>
     </div>
     <button class="side-btn" id="hintBtn">
       <span class="circle-wrap">
-        <span class="circle">💡</span>
+        <span class="circle"><span class="ffr-ico" data-ico="bulb"></span></span>
         <span class="hint-badge" id="hintBadge">0</span>
       </span>
       <span data-i18n="hint">Aiuto</span>
@@ -137,20 +137,20 @@
 
   <div class="overlay" id="winOverlay" data-no-x>
     <div class="card">
-      <div class="crown-icon">👑</div>
+      <div class="crown-icon"><span class="ffr-ico" data-ico="crown"></span></div>
       <h2 data-i18n="levelComplete">Livello Completato!</h2>
       <p id="winSub" data-i18n="levelCompleteSub">Ottimo lavoro, isolano!</p>
       <div class="stat-row">
         <div class="stat"><span id="winCoins">+0</span><span data-i18n="coinsLabel">monete</span></div>
         <div class="stat"><span id="winExtra">+0</span><span data-i18n="extraLabel">extra</span></div>
       </div>
-      <button class="primary-btn" id="nextLevelBtn" data-i18n="continueBtn">Continua →</button>
+      <button class="primary-btn" id="nextLevelBtn"><span data-i18n="continueBtn">Continua</span><span class="ffr-ico ffr-ico-trail" data-ico="arrow-right"></span></button>
     </div>
   </div>
 
   <div class="overlay" id="extraModalOverlay">
     <div class="card">
-      <h2 data-i18n="extraWordsTitle">✨ Parole Extra</h2>
+      <h2 data-i18n="extraWordsTitle">Parole Extra</h2>
       <p data-i18n="extraWordsSub">Le parole bonus trovate in questo livello</p>
       <div id="extraWordsGrid" class="extra-words-grid"></div>
       <button class="primary-btn" id="closeExtraModalBtn" data-i18n="close">Chiudi</button>
@@ -159,28 +159,28 @@
 
   <div class="overlay" id="shopOverlay">
     <div class="card">
-      <h2 data-i18n="shopTitle">🪙 Negozio Aiuti</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="coin"></span><span data-i18n="shopTitle">Negozio Aiuti</span></h2>
       <p data-i18n="shopSub">Scambia le monete con aiuti</p>
-      <div class="shop-balance"><span data-i18n="yourBalance">Il tuo saldo</span>: 🪙 <span id="shopBalance">0</span></div>
+      <div class="shop-balance"><span data-i18n="yourBalance">Il tuo saldo</span>: <span class="ffr-ico" data-ico="coin"></span> <span id="shopBalance">0</span></div>
       <div class="shop-packages">
         <div class="shop-package" data-coins="50" data-hints="1">
           <div class="shop-package-info">
-            <div class="shop-package-hints">💡 x1</div>
-            <div class="shop-package-cost">🪙 50</div>
+            <div class="shop-package-hints"><span class="ffr-ico" data-ico="bulb"></span> x1</div>
+            <div class="shop-package-cost"><span class="ffr-ico" data-ico="coin"></span> 50</div>
           </div>
           <button class="shop-buy-btn" data-i18n="buy">Compra</button>
         </div>
         <div class="shop-package" data-coins="100" data-hints="3">
           <div class="shop-package-info">
-            <div class="shop-package-hints">💡 x3</div>
-            <div class="shop-package-cost">🪙 100</div>
+            <div class="shop-package-hints"><span class="ffr-ico" data-ico="bulb"></span> x3</div>
+            <div class="shop-package-cost"><span class="ffr-ico" data-ico="coin"></span> 100</div>
           </div>
           <button class="shop-buy-btn" data-i18n="buy">Compra</button>
         </div>
         <div class="shop-package" data-coins="200" data-hints="8">
           <div class="shop-package-info">
-            <div class="shop-package-hints">💡 x8</div>
-            <div class="shop-package-cost">🪙 200</div>
+            <div class="shop-package-hints"><span class="ffr-ico" data-ico="bulb"></span> x8</div>
+            <div class="shop-package-cost"><span class="ffr-ico" data-ico="coin"></span> 200</div>
           </div>
           <button class="shop-buy-btn" data-i18n="buy">Compra</button>
         </div>
@@ -191,7 +191,7 @@
 
   <div class="overlay" id="confirmPurchaseOverlay">
     <div class="card">
-      <div class="crown-icon">💡</div>
+      <div class="crown-icon"><span class="ffr-ico" data-ico="bulb"></span></div>
       <h2 data-i18n="confirmPurchaseTitle">Confermi l'acquisto?</h2>
       <p class="confirm-text" id="confirmPurchaseText"></p>
       <div class="confirm-btn-row">
@@ -203,11 +203,11 @@
 
   <div class="overlay" id="settingsOverlay">
     <div class="card">
-      <h2 data-i18n="settingsTitle">⚙️ Impostazioni</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="gear"></span><span data-i18n="settingsTitle">Impostazioni</span></h2>
       <div class="menu-list">
-        <button class="menu-row" id="openLanguageBtn">🌍 <span data-i18n="languageMenuLabel">Lingua</span></button>
-        <button class="menu-row" id="openTutorialBtn">❓ <span data-i18n="commands">Istruzioni</span></button>
-        <button class="menu-row" id="openLeaderboardBtn">🏆 <span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+        <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openTutorialBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>
       </div>
       <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
     </div>
@@ -217,19 +217,19 @@
     <div class="card tutorial-card">
       <h2 data-i18n="tutorialTitle">Come si gioca</h2>
       <div class="tutorial-row">
-        <span class="tutorial-icon">👆</span>
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="touch"></span></span>
         <p data-i18n="tutorialCompose">Tocca le lettere sulla ruota (o trascina da una all'altra) per comporre una parola</p>
       </div>
       <div class="tutorial-row">
-        <span class="tutorial-icon">✅</span>
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="ok"></span></span>
         <p data-i18n="tutorialTargets">Trova tutte le parole del livello per completarlo; le parole extra danno monete e sbloccano aiuti</p>
       </div>
       <div class="tutorial-row">
-        <span class="tutorial-icon">🔀</span>
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="shuffle"></span></span>
         <p data-i18n="tutorialShuffle">Mescola: cambia la disposizione delle lettere sulla ruota</p>
       </div>
       <div class="tutorial-row">
-        <span class="tutorial-icon">💡</span>
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="bulb"></span></span>
         <p data-i18n="tutorialHint">Aiuto: rivela una lettera di una parola non ancora trovata</p>
       </div>
       <button class="primary-btn" id="closeTutorialBtn" data-i18n="gotIt">Ho capito!</button>
@@ -238,7 +238,7 @@
 
   <div class="overlay" id="leaderboardOverlay">
     <div class="card">
-      <div class="crown-icon">🏆</div>
+      <div class="crown-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
       <h2 data-i18n="leaderboardTitle">Classifica</h2>
       <div class="leaderboard-list" id="leaderboardList"></div>
       <button class="secondary-btn" id="closeLeaderboardBtn" data-i18n="close">Chiudi</button>
@@ -247,7 +247,7 @@
 
   <div class="overlay" id="languageOverlay">
     <div class="card">
-      <h2 data-i18n="languageTitle">🌍 Lingua</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageTitle">Lingua</span></h2>
       <p data-i18n="languageSub">Scegli la lingua delle parole</p>
       <div class="language-list" id="languageList"></div>
       <p class="language-note" data-i18n="languageOnlyHere">Vale solo per Wordio: la lingua del resto del sito non cambia.</p>
@@ -257,7 +257,7 @@
 
   <div class="overlay" id="languageConfirmOverlay">
     <div class="card">
-      <div class="crown-icon">🌍</div>
+      <div class="crown-icon"><span class="ffr-ico" data-ico="languages"></span></div>
       <h2 data-i18n="languageChangeTitle">Cambiare lingua?</h2>
       <p class="confirm-text" id="languageConfirmText"></p>
       <div class="confirm-btn-row">
@@ -269,6 +269,7 @@
 
 </div>
 
+<script src="../shared/icons.js"></script>
 <script>window.FFR_AUTH_HEADLESS = true;</script>
 <script src="../shared/auth.js"></script>
 <script src="script.js"></script>

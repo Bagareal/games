@@ -5,9 +5,9 @@
 
 // ---------- Lingua condivisa con tutto il sito ----------
 const LANGUAGES = {
-  it: { label: 'Italiano', flag: '🇮🇹' },
-  en: { label: 'English', flag: '🇬🇧' },
-  fr: { label: 'Français', flag: '🇫🇷' },
+  it: { label: 'Italiano', flag: 'flag-it' },
+  en: { label: 'English', flag: 'flag-en' },
+  fr: { label: 'Français', flag: 'flag-fr' },
 };
 const SITE_LANGUAGE_KEY = 'ffr-language';
 
@@ -26,16 +26,16 @@ const UI_STRINGS = {
     gameOverBest: best => `Record: ${best}`,
     playAgain: 'Rigioca',
     paused: 'Pausa',
-    resume: 'Riprendi ▶',
+    resume: 'Riprendi',
     restart: 'Ricomincia',
     difficultyLabel: 'Difficoltà',
-    settingsTitle: '⚙️ Impostazioni',
+    settingsTitle: 'Impostazioni',
     languageMenuLabel: 'Lingua',
     commands: 'Istruzioni',
     leaderboardMenuLabel: 'Classifica',
     leaderboardTitle: 'Classifica',
     leaderboardEmpty: 'Nessun punteggio ancora: gioca da loggato per essere il primo!',
-    languageTitle: '🌍 Lingua',
+    languageTitle: 'Lingua',
     languageSub: "Scegli la lingua dell'interfaccia",
     close: 'Chiudi',
     tutorialTitle: 'Come si gioca',
@@ -44,7 +44,12 @@ const UI_STRINGS = {
     tutorialHold: 'Tieni premuto per farlo scendere veloce',
     tutorialDrop: 'Scorri verso il basso per farlo cadere di colpo',
     tutorialLines: 'Riempi una riga intera e sparisce. Quattro righe in un colpo solo = BLOKKO!',
-    tutorialKeys: 'Da computer: ← → per muovere, ↑ per ruotare, ↓ per scendere, spazio per la caduta immediata',
+    tutorialKeys: 'Da computer, con la tastiera:',
+    keyMove: 'per muovere',
+    keyRotate: 'per ruotare',
+    keyDown: 'per scendere',
+    keySpace: 'spazio',
+    keySlam: 'per la caduta immediata',
     gotIt: 'Ho capito!',
     levelUp: n => `LIVELLO ${n}`,
     comboToast: n => `COMBO ×${n}`,
@@ -63,16 +68,16 @@ const UI_STRINGS = {
     gameOverBest: best => `Best: ${best}`,
     playAgain: 'Play again',
     paused: 'Paused',
-    resume: 'Resume ▶',
+    resume: 'Resume',
     restart: 'Restart',
     difficultyLabel: 'Difficulty',
-    settingsTitle: '⚙️ Settings',
+    settingsTitle: 'Settings',
     languageMenuLabel: 'Language',
     commands: 'Instructions',
     leaderboardMenuLabel: 'Leaderboard',
     leaderboardTitle: 'Leaderboard',
     leaderboardEmpty: 'No scores yet: play while signed in to be the first!',
-    languageTitle: '🌍 Language',
+    languageTitle: 'Language',
     languageSub: 'Choose the interface language',
     close: 'Close',
     tutorialTitle: 'How to play',
@@ -81,7 +86,12 @@ const UI_STRINGS = {
     tutorialHold: 'Press and hold to make it drop fast',
     tutorialDrop: 'Swipe down to slam it into place',
     tutorialLines: 'Fill a whole row and it disappears. Four rows at once = BLOKKO!',
-    tutorialKeys: 'On a computer: ← → to move, ↑ to rotate, ↓ to drop faster, space to slam',
+    tutorialKeys: 'On a computer, with the keyboard:',
+    keyMove: 'to move',
+    keyRotate: 'to rotate',
+    keyDown: 'to drop faster',
+    keySpace: 'space',
+    keySlam: 'to slam',
     gotIt: 'Got it!',
     levelUp: n => `LEVEL ${n}`,
     comboToast: n => `COMBO ×${n}`,
@@ -100,16 +110,16 @@ const UI_STRINGS = {
     gameOverBest: best => `Record : ${best}`,
     playAgain: 'Rejouer',
     paused: 'Pause',
-    resume: 'Reprendre ▶',
+    resume: 'Reprendre',
     restart: 'Recommencer',
     difficultyLabel: 'Difficulté',
-    settingsTitle: '⚙️ Paramètres',
+    settingsTitle: 'Paramètres',
     languageMenuLabel: 'Langue',
     commands: 'Instructions',
     leaderboardMenuLabel: 'Classement',
     leaderboardTitle: 'Classement',
     leaderboardEmpty: "Aucun score pour l'instant : joue connecté pour être le premier !",
-    languageTitle: '🌍 Langue',
+    languageTitle: 'Langue',
     languageSub: "Choisis la langue de l'interface",
     close: 'Fermer',
     tutorialTitle: 'Comment jouer',
@@ -118,7 +128,12 @@ const UI_STRINGS = {
     tutorialHold: 'Reste appuyé pour la faire descendre vite',
     tutorialDrop: 'Glisse vers le bas pour la faire tomber d\'un coup',
     tutorialLines: 'Remplis une ligne entière et elle disparaît. Quatre lignes d\'un coup = BLOKKO !',
-    tutorialKeys: 'Sur ordinateur : ← → pour déplacer, ↑ pour tourner, ↓ pour descendre, espace pour la chute immédiate',
+    tutorialKeys: 'Sur ordinateur, au clavier :',
+    keyMove: 'pour déplacer',
+    keyRotate: 'pour tourner',
+    keyDown: 'pour descendre',
+    keySpace: 'espace',
+    keySlam: 'pour la chute immédiate',
     gotIt: "C'est compris !",
     levelUp: n => `NIVEAU ${n}`,
     comboToast: n => `COMBO ×${n}`,
@@ -968,10 +983,11 @@ function releaseTouch() {
 function renderLanguageList() {
   els.languageList.innerHTML = Object.entries(LANGUAGES).map(([code, info]) => `
     <button class="language-option${code === language ? ' active' : ''}" data-lang="${code}">
-      <span class="language-flag">${info.flag}</span>
+      <span class="ffr-ico language-flag" data-ico="${info.flag}"></span>
       <span class="language-name">${info.label}</span>
     </button>
   `).join('');
+  window.FFR.icons(els.languageList);
 }
 function openLanguageModal() {
   els.settingsOverlay.classList.remove('show');

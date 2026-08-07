@@ -6,9 +6,9 @@
 
 // ---------- Lingua condivisa con tutto il sito ----------
 const LANGUAGES = {
-  it: { label: 'Italiano', flag: '🇮🇹' },
-  en: { label: 'English', flag: '🇬🇧' },
-  fr: { label: 'Français', flag: '🇫🇷' },
+  it: { label: 'Italiano', flag: 'flag-it' },
+  en: { label: 'English', flag: 'flag-en' },
+  fr: { label: 'Français', flag: 'flag-fr' },
 };
 const SITE_LANGUAGE_KEY = 'ffr-language';
 
@@ -19,10 +19,10 @@ const UI_STRINGS = {
     bestLabel: 'RECORD',
     undo: 'Annulla',
     newGame: 'Nuova partita',
-    settingsTitle: '⚙️ Impostazioni',
+    settingsTitle: 'Impostazioni',
     languageMenuLabel: 'Lingua',
     commands: 'Istruzioni',
-    languageTitle: '🌍 Lingua',
+    languageTitle: 'Lingua',
     languageSub: "Scegli la lingua dell'interfaccia",
     close: 'Chiudi',
     tutorialTitle: 'Come si gioca',
@@ -38,7 +38,7 @@ const UI_STRINGS = {
     gameOver: 'Niente più mosse',
     gameOverSub: (score, best) => `Punti: ${score}\nRecord: ${best}`,
     playAgain: 'Rigioca',
-    undoLastMove: "↺ Annulla l'ultima mossa",
+    undoLastMove: "Annulla l'ultima mossa",
     confirmNewTitle: 'Ricominciare?',
     confirmNewSub: 'La partita in corso viene persa, il record resta.',
     confirmYes: 'Sì, ricomincia',
@@ -50,10 +50,10 @@ const UI_STRINGS = {
     bestLabel: 'BEST',
     undo: 'Undo',
     newGame: 'New game',
-    settingsTitle: '⚙️ Settings',
+    settingsTitle: 'Settings',
     languageMenuLabel: 'Language',
     commands: 'Instructions',
-    languageTitle: '🌍 Language',
+    languageTitle: 'Language',
     languageSub: 'Choose the interface language',
     close: 'Close',
     tutorialTitle: 'How to play',
@@ -69,7 +69,7 @@ const UI_STRINGS = {
     gameOver: 'No moves left',
     gameOverSub: (score, best) => `Score: ${score}\nBest: ${best}`,
     playAgain: 'Play again',
-    undoLastMove: '↺ Undo the last move',
+    undoLastMove: 'Undo the last move',
     confirmNewTitle: 'Start over?',
     confirmNewSub: 'The current game is lost, your record stays.',
     confirmYes: 'Yes, start over',
@@ -81,10 +81,10 @@ const UI_STRINGS = {
     bestLabel: 'RECORD',
     undo: 'Annuler',
     newGame: 'Nouvelle partie',
-    settingsTitle: '⚙️ Paramètres',
+    settingsTitle: 'Paramètres',
     languageMenuLabel: 'Langue',
     commands: 'Instructions',
-    languageTitle: '🌍 Langue',
+    languageTitle: 'Langue',
     languageSub: "Choisis la langue de l'interface",
     close: 'Fermer',
     tutorialTitle: 'Comment jouer',
@@ -100,7 +100,7 @@ const UI_STRINGS = {
     gameOver: 'Plus aucun coup possible',
     gameOverSub: (score, best) => `Points : ${score}\nRecord : ${best}`,
     playAgain: 'Rejouer',
-    undoLastMove: '↺ Annuler le dernier coup',
+    undoLastMove: 'Annuler le dernier coup',
     confirmNewTitle: 'Recommencer ?',
     confirmNewSub: 'La partie en cours est perdue, ton record reste.',
     confirmYes: 'Oui, recommencer',
@@ -543,10 +543,11 @@ function closeSettingsMenu() { els.settingsOverlay.classList.remove('show'); }
 function renderLanguageList() {
   els.languageList.innerHTML = Object.entries(LANGUAGES).map(([code, info]) => `
     <button class="language-option${code === language ? ' active' : ''}" data-lang="${code}">
-      <span class="language-flag">${info.flag}</span>
+      <span class="ffr-ico language-flag" data-ico="${info.flag}"></span>
       <span class="language-name">${info.label}</span>
     </button>
   `).join('');
+  window.FFR.icons(els.languageList);
 }
 function openLanguageModal() {
   els.settingsOverlay.classList.remove('show');

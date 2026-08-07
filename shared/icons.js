@@ -1,0 +1,164 @@
+// Free For Real — le icone del sito, uguali in tutto il sito.
+// Incluso da ogni pagina PRIMA dello script del gioco:
+//   <script src="../shared/icons.js"></script>
+// (dalla home: src="shared/icons.js").
+//
+// Perche' esiste: prima le icone erano emoji, e le emoji le disegna il sistema
+// operativo. Su qualche telefono e qualche browser vecchio mancano del tutto e
+// si vede il quadratino vuoto, oppure escono di un colore che non c'entra
+// niente con il gioco. Qui sono disegni SVG nostri: si vedono uguali ovunque.
+//
+// Come si usa nell'HTML:
+//   <span class="ffr-ico" data-ico="gear"></span>
+// e basta: il pezzo di SVG viene messo dentro allo span quando la pagina carica.
+//
+// Due famiglie di icone, e la differenza conta:
+//
+// - MONO: disegni a una tinta sola, scritti con `currentColor`. Prendono da
+//   sole il colore del testo dove si trovano, quindi bianche in home e in tinta
+//   con il gioco dentro ai giochi, senza doverle ridipingere una per una.
+//
+// - COLOR: icone che un colore ce l'hanno gia' loro e va tenuto — le bandiere,
+//   la coppa d'oro, la corona, la moneta, la lampadina, il joystick. Una
+//   bandiera a tinta unita non si riconosce piu'. Queste entrano come <img>:
+//   il browser le disegna come immagini, senza riempire la pagina di nodi.
+//
+// L'icona non e' mai l'unica cosa che dice cosa fa un pulsante: il testo o
+// l'aria-label restano dove erano. Qui dentro sono tutte aria-hidden.
+(function () {
+  'use strict';
+
+  // ---- icone a una tinta: [viewBox, contenuto] ----
+  const MONO = {
+    "gear": ["0 0 32 32", "<circle cx=\"16\" cy=\"16\" fill=\"none\" id=\"ffri-gear-XMLID224\" r=\"4\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/><path d=\" M27.758,10.366l-1-1.732c-0.552-0.957-1.775-1.284-2.732-0.732L23.5,8.206C21.5,9.36,19,7.917,19,5.608V5c0-1.105-0.895-2-2-2h-2 c-1.105,0-2,0.895-2,2v0.608c0,2.309-2.5,3.753-4.5,2.598L7.974,7.902C7.017,7.35,5.794,7.677,5.242,8.634l-1,1.732 c-0.552,0.957-0.225,2.18,0.732,2.732L5.5,13.402c2,1.155,2,4.041,0,5.196l-0.526,0.304c-0.957,0.552-1.284,1.775-0.732,2.732 l1,1.732c0.552,0.957,1.775,1.284,2.732,0.732L8.5,23.794c2-1.155,4.5,0.289,4.5,2.598V27c0,1.105,0.895,2,2,2h2 c1.105,0,2-0.895,2-2v-0.608c0-2.309,2.5-3.753,4.5-2.598l0.526,0.304c0.957,0.552,2.18,0.225,2.732-0.732l1-1.732 c0.552-0.957,0.225-2.18-0.732-2.732L26.5,18.598c-2-1.155-2-4.041,0-5.196l0.526-0.304C27.983,12.546,28.311,11.323,27.758,10.366z \" fill=\"none\" id=\"ffri-gear-XMLID242\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" stroke-width=\"2\"/>"],
+    "question": ["0 0 512 512", "<g> <path fill=\"currentColor\" d=\"M396.138,85.295c-13.172-25.037-33.795-45.898-59.342-61.03C311.26,9.2,280.435,0.001,246.98,0.001 c-41.238-0.102-75.5,10.642-101.359,25.521c-25.962,14.826-37.156,32.088-37.156,32.088c-4.363,3.786-6.824,9.294-6.721,15.056 c0.118,5.77,2.775,11.186,7.273,14.784l35.933,28.78c7.324,5.864,17.806,5.644,24.875-0.518c0,0,4.414-7.978,18.247-15.88 c13.91-7.85,31.945-14.173,58.908-14.258c23.517-0.051,44.022,8.725,58.016,20.717c6.952,5.941,12.145,12.594,15.328,18.68 c3.208,6.136,4.379,11.5,4.363,15.574c-0.068,13.766-2.742,22.77-6.603,30.442c-2.945,5.729-6.789,10.813-11.738,15.744 c-7.384,7.384-17.398,14.207-28.634,20.479c-11.245,6.348-23.365,11.932-35.612,18.68c-13.978,7.74-28.77,18.858-39.701,35.544 c-5.449,8.249-9.71,17.686-12.416,27.641c-2.742,9.964-3.98,20.412-3.98,31.071c0,11.372,0,20.708,0,20.708 c0,10.719,8.69,19.41,19.41,19.41h46.762c10.719,0,19.41-8.691,19.41-19.41c0,0,0-9.336,0-20.708c0-4.107,0.467-6.755,0.917-8.436 c0.773-2.512,1.206-3.14,2.47-4.668c1.29-1.452,3.895-3.674,8.698-6.331c7.019-3.946,18.298-9.276,31.07-16.176 c19.121-10.456,42.367-24.646,61.972-48.062c9.752-11.686,18.374-25.758,24.323-41.968c6.001-16.21,9.242-34.431,9.226-53.96 C410.243,120.761,404.879,101.971,396.138,85.295z\"/> <path fill=\"currentColor\" d=\"M228.809,406.44c-29.152,0-52.788,23.644-52.788,52.788c0,29.136,23.637,52.772,52.788,52.772 c29.136,0,52.763-23.636,52.763-52.772C281.572,430.084,257.945,406.44,228.809,406.44z\"/> </g>"],
+    "languages": ["0 0 24 24", "<g fill=\"none\"><path d=\"M5 14L5.90909 11.3333M11 14L9.90909 11.3333M9.90909 11.3333L7.72727 6L5.90909 11.3333M9.90909 11.3333H5.90909\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M13 11.8462H16.5M20 11.8462H18.25M16.5 11.8462V10M16.5 11.8462H17.375H18.25M18.25 11.8462C18.0556 13.2821 16.2667 17.0154 13 18M18.8333 18C17.6667 17.3846 14.6333 15.1692 14.1667 13.6923\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>"],
+    "back": ["0 0 24 24", "<g fill=\"none\"><g clip-path=\"url(#ffri-back-clip042911240)\"> <circle cx=\"12\" cy=\"12\" r=\"9\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> <path d=\"M13 9L10 12L13 15\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </g> <defs> <clipPath id=\"ffri-back-clip042911240\"> <rect width=\"24\" height=\"24\" fill=\"white\"/> </clipPath> </defs></g>"],
+    "pause": ["0 0 32 32", "<g fill=\"currentColor\"><title>pause</title> <path d=\"M5.92 24.096q0 0.832 0.576 1.408t1.44 0.608h4.032q0.832 0 1.44-0.608t0.576-1.408v-16.16q0-0.832-0.576-1.44t-1.44-0.576h-4.032q-0.832 0-1.44 0.576t-0.576 1.44v16.16zM18.016 24.096q0 0.832 0.608 1.408t1.408 0.608h4.032q0.832 0 1.44-0.608t0.576-1.408v-16.16q0-0.832-0.576-1.44t-1.44-0.576h-4.032q-0.832 0-1.408 0.576t-0.608 1.44v16.16z\"></path></g>"],
+    "refresh": ["0 0 24 24", "<g fill=\"none\"><path d=\"M21 12C21 16.9706 16.9706 21 12 21C9.69494 21 7.59227 20.1334 6 18.7083L3 16M3 12C3 7.02944 7.02944 3 12 3C14.3051 3 16.4077 3.86656 18 5.29168L21 8M3 21V16M3 16H8M21 3V8M21 8H16\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>"],
+    "shuffle": ["0 0 24 24", "<g fill=\"none\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M17.2929 3.29289C17.6834 2.90237 18.3166 2.90237 18.7071 3.29289L21.7071 6.29289C22.0976 6.68342 22.0976 7.31658 21.7071 7.70711L18.7071 10.7071C18.3166 11.0976 17.6834 11.0976 17.2929 10.7071C16.9024 10.3166 16.9024 9.68342 17.2929 9.29289L18.4858 8.1H17.1339C15.6006 8.1 14.2417 8.85096 13.0268 9.94141C12.6158 10.3103 11.9835 10.2762 11.6146 9.86514C11.2457 9.45413 11.2799 8.82188 11.6909 8.45299C13.0917 7.19573 14.9088 6.1 17.1339 6.1H18.6858L17.2929 4.70711C16.9024 4.31658 16.9024 3.68342 17.2929 3.29289ZM2 7.1C2 6.54772 2.44772 6.1 3 6.1C6.82463 6.1 9.24061 9.04557 11.1944 11.473C11.2677 11.5642 11.3405 11.6548 11.4128 11.7447C12.3547 12.917 13.2086 13.9797 14.1313 14.7835C15.1035 15.6305 16.0541 16.1 17.1291 16.1H18.6858L17.2929 14.7071C16.9024 14.3166 16.9024 13.6834 17.2929 13.2929C17.6834 12.9024 18.3166 12.9024 18.7071 13.2929L21.7071 16.2929C22.0976 16.6834 22.0976 17.3166 21.7071 17.7071L18.7071 20.7071C18.3166 21.0976 17.6834 21.0976 17.2929 20.7071C16.9024 20.3166 16.9024 19.6834 17.2929 19.2929L18.4858 18.1H17.1291C15.3977 18.1 13.9975 17.3195 12.8175 16.2915C11.8362 15.4366 10.94 14.3486 10.0918 13.2941C9.25289 14.3419 8.35876 15.4156 7.37784 16.2661C6.17696 17.3072 4.75087 18.1 3.00536 18.1C2.45308 18.1 2.00536 17.6523 2.00536 17.1C2.00536 16.5477 2.45308 16.1 3.00536 16.1C4.094 16.1 5.07128 15.6188 6.06772 14.7549C7.00179 13.9451 7.86818 12.8757 8.79915 11.7073C7.04692 9.6323 5.35215 8.1 3 8.1C2.44772 8.1 2 7.65229 2 7.1Z\" fill=\"currentColor\"/></g>"],
+    "robot": ["0 0 24 24", "<g fill=\"none\"><path d=\"M9 15C8.44771 15 8 15.4477 8 16C8 16.5523 8.44771 17 9 17C9.55229 17 10 16.5523 10 16C10 15.4477 9.55229 15 9 15Z\" fill=\"currentColor\"/> <path d=\"M14 16C14 15.4477 14.4477 15 15 15C15.5523 15 16 15.4477 16 16C16 16.5523 15.5523 17 15 17C14.4477 17 14 16.5523 14 16Z\" fill=\"currentColor\"/> <path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12 1C10.8954 1 10 1.89543 10 3C10 3.74028 10.4022 4.38663 11 4.73244V7H6C4.34315 7 3 8.34315 3 10V20C3 21.6569 4.34315 23 6 23H18C19.6569 23 21 21.6569 21 20V10C21 8.34315 19.6569 7 18 7H13V4.73244C13.5978 4.38663 14 3.74028 14 3C14 1.89543 13.1046 1 12 1ZM5 10C5 9.44772 5.44772 9 6 9H7.38197L8.82918 11.8944C9.16796 12.572 9.86049 13 10.618 13H13.382C14.1395 13 14.832 12.572 15.1708 11.8944L16.618 9H18C18.5523 9 19 9.44772 19 10V20C19 20.5523 18.5523 21 18 21H6C5.44772 21 5 20.5523 5 20V10ZM13.382 11L14.382 9H9.61803L10.618 11H13.382Z\" fill=\"currentColor\"/> <path d=\"M1 14C0.447715 14 0 14.4477 0 15V17C0 17.5523 0.447715 18 1 18C1.55228 18 2 17.5523 2 17V15C2 14.4477 1.55228 14 1 14Z\" fill=\"currentColor\"/> <path d=\"M22 15C22 14.4477 22.4477 14 23 14C23.5523 14 24 14.4477 24 15V17C24 17.5523 23.5523 18 23 18C22.4477 18 22 17.5523 22 17V15Z\" fill=\"currentColor\"/></g>"],
+    "friend": ["0 0 512 512", "<g> <path fill=\"currentColor\" d=\"M406.591,354.932c-16.943-6.336-36.233-16.2-36.233-28.963c0-8.45,0-19.007,0-33.489 c6.194-17.19,15.514-18.42,20.181-44.803c10.861-3.882,17.07-10.09,24.819-37.251c5.827-20.443-2.757-25.93-8.315-27.394 c0.113-1.089,0.226-2.185,0.325-3.472c2.093-30.618,19.87-121.503-41.678-132.365c-16.292-12.671-26.63-18.413-61.547-16.292 c-22.104-0.008-38.905,4.872-62.31-1.818C227.578,41.045,221.653,65.503,219.8,92.48c-4.101-2.871-8.414-5.459-13.492-7.425 c-7.707-2.984-16.504-4.32-27.761-4.306c-3.507,0-7.297,0.128-11.398,0.375c-11.766,0.07-21.186,1.463-29.939,1.428 c-6.138-0.006-12.036-0.58-18.965-2.552l-5.544-1.584l-4.426,3.706c-5.176,4.356-9.079,9.836-12.092,15.818 c-4.497,9.002-7.099,19.248-8.725,30.102c-1.612,10.847-2.192,22.316-2.192,33.666c0,18.936,1.612,37.548,3.069,51.874 c-0.778,0.616-1.556,1.231-2.292,2.016c-1.895,2.022-3.535,4.617-4.582,7.552c-1.061,2.935-1.57,6.166-1.57,9.588 c0,4.038,0.679,8.358,2.05,13.174c3.436,11.922,6.548,19.933,11.06,26.333c2.248,3.168,4.95,5.848,7.863,7.863 c1.004,0.708,2.037,1.238,3.055,1.789c2.503,9.708,6.364,17.062,9.687,22.224c1.966,3.069,3.662,5.459,4.597,7.05 c0.466,0.792,0.749,1.372,0.876,1.683l0.029,0.078c0,11.576,0,20.167,0,27.047l-0.198,0.438c-0.325,0.601-1.216,1.747-2.659,3.012 c-4.313,3.939-13.237,8.316-20.365,10.763c-12.204,4.334-35.568,12.805-56.456,29.514c-10.437,8.365-20.308,18.894-27.591,32.11 C4.554,429.003-0.014,444.885,0,463.192c0,3.182,0.142,6.435,0.411,9.765l0.834,9.956h116.886h1.768h391.657 C518.781,396.291,436.021,365.942,406.591,354.932z M259.328,325.969c0,12.763-20.832,23.533-36.233,28.963 c-27.012,9.518-97.964,36.063-104.851,106.258H21.85c0.325-13.802,3.692-25.173,9.023-34.896 c8.373-15.267,21.85-26.701,35.695-35.045c13.845-8.351,27.775-13.484,36.544-16.567c7.155-2.546,15.429-6.174,22.684-11.201 c3.62-2.539,7.042-5.424,9.885-9.143c2.8-3.663,5.134-8.528,5.148-14.256c0-7.106,0-15.981,0-28.157v-0.559l-0.057-0.558 c-0.495-4.54-2.277-7.962-3.889-10.72c-2.503-4.158-5.048-7.438-7.326-11.603c-2.263-4.144-4.342-9.051-5.6-16.123l-1.104-6.215 l-5.94-2.122c-1.739-0.629-2.814-1.167-3.649-1.754c-1.202-0.877-2.39-1.972-4.228-5.352c-1.782-3.338-3.875-8.803-6.208-16.978 c-0.948-3.302-1.23-5.693-1.216-7.206c0-1.294,0.184-1.944,0.268-2.199l0.029-0.07l0.353-0.106l9.433-2.122l-1.004-9.617 c-1.57-14.771-3.719-36.006-3.705-56.915c-0.014-14.128,1.004-28.094,3.62-39.415c1.301-5.664,2.998-10.634,4.993-14.616 c1.004-1.994,2.064-3.72,3.182-5.198c6.576,1.343,12.714,1.803,18.428,1.796c11.059-0.036,20.407-1.471,30.462-1.442h0.325 l0.325-0.021c3.819-0.233,7.199-0.34,10.225-0.34c9.674,0.007,15.387,1.103,19.927,2.85c4.539,1.747,8.528,4.448,14.27,8.931 l1.697,1.315l4.695,2.093c0.227,24.416,2.644,48.452,4.413,65.217c-5.502,1.23-14.977,6.336-8.91,27.549 c7.75,27.16,13.958,33.369,24.82,37.251c4.653,26.383,18.838,34.854,19.87,44.803C259.328,306.962,259.328,317.519,259.328,325.969 z\"/> </g>"],
+    "account": ["0 0 24 24", "<g fill=\"currentColor\"><path d=\"M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z\"/></g>"],
+    "key": ["0 0 16 16", "<g fill=\"none\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M16 5.5C16 8.53757 13.5376 11 10.5 11H7V13H5V15L4 16H0V12L5.16351 6.83649C5.0567 6.40863 5 5.96094 5 5.5C5 2.46243 7.46243 0 10.5 0C13.5376 0 16 2.46243 16 5.5ZM13 4C13 4.55228 12.5523 5 12 5C11.4477 5 11 4.55228 11 4C11 3.44772 11.4477 3 12 3C12.5523 3 13 3.44772 13 4Z\" fill=\"currentColor\"/></g>"],
+    "guest": ["0 0 24 24", "<g fill=\"none\"><path d=\"M12.7533 2C13.9109 2 14.8641 2.87549 14.9867 4.00046L16.75 4C17.9409 4 18.9156 4.92516 18.9948 6.09595L19 6.25V11.1739C18.5185 11.0602 18.0163 11 17.5 11V6.25C17.5 5.8703 17.2178 5.55651 16.8518 5.50685L16.75 5.5L14.6176 5.50082C14.2141 6.09953 13.5297 6.4933 12.7533 6.4933H9.24665C8.47031 6.4933 7.78594 6.09953 7.38237 5.50082L5.25 5.5C4.8703 5.5 4.55651 5.78215 4.50685 6.14823L4.5 6.25V19.7546C4.5 20.1343 4.78215 20.4481 5.14823 20.4977L5.25 20.5046H11.7346C12.0224 21.0557 12.3869 21.5604 12.814 22.0046H5.25C4.05914 22.0046 3.08436 21.0794 3.00519 19.9086L3 19.7546V6.25C3 5.05914 3.92516 4.08436 5.09595 4.00519L5.25 4L7.01334 4.00046C7.13595 2.87549 8.08906 2 9.24665 2H12.7533ZM12.7533 3.5H9.24665C8.83429 3.5 8.5 3.83429 8.5 4.24665C8.5 4.65902 8.83429 4.9933 9.24665 4.9933H12.7533C13.1657 4.9933 13.5 4.65902 13.5 4.24665C13.5 3.83429 13.1657 3.5 12.7533 3.5Z\" fill=\"currentColor\"/> <path d=\"M8.25 13.9955H12.0247C11.3761 15.0068 11 16.2095 11 17.5C11 17.8397 11.0261 18.1733 11.0763 18.4989L11 18.4992C8.47204 18.4992 7 17.5904 7 15.7428V15.2455C7 14.5552 7.55964 13.9955 8.25 13.9955Z\" fill=\"currentColor\"/> <path d=\"M11 7.99552C12.3807 7.99552 13.5 9.11481 13.5 10.4955C13.5 11.8762 12.3807 12.9955 11 12.9955C9.61929 12.9955 8.5 11.8762 8.5 10.4955C8.5 9.11481 9.61929 7.99552 11 7.99552Z\" fill=\"currentColor\"/> <path d=\"M23 17.5C23 14.4624 20.5376 12 17.5 12C14.4624 12 12 14.4624 12 17.5C12 20.5376 14.4624 23 17.5 23C20.5376 23 23 20.5376 23 17.5ZM18.0006 18L18.0011 20.5035C18.0011 20.7797 17.7773 21.0035 17.5011 21.0035C17.225 21.0035 17.0011 20.7797 17.0011 20.5035L17.0006 18H14.4961C14.22 18 13.9961 17.7762 13.9961 17.5C13.9961 17.2239 14.22 17 14.4961 17H17.0005L17 14.4993C17 14.2231 17.2239 13.9993 17.5 13.9993C17.7761 13.9993 18 14.2231 18 14.4993L18.0005 17H20.503C20.7792 17 21.003 17.2239 21.003 17.5C21.003 17.7762 20.7792 18 20.503 18H18.0006Z\" fill=\"currentColor\"/></g>"],
+    "touch": ["0 0 24 24", "<path fill=\"none\" stroke=\"currentColor\" stroke-miterlimit=\"10\" stroke-width=\"1.88\" d=\"M10.12,22.31l-5-5a2,2,0,0,1-.58-1.41,2,2,0,0,1,.58-1.4,2,2,0,0,1,1.41-.59,2,2,0,0,1,1.4.59l1.3,1.29V6.48a1.94,1.94,0,0,1,1.71-2,1.89,1.89,0,0,1,2,1.86V12l5,.71a1.87,1.87,0,0,1,1.61,1.85h0a16.9,16.9,0,0,1-1.79,7.58l-.09.17\"/><path fill=\"none\" stroke=\"currentColor\" stroke-miterlimit=\"10\" stroke-width=\"1.88\" d=\"M12.94,10.67a4.55,4.55,0,0,0,1.44-1,4.69,4.69,0,1,0-6.64,0,4.59,4.59,0,0,0,1.45,1\"/>"],
+    "hold": ["0 0 24 24", "<path fill=\"none\" stroke=\"currentColor\" stroke-miterlimit=\"10\" stroke-width=\"1.91\" d=\"M7.24,22.52,2.09,17.38a2,2,0,0,1,1.44-3.47,2,2,0,0,1,1.43.6l1.32,1.32V6.37A2,2,0,0,1,8,4.35a1.94,1.94,0,0,1,2.08,1.91V12l5.05.72a1.92,1.92,0,0,1,1.64,1.9h0A17.25,17.25,0,0,1,15,22.34l-.09.18\"/><path fill=\"none\" stroke=\"currentColor\" stroke-miterlimit=\"10\" stroke-width=\"1.91\" d=\"M10.11,10.64a4.54,4.54,0,0,0,1.47-1,4.79,4.79,0,1,0-6.77,0,4.54,4.54,0,0,0,1.47,1\"/><path fill=\"none\" stroke=\"currentColor\" stroke-miterlimit=\"10\" stroke-width=\"1.91\" d=\"M20,5.14l-.33.16-.32-.16a2.86,2.86,0,0,1-1.59-2.57V1.48h3.83V2.57A2.88,2.88,0,0,1,20,5.14Z\"/><line fill=\"none\" stroke=\"currentColor\" stroke-miterlimit=\"10\" stroke-width=\"1.91\" x1=\"15.85\" y1=\"1.48\" x2=\"23.5\" y2=\"1.48\"/><path fill=\"none\" stroke=\"currentColor\" stroke-miterlimit=\"10\" stroke-width=\"1.91\" d=\"M19.35,5.47l.32-.17.33.17A2.87,2.87,0,0,1,21.59,8v1.1H17.76V8A2.85,2.85,0,0,1,19.35,5.47Z\"/><line fill=\"none\" stroke=\"currentColor\" stroke-miterlimit=\"10\" stroke-width=\"1.91\" x1=\"23.5\" y1=\"9.13\" x2=\"15.85\" y2=\"9.13\"/>"],
+    "mouse": ["0 0 32 32", "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" d=\"M11,28L11,28c-3.3,0-6-2.7-6-6v-4c0-3.3,2.7-6,6-6h0c3.3,0,6,2.7,6,6v4C17,25.3,14.3,28,11,28z\"/> <line fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" x1=\"11\" y1=\"15\" x2=\"11\" y2=\"19\"/> <path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-miterlimit=\"10\" d=\"M29,9c0,2.5-2,4.5-4.5,4.5S20,11.5,20,9V8.5C20,6,18,4,15.5,4S11,6,11,8.5\"/>"],
+    "arrow-lr": ["0 0 20 20", "<g fill=\"none\"><path stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M2 10l4-4m-4 4l4 4m-4-4h16.5m0 0l-4-4m4 4l-4 4\"/></g>"],
+    "arrow-left": ["0 0 24 24", "<g fill=\"none\"><g id=\"ffri-arrow-left-ArrowArrowLeftMD\"> <path id=\"ffri-arrow-left-Vector\" d=\"M19 12H5M5 12L11 18M5 12L11 6\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/> </g></g>"],
+    "arrow-right": ["0 0 24 24", "<g fill=\"none\"><path d=\"M5 12H19M19 12L13 6M19 12L13 18\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>"],
+    "arrow-up": ["0 0 24 24", "<g fill=\"none\"><path d=\"M12 5V19M12 5L6 11M12 5L18 11\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>"],
+    "arrow-down": ["0 0 24 24", "<g fill=\"none\"><path d=\"M12 5V19M12 19L6 13M12 19L18 13\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></g>"],
+    "close": ["0 0 24 24", "<g fill=\"none\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM8.96963 8.96965C9.26252 8.67676 9.73739 8.67676 10.0303 8.96965L12 10.9393L13.9696 8.96967C14.2625 8.67678 14.7374 8.67678 15.0303 8.96967C15.3232 9.26256 15.3232 9.73744 15.0303 10.0303L13.0606 12L15.0303 13.9696C15.3232 14.2625 15.3232 14.7374 15.0303 15.0303C14.7374 15.3232 14.2625 15.3232 13.9696 15.0303L12 13.0607L10.0303 15.0303C9.73742 15.3232 9.26254 15.3232 8.96965 15.0303C8.67676 14.7374 8.67676 14.2625 8.96965 13.9697L10.9393 12L8.96963 10.0303C8.67673 9.73742 8.67673 9.26254 8.96963 8.96965Z\" fill=\"currentColor\"/></g>"],
+    "plus": ["0 0 24 24", "<g fill=\"none\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M12 4C12.5523 4 13 4.44772 13 5V11H19C19.5523 11 20 11.4477 20 12C20 12.5523 19.5523 13 19 13H13V19C13 19.5523 12.5523 20 12 20C11.4477 20 11 19.5523 11 19V13H5C4.44772 13 4 12.5523 4 12C4 11.4477 4.44772 11 5 11H11V5C11 4.44772 11.4477 4 12 4Z\" fill=\"currentColor\"/></g>"],
+    "play": ["0 0 24 24", "<g fill=\"none\"><path d=\"M21.4086 9.35258C23.5305 10.5065 23.5305 13.4935 21.4086 14.6474L8.59662 21.6145C6.53435 22.736 4 21.2763 4 18.9671L4 5.0329C4 2.72368 6.53435 1.26402 8.59661 2.38548L21.4086 9.35258Z\" fill=\"currentColor\"/></g>"],
+    "target": ["0 0 512 512", "<g> <path fill=\"currentColor\" d=\"M204.762,254.456l34.212-34.204c-39.807-18.293-88.544-11.079-121.29,21.675 c-42.013,42.006-42.013,110.372,0,152.393c42.005,42.014,110.38,42.014,152.386,0c32.746-32.745,39.968-81.49,21.675-121.298 l-34.211,34.211c3.381,19.976-2.553,41.224-17.939,56.604c-25.21,25.218-66.225,25.218-91.434,0 c-25.21-25.21-25.21-66.224,0-91.427C163.546,257.016,184.794,251.074,204.762,254.456z\"/> <path fill=\"currentColor\" d=\"M323.628,241.146c34.324,57.876,26.642,133.939-23.076,183.65c-58.826,58.826-154.527,58.826-213.345,0 c-58.826-58.817-58.826-154.527,0-213.352c49.703-49.711,125.775-57.393,183.65-23.076l31.216-31.225 c-75.387-50.693-178.754-42.77-245.35,23.817c-75.629,75.621-75.629,198.69,0,274.311c75.63,75.638,198.683,75.638,274.312,0 c66.603-66.595,74.518-169.962,23.809-245.358L323.628,241.146z\"/> <path fill=\"currentColor\" d=\"M511.279,84.84c-1.61-4.195-5.684-6.78-10.298-6.57l-70.565,3.31l3.318-70.556 c0.201-4.622-2.384-8.68-6.578-10.306c-4.17-1.61-9.122-0.451-12.52,2.931l-75.299,75.306l-3.809,81.322L198.634,297.162 c-6.964-1.578-14.565,0.29-19.992,5.716c-8.422,8.422-8.422,22.062,0,30.484c8.414,8.422,22.062,8.422,30.484,0 c5.418-5.427,7.295-13.028,5.716-20l136.886-136.894l81.314-3.8l75.307-75.316C511.739,93.963,512.89,89.026,511.279,84.84z\"/> </g>"],
+  };
+
+  // ---- icone che tengono i colori loro: nome -> file ----
+  const COLOR = {
+    trophy: 'trophy.svg',
+    crown: 'crown.svg',
+    ok: 'ok.svg',
+    coin: 'coin.svg',
+    bulb: 'bulb.svg',
+    joystick: 'joystick.svg',
+    wordio: 'wordio.svg',
+    'flag-it': 'italy.svg',
+    'flag-en': 'uk.svg',
+    'flag-fr': 'france.svg'
+  };
+
+  // La cartella icons/ sta accanto a shared/, ma la home e i giochi la vedono a
+  // profondita' diverse. Invece di scriverlo a mano pagina per pagina lo ricavo
+  // dall'indirizzo di questo file: cosi' vale anche se il sito finisce in una
+  // sottocartella.
+  const BASE = (function () {
+    const s = document.currentScript && document.currentScript.src;
+    if (s) return s.replace(/shared\/icons\.js.*$/, 'icons/');
+    return 'icons/';
+  })();
+
+  function markup(name) {
+    const mono = MONO[name];
+    if (mono) {
+      return '<svg viewBox="' + mono[0] + '" xmlns="http://www.w3.org/2000/svg" ' +
+        'focusable="false" aria-hidden="true">' + mono[1] + '</svg>';
+    }
+    const file = COLOR[name];
+    if (file) return '<img src="' + BASE + file + '" alt="" aria-hidden="true" draggable="false">';
+    console.warn('[FFR] icona sconosciuta:', name);
+    return '';
+  }
+
+  function injectStyles() {
+    if (document.getElementById('ffr-ico-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'ffr-ico-styles';
+    style.textContent = `
+      /* Misura in em: l'icona segue il font-size di dove sta, quindi tutte le
+         regole di dimensione che i giochi avevano gia' sulle emoji continuano a
+         valere senza toccarle una per una. */
+      .ffr-ico{
+        display:inline-block;
+        width:1em; height:1em;
+        flex:0 0 auto;
+        vertical-align:-0.14em;
+        line-height:0;
+      }
+      .ffr-ico > svg, .ffr-ico > img{
+        display:block;
+        width:100%; height:100%;
+      }
+      /* l'annulla di Addy e' la freccia del ricomincia specchiata */
+      .ffr-ico.ffr-flip > svg{ transform: scaleX(-1); }
+      /* icona accanto a del testo dentro un pulsante o una riga di menu */
+      .ffr-ico-lead{ margin-right:0.5em; }
+      /* Nelle righe di menu e nei titoli dei pannelli l'icona a pari altezza del
+         testo risultava minuta: un filo piu' grande sta in riga lo stesso e si
+         legge. Le classi .menu-row e .card > h2 le usano tutti e cinque i
+         giochi. NB: qui dentro niente apici inversi, questo blocco sta in un
+         template literal e li' chiuderebbero la stringa. */
+      .menu-row > .ffr-ico, .card > h2 > .ffr-ico, .ffr-auth-btn > .ffr-ico{
+        font-size:1.2em;
+      }
+      /* Contenitore che vuole l'icona a tutta misura invece che a 1em: il
+         pallino della bandiera, che a 18px non puo' permettersi un bordo
+         vuoto intorno. Ci arriva da solo chi passa per FFR.setIcon(). */
+      .ffr-ico-fill{ overflow:hidden; }
+      .ffr-ico-fill > img, .ffr-ico-fill > svg{
+        display:block; width:100%; height:100%; object-fit:cover;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  // Riempie gli <span data-ico> che non sono ancora stati riempiti. Si puo'
+  // richiamare su un pezzo di pagina costruito al volo: FFR.icons(elemento).
+  function hydrate(root) {
+    injectStyles();
+    (root || document).querySelectorAll('.ffr-ico[data-ico]').forEach(el => {
+      if (el.firstChild) return;
+      el.innerHTML = markup(el.dataset.ico);
+    });
+  }
+
+  // Mette un'icona dentro a un elemento che c'e' gia', riempiendolo tutto.
+  // Serve dove la misura la decide il contenitore e non il font-size: la
+  // bandierina attaccata al pulsante della lingua, per esempio.
+  function setIcon(el, name) {
+    if (!el) return;
+    injectStyles();
+    el.classList.add('ffr-ico-fill');
+    el.innerHTML = markup(name);
+  }
+
+  window.FFR = window.FFR || {};
+  window.FFR.icons = hydrate;
+  window.FFR.iconMarkup = markup;   // per chi costruisce l'HTML da JS
+  window.FFR.setIcon = setIcon;
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => hydrate());
+  else hydrate();
+})();

@@ -11,19 +11,19 @@
 
 // ---------- Lingua condivisa con tutto il sito ----------
 const LANGUAGES = {
-  it: { label: 'Italiano', flag: '🇮🇹' },
-  en: { label: 'English', flag: '🇬🇧' },
-  fr: { label: 'Français', flag: '🇫🇷' },
+  it: { label: 'Italiano', flag: 'flag-it' },
+  en: { label: 'English', flag: 'flag-en' },
+  fr: { label: 'Français', flag: 'flag-fr' },
 };
 const SITE_LANGUAGE_KEY = 'ffr-language';
 
 const UI_STRINGS = {
   it: {
-    settingsTitle: '⚙️ Impostazioni',
+    settingsTitle: 'Impostazioni',
     languageMenuLabel: 'Lingua',
     commands: 'Istruzioni',
     leaderboardMenuLabel: 'Classifica',
-    languageTitle: '🌍 Lingua',
+    languageTitle: 'Lingua',
     languageSub: "Scegli la lingua dell'interfaccia",
     close: 'Chiudi',
     back: 'Indietro',
@@ -89,11 +89,11 @@ const UI_STRINGS = {
     winsShort: n => `${n} vitt.`,
   },
   en: {
-    settingsTitle: '⚙️ Settings',
+    settingsTitle: 'Settings',
     languageMenuLabel: 'Language',
     commands: 'Instructions',
     leaderboardMenuLabel: 'Leaderboard',
-    languageTitle: '🌍 Language',
+    languageTitle: 'Language',
     languageSub: 'Choose the interface language',
     close: 'Close',
     back: 'Back',
@@ -159,11 +159,11 @@ const UI_STRINGS = {
     winsShort: n => `${n} wins`,
   },
   fr: {
-    settingsTitle: '⚙️ Paramètres',
+    settingsTitle: 'Paramètres',
     languageMenuLabel: 'Langue',
     commands: 'Instructions',
     leaderboardMenuLabel: 'Classement',
-    languageTitle: '🌍 Langue',
+    languageTitle: 'Langue',
     languageSub: "Choisis la langue de l'interface",
     close: 'Fermer',
     back: 'Retour',
@@ -797,6 +797,16 @@ function onBoardClick(e) {
 }
 
 // ---------- Fine partita ----------
+// Icona grande della schermata di fine partita: la corona per chi ha vinto, il
+// robot quando ha vinto il computer, il segno di parita' per il pareggio.
+// Il pareggio resta un carattere: e' un segno matematico, non un disegno, e i
+// caratteri '=' li hanno tutti.
+function setEndIcon(kind) {
+  if (kind === 'draw') { els.endIcon.textContent = '='; return; }
+  els.endIcon.innerHTML = '<span class="ffr-ico" data-ico="' + kind + '"></span>';
+  window.FFR.icons(els.endIcon);
+}
+
 function finishGame(winnerSide) {
   state.over = true;
   state.busy = false;
@@ -808,27 +818,27 @@ function finishGame(winnerSide) {
   if (state.mode === 'pc') {
     if (winnerSide === null) {
       recordResult('draws');
-      els.endIcon.textContent = '=';
+      setEndIcon('draw');
       els.endTitle.textContent = t().draw;
       els.endSub.textContent = t().drawSub;
     } else if (winnerSide === state.humanSide) {
       const wins = recordResult('wins');
-      els.endIcon.textContent = '♛';
+      setEndIcon('crown');
       els.endTitle.textContent = t().youWin;
       els.endSub.textContent = t().winSub(diffLabel, wins);
     } else {
       recordResult('losses');
-      els.endIcon.textContent = '🤖';
+      setEndIcon('robot');
       els.endTitle.textContent = t().youLose;
       els.endSub.textContent = t().loseSub(diffLabel);
     }
   } else {
     if (winnerSide === null) {
-      els.endIcon.textContent = '=';
+      setEndIcon('draw');
       els.endTitle.textContent = t().draw;
       els.endSub.textContent = t().drawSub;
     } else {
-      els.endIcon.textContent = '♛';
+      setEndIcon('crown');
       els.endTitle.textContent = winnerSide === BOTTOM ? t().winsP1 : t().winsP2;
       els.endSub.textContent = t().friendEndSub;
     }
@@ -954,10 +964,11 @@ function tauntFor(diff) {
 function renderLanguageList() {
   els.languageList.innerHTML = Object.entries(LANGUAGES).map(([code, info]) => `
     <button class="language-option${code === language ? ' active' : ''}" data-lang="${code}">
-      <span class="language-flag">${info.flag}</span>
+      <span class="ffr-ico language-flag" data-ico="${info.flag}"></span>
       <span class="language-name">${info.label}</span>
     </button>
   `).join('');
+  window.FFR.icons(els.languageList);
 }
 function openLanguageModal() {
   els.settingsOverlay.classList.remove('show');

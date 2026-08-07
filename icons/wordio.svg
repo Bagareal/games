@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Wordio: la ruota di lettere del gioco, nella sua palette laguna/sabbia.
+       Disegnata apposta per il sito, non presa da nessuna parte. -->
+  <circle cx="32" cy="32" r="26" fill="#1789B0"/>
+  <circle cx="32" cy="32" r="26" fill="none" stroke="#0B4F6C" stroke-width="3"/>
+  <circle cx="32" cy="32" r="18" fill="none" stroke="#4FC3D9" stroke-width="2" stroke-dasharray="3 4" opacity="0.75"/>
+
+  <!-- tre tessere disposte sulla ruota, come le lettere da comporre -->
+  <g font-family="'Baloo 2','Nunito',sans-serif" font-weight="800" font-size="13" text-anchor="middle">
+    <g>
+      <rect x="24" y="4" width="16" height="16" rx="4" fill="#FBEBC9" stroke="#EAD3A0" stroke-width="1.5"/>
+      <text x="32" y="16.5" fill="#0B2B3C">W</text>
+    </g>
+    <g>
+      <rect x="43" y="40" width="16" height="16" rx="4" fill="#F2622E" stroke="#D34A1C" stroke-width="1.5"/>
+      <text x="51" y="52.5" fill="#FFFDF8">O</text>
+    </g>
+    <g>
+      <rect x="5" y="40" width="16" height="16" rx="4" fill="#14A085" stroke="#0E7A65" stroke-width="1.5"/>
+      <text x="13" y="52.5" fill="#FFFDF8">R</text>
+    </g>
+  </g>
+
+  <!-- perno centrale -->
+  <circle cx="32" cy="32" r="7" fill="#F4B740"/>
+  <circle cx="32" cy="32" r="7" fill="none" stroke="#0B2B3C" stroke-width="2" opacity="0.45"/>
+</svg>

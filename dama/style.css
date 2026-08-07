@@ -486,7 +486,13 @@ body{
   text-align:left;
   margin-bottom:13px;
 }
-.rule-icon{ font-size:17px; line-height:1.4; flex:0 0 24px; text-align:center; color: var(--brass); }
+/* numero della regola: prima erano icone, ma sei simboli diversi in fila
+   dicevano meno di 1-2-3. Cifre in ottone, incolonnate. */
+.rule-icon{
+  font-family:'Merriweather', serif;
+  font-size:16px; font-weight:700; line-height:1.4;
+  flex:0 0 24px; text-align:center; color: var(--brass);
+}
 .rule-row p{ margin:0; font-size:14px; color: var(--text); }
 
 /* lingua */

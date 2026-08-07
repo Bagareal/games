@@ -4,9 +4,9 @@
 // Le lingue caricano il proprio dizionario da file esterni (dictionaries/<lingua>.json),
 // così si possono aggiungere nuove lingue senza gonfiare lo script principale.
 const LANGUAGES = {
-  it: { label: 'Italiano', flag: '🇮🇹' },
-  en: { label: 'English', flag: '🇬🇧' },
-  fr: { label: 'Français', flag: '🇫🇷' },
+  it: { label: 'Italiano', flag: 'flag-it' },
+  en: { label: 'English', flag: 'flag-en' },
+  fr: { label: 'Français', flag: 'flag-fr' },
 };
 
 // ---------- Interfaccia: testi tradotti ----------
@@ -22,38 +22,38 @@ const UI_STRINGS = {
     levelCompleteSub: 'Ottimo lavoro, isolano!',
     coinsLabel: 'monete',
     extraLabel: 'extra',
-    continueBtn: 'Continua →',
-    extraWordsTitle: '✨ Parole Extra',
+    continueBtn: 'Continua',
+    extraWordsTitle: 'Parole Extra',
     extraWordsSub: 'Le parole bonus trovate in questo livello',
     close: 'Chiudi',
-    shopTitle: '🪙 Negozio Aiuti',
+    shopTitle: 'Negozio Aiuti',
     shopSub: 'Scambia le monete con aiuti',
     yourBalance: 'Il tuo saldo',
     buy: 'Compra',
     confirmPurchaseTitle: "Confermi l'acquisto?",
     cancel: 'Annulla',
     confirm: 'Conferma',
-    languageTitle: '🌍 Lingua',
+    languageTitle: 'Lingua',
     languageSub: 'Scegli la lingua delle parole',
     languageOnlyHere: 'Vale solo per Wordio: la lingua del resto del sito non cambia.',
     languageChangeTitle: 'Cambiare lingua?',
     wordsToFind: n => `${n} parole da trovare`,
-    wordFoundToast: w => '✓ ' + w.toUpperCase(),
-    extraFoundToast: '✨ Extra! +5 🪙',
-    hintEarnedToast: '🎁 Hai guadagnato un aiuto!',
+    wordFoundToast: w => w.toUpperCase(),
+    extraFoundToast: 'Extra! +5',
+    hintEarnedToast: 'Hai guadagnato un aiuto!',
     alreadyFound: 'Già trovata',
-    needMoreExtra: n => `Trova ${n} parole extra per un aiuto ✨`,
+    needMoreExtra: n => `Trova ${n} parole extra per un aiuto`,
     noLetterToReveal: 'Nessuna lettera da svelare',
-    letterRevealed: '💡 Lettera svelata',
-    hintsBought: n => `✓ Acquistati ${n} aiuti!`,
+    letterRevealed: 'Lettera svelata',
+    hintsBought: n => `Acquistati ${n} aiuti!`,
     notEnoughCoins: 'Monete insufficienti',
     dictError: 'Errore nel caricamento del dizionario',
-    purchaseConfirmText: (coins, hints) => `Vuoi spendere ${coins} 🪙 per ottenere ${hints} aiuti?`,
+    purchaseConfirmText: (coins, hints) => `Vuoi spendere ${coins} monete per ottenere ${hints} aiuti?`,
     languageConfirmText: name => `Passare a ${name}? Si ricomincerà dal livello 1.`,
     languageConfirmResumeText: (name, level) => `Passare a ${name}? Riprenderai dal livello ${level}.`,
     noExtraWords: 'Nessuna parola extra trovata in questo livello. Prova a scrivere altre parole valide con le lettere disponibili!',
     hintsMaxedOut: 'Hai già il massimo di aiuti (10)',
-    settingsTitle: '⚙️ Impostazioni',
+    settingsTitle: 'Impostazioni',
     languageMenuLabel: 'Lingua',
     commands: 'Istruzioni',
     leaderboardMenuLabel: 'Classifica',
@@ -75,38 +75,38 @@ const UI_STRINGS = {
     levelCompleteSub: 'Great job, islander!',
     coinsLabel: 'coins',
     extraLabel: 'extra',
-    continueBtn: 'Continue →',
-    extraWordsTitle: '✨ Extra Words',
+    continueBtn: 'Continue',
+    extraWordsTitle: 'Extra Words',
     extraWordsSub: 'Bonus words found in this level',
     close: 'Close',
-    shopTitle: '🪙 Hint Shop',
+    shopTitle: 'Hint Shop',
     shopSub: 'Trade coins for hints',
     yourBalance: 'Your balance',
     buy: 'Buy',
     confirmPurchaseTitle: 'Confirm purchase?',
     cancel: 'Cancel',
     confirm: 'Confirm',
-    languageTitle: '🌍 Language',
+    languageTitle: 'Language',
     languageSub: 'Choose the words language',
     languageOnlyHere: 'This applies to Wordio only: the rest of the site keeps its language.',
     languageChangeTitle: 'Change language?',
     wordsToFind: n => `${n} words to find`,
-    wordFoundToast: w => '✓ ' + w.toUpperCase(),
-    extraFoundToast: '✨ Extra! +5 🪙',
-    hintEarnedToast: '🎁 You earned a hint!',
+    wordFoundToast: w => w.toUpperCase(),
+    extraFoundToast: 'Extra! +5',
+    hintEarnedToast: 'You earned a hint!',
     alreadyFound: 'Already found',
-    needMoreExtra: n => `Find ${n} extra words for a hint ✨`,
+    needMoreExtra: n => `Find ${n} extra words for a hint`,
     noLetterToReveal: 'No letters left to reveal',
-    letterRevealed: '💡 Letter revealed',
-    hintsBought: n => `✓ Bought ${n} hints!`,
+    letterRevealed: 'Letter revealed',
+    hintsBought: n => `Bought ${n} hints!`,
     notEnoughCoins: 'Not enough coins',
     dictError: 'Error loading dictionary',
-    purchaseConfirmText: (coins, hints) => `Spend ${coins} 🪙 to get ${hints} hints?`,
+    purchaseConfirmText: (coins, hints) => `Spend ${coins} coins to get ${hints} hints?`,
     languageConfirmText: name => `Switch to ${name}? You'll restart from level 1.`,
     languageConfirmResumeText: (name, level) => `Switch to ${name}? You'll resume from level ${level}.`,
     noExtraWords: "No extra words found in this level yet. Try spelling other valid words with the available letters!",
     hintsMaxedOut: 'You already have the max hints (10)',
-    settingsTitle: '⚙️ Settings',
+    settingsTitle: 'Settings',
     languageMenuLabel: 'Language',
     commands: 'Instructions',
     leaderboardMenuLabel: 'Leaderboard',
@@ -128,38 +128,38 @@ const UI_STRINGS = {
     levelCompleteSub: 'Bravo, insulaire !',
     coinsLabel: 'pièces',
     extraLabel: 'extras',
-    continueBtn: 'Continuer →',
-    extraWordsTitle: '✨ Mots bonus',
+    continueBtn: 'Continuer',
+    extraWordsTitle: 'Mots bonus',
     extraWordsSub: 'Les mots bonus trouvés dans ce niveau',
     close: 'Fermer',
-    shopTitle: "🪙 Boutique d'indices",
+    shopTitle: "Boutique d'indices",
     shopSub: 'Échange des pièces contre des indices',
     yourBalance: 'Ton solde',
     buy: 'Acheter',
     confirmPurchaseTitle: "Confirmer l'achat ?",
     cancel: 'Annuler',
     confirm: 'Confirmer',
-    languageTitle: '🌍 Langue',
+    languageTitle: 'Langue',
     languageSub: 'Choisis la langue des mots',
     languageOnlyHere: 'Vaut seulement pour Wordio : la langue du reste du site ne change pas.',
     languageChangeTitle: 'Changer de langue ?',
     wordsToFind: n => `${n} mots à trouver`,
-    wordFoundToast: w => '✓ ' + w.toUpperCase(),
-    extraFoundToast: '✨ Extra ! +5 🪙',
-    hintEarnedToast: '🎁 Tu as gagné un indice !',
+    wordFoundToast: w => w.toUpperCase(),
+    extraFoundToast: 'Extra ! +5',
+    hintEarnedToast: 'Tu as gagné un indice !',
     alreadyFound: 'Déjà trouvé',
-    needMoreExtra: n => `Trouve ${n} mots extra pour un indice ✨`,
+    needMoreExtra: n => `Trouve ${n} mots extra pour un indice`,
     noLetterToReveal: 'Aucune lettre à révéler',
-    letterRevealed: '💡 Lettre révélée',
-    hintsBought: n => `✓ ${n} indices achetés !`,
+    letterRevealed: 'Lettre révélée',
+    hintsBought: n => `${n} indices achetés !`,
     notEnoughCoins: 'Pièces insuffisantes',
     dictError: 'Erreur de chargement du dictionnaire',
-    purchaseConfirmText: (coins, hints) => `Dépenser ${coins} 🪙 pour obtenir ${hints} indices ?`,
+    purchaseConfirmText: (coins, hints) => `Dépenser ${coins} pièces pour obtenir ${hints} indices ?`,
     languageConfirmText: name => `Passer à ${name} ? Tu recommenceras au niveau 1.`,
     languageConfirmResumeText: (name, level) => `Passer à ${name} ? Tu reprendras au niveau ${level}.`,
     noExtraWords: "Aucun mot bonus trouvé dans ce niveau pour l'instant. Essaie d'écrire d'autres mots valides avec les lettres disponibles !",
     hintsMaxedOut: "Tu as déjà le maximum d'indices (10)",
-    settingsTitle: '⚙️ Paramètres',
+    settingsTitle: 'Paramètres',
     languageMenuLabel: 'Langue',
     commands: 'Instructions',
     leaderboardMenuLabel: 'Classement',
@@ -891,7 +891,7 @@ function checkWord(normWord) {
     state.extraFoundTotal += 1;
     els.extraCount.textContent = state.foundExtras.size;
     updateHeader();
-    showToast(t().extraFoundToast);
+    showToast(t().extraFoundToast, 'coin');
     if (state.extraFoundTotal % EXTRA_PER_HINT === 0) {
       if (state.hintsAvailable < MAX_HINTS) {
         state.hintsAvailable += 1;
@@ -909,8 +909,19 @@ function checkWord(normWord) {
 }
 
 let toastTimer = null;
-function showToast(msg) {
-  els.toast.textContent = msg;
+// `ico` e' il nome di un'icona di shared/icons.js da mettere prima del testo.
+// L'icona sta fuori dalla stringa tradotta apposta: il testo si scrive con
+// textContent, che di HTML dentro non ne accetta.
+function showToast(msg, ico) {
+  els.toast.textContent = '';
+  if (ico) {
+    const span = document.createElement('span');
+    span.className = 'ffr-ico ffr-ico-lead';
+    span.dataset.ico = ico;
+    els.toast.appendChild(span);
+    window.FFR.icons(els.toast);
+  }
+  els.toast.appendChild(document.createTextNode(msg));
   els.toast.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => els.toast.classList.remove('show'), 800);
@@ -919,7 +930,7 @@ function showToast(msg) {
 function updateHeader() {
   els.levelLabel.textContent = state.level;
   els.coinLabel.textContent = state.coins;
-  els.langBadge.textContent = LANGUAGES[state.language].flag;
+  window.FFR.setIcon(els.langBadge, LANGUAGES[state.language].flag);
 }
 
 function updateHintBadge(justEarned) {
@@ -991,7 +1002,7 @@ function useHint() {
   state.hintsAvailable -= 1;
   updateHintBadge(false);
   renderWordsList();
-  showToast(t().letterRevealed);
+  showToast(t().letterRevealed, 'bulb');
   saveProgress();
 }
 
@@ -1095,7 +1106,7 @@ function confirmPurchase() {
     state.hintsAvailable += hints;
     updateHeader();
     updateHintBadge(true);
-    showToast(t().hintsBought(hints));
+    showToast(t().hintsBought(hints), 'bulb');
     saveProgress();
   } else {
     showToast(t().notEnoughCoins);
@@ -1176,10 +1187,11 @@ function escapeHtml(s) {
 function renderLanguageList() {
   els.languageList.innerHTML = Object.entries(LANGUAGES).map(([code, info]) => `
     <button class="language-option${code === state.language ? ' active' : ''}" data-lang="${code}">
-      <span class="language-flag">${info.flag}</span>
+      <span class="ffr-ico language-flag" data-ico="${info.flag}"></span>
       <span class="language-name">${info.label}</span>
     </button>
   `).join('');
+  window.FFR.icons(els.languageList);
 }
 function openLanguageModal() {
   els.settingsOverlay.classList.remove('show'); // si apre dal menu impostazioni

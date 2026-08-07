@@ -35,8 +35,8 @@
       welcomeTitle: 'Benvenuto!',
       welcomeSub: 'Vuoi giocare come Ospite o creare un Account?',
       welcomeHint: 'Puoi sempre creare un account più tardi dalle impostazioni.',
-      guestBtn: '🎮 Gioca come Ospite',
-      accountBtn: '✨ Crea un Account',
+      guestBtn: 'Gioca come Ospite',
+      accountBtn: 'Crea un Account',
       guestWarnTitle: 'Stai giocando come Ospite',
       guestWarnBody: 'I tuoi progressi restano solo su questo dispositivo e in questo browser. Se cancelli la cache o cambi telefono, li perdi. Puoi creare un account quando vuoi per salvarli in modo permanente.',
       guestWarnOk: 'Ho capito, continua',
@@ -54,7 +54,7 @@
       createSubmit: 'Crea account',
       haveAccount: 'Hai già un account?',
       loginLink: 'Accedi',
-      recoveryTitle: '🔑 Salva il tuo codice di recupero',
+      recoveryTitle: 'Salva il tuo codice di recupero',
       recoveryBody: 'Senza email, questo codice è l\'unico modo per reimpostare la password se la dimentichi. Scrivilo o fai uno screenshot: non potremo mostrartelo di nuovo.',
       recoveryAck: 'L\'ho salvato in un posto sicuro',
       recoveryContinue: 'Continua',
@@ -76,7 +76,7 @@
       accountPanelSignedIn: n => `Ciao, ${n}!`,
       guestLabel: 'Ospite',
       logoutBtn: 'Esci',
-      regenCodeBtn: '🔑 Genera un nuovo codice di recupero',
+      regenCodeBtn: 'Genera un nuovo codice di recupero',
       close: 'Chiudi',
       errGeneric: 'Qualcosa è andato storto. Riprova.',
       errNicknameTaken: 'Questo nickname è già in uso.',
@@ -86,9 +86,9 @@
       saving: 'Un attimo…',
       showPassword: 'Mostra la password',
       hidePassword: 'Nascondi la password',
-      langTitle: '🌍 Che lingua vuoi?',
+      langTitle: 'Che lingua vuoi?',
       langSub: 'Scegli la lingua del sito',
-      langHint: 'Si può cambiare quando vuoi, dall\'icona 🌍 in alto o dalle impostazioni di ogni gioco: vale per tutto il sito.',
+      langHint: 'Si può cambiare quando vuoi, dall\'icona della lingua in alto o dalle impostazioni di ogni gioco: vale per tutto il sito.',
       signedOutTitle: 'Non sei più collegato al tuo account',
       signedOutBody: 'I progressi di questa partita restano su questo dispositivo.',
       offlineTitle: 'Non riusciamo a raggiungere il server',
@@ -100,8 +100,8 @@
       welcomeTitle: 'Welcome!',
       welcomeSub: 'Do you want to play as a Guest or create an Account?',
       welcomeHint: 'You can always create an account later from settings.',
-      guestBtn: '🎮 Play as Guest',
-      accountBtn: '✨ Create an Account',
+      guestBtn: 'Play as Guest',
+      accountBtn: 'Create an Account',
       guestWarnTitle: 'You\'re playing as a Guest',
       guestWarnBody: 'Your progress stays only on this device and browser. If you clear the cache or switch phones, you\'ll lose it. You can create an account anytime to save it permanently.',
       guestWarnOk: 'Got it, continue',
@@ -119,7 +119,7 @@
       createSubmit: 'Create account',
       haveAccount: 'Already have an account?',
       loginLink: 'Log in',
-      recoveryTitle: '🔑 Save your recovery code',
+      recoveryTitle: 'Save your recovery code',
       recoveryBody: 'Without email, this code is the only way to reset your password if you forget it. Write it down or take a screenshot: we won\'t be able to show it again.',
       recoveryAck: 'I saved it somewhere safe',
       recoveryContinue: 'Continue',
@@ -141,7 +141,7 @@
       accountPanelSignedIn: n => `Hi, ${n}!`,
       guestLabel: 'Guest',
       logoutBtn: 'Log out',
-      regenCodeBtn: '🔑 Generate a new recovery code',
+      regenCodeBtn: 'Generate a new recovery code',
       close: 'Close',
       errGeneric: 'Something went wrong. Please try again.',
       errNicknameTaken: 'This nickname is already taken.',
@@ -151,9 +151,9 @@
       saving: 'One moment…',
       showPassword: 'Show password',
       hidePassword: 'Hide password',
-      langTitle: '🌍 Which language?',
+      langTitle: 'Which language?',
       langSub: 'Choose the site language',
-      langHint: 'You can change it whenever you like, from the 🌍 icon at the top or from any game\'s settings: it applies to the whole site.',
+      langHint: 'You can change it whenever you like, from the language icon at the top or from any game\'s settings: it applies to the whole site.',
       signedOutTitle: 'You\'re no longer connected to your account',
       signedOutBody: 'This game\'s progress stays on this device.',
       offlineTitle: 'We can\'t reach the server',
@@ -165,8 +165,8 @@
       welcomeTitle: 'Bienvenue !',
       welcomeSub: 'Tu veux jouer en Invité ou créer un Compte ?',
       welcomeHint: 'Tu pourras toujours créer un compte plus tard dans les paramètres.',
-      guestBtn: '🎮 Jouer en Invité',
-      accountBtn: '✨ Créer un Compte',
+      guestBtn: 'Jouer en Invité',
+      accountBtn: 'Créer un Compte',
       guestWarnTitle: 'Tu joues en Invité',
       guestWarnBody: 'Ta progression reste seulement sur cet appareil et ce navigateur. Si tu vides le cache ou changes de téléphone, tu la perdras. Tu peux créer un compte à tout moment pour la sauvegarder définitivement.',
       guestWarnOk: 'Compris, continuer',
@@ -184,7 +184,7 @@
       createSubmit: 'Créer le compte',
       haveAccount: 'Tu as déjà un compte ?',
       loginLink: 'Se connecter',
-      recoveryTitle: '🔑 Sauvegarde ton code de récupération',
+      recoveryTitle: 'Sauvegarde ton code de récupération',
       recoveryBody: 'Sans email, ce code est le seul moyen de réinitialiser ton mot de passe si tu l\'oublies. Note-le ou fais une capture d\'écran : nous ne pourrons plus te le montrer.',
       recoveryAck: 'Je l\'ai sauvegardé en lieu sûr',
       recoveryContinue: 'Continuer',
@@ -206,7 +206,7 @@
       accountPanelSignedIn: n => `Salut, ${n} !`,
       guestLabel: 'Invité',
       logoutBtn: 'Se déconnecter',
-      regenCodeBtn: '🔑 Générer un nouveau code de récupération',
+      regenCodeBtn: 'Générer un nouveau code de récupération',
       close: 'Fermer',
       errGeneric: 'Une erreur est survenue. Réessaie.',
       errNicknameTaken: 'Ce pseudo est déjà pris.',
@@ -216,9 +216,9 @@
       saving: 'Un instant…',
       showPassword: 'Afficher le mot de passe',
       hidePassword: 'Masquer le mot de passe',
-      langTitle: '🌍 Quelle langue ?',
+      langTitle: 'Quelle langue ?',
       langSub: 'Choisis la langue du site',
-      langHint: 'Tu peux la changer quand tu veux, avec l\'icône 🌍 en haut ou dans les réglages de chaque jeu : elle vaut pour tout le site.',
+      langHint: 'Tu peux la changer quand tu veux, avec l\'icône de la langue en haut ou dans les réglages de chaque jeu : elle vaut pour tout le site.',
       signedOutTitle: 'Tu n\'es plus connecté à ton compte',
       signedOutBody: 'La progression de cette partie reste sur cet appareil.',
       offlineTitle: 'Le serveur est injoignable',
@@ -229,9 +229,9 @@
   };
   // le tre lingue offerte alla prima visita: le stesse tre di home e giochi
   const LANGUAGE_OPTIONS = [
-    { code: 'it', flag: '🇮🇹', label: 'Italiano' },
-    { code: 'en', flag: '🇬🇧', label: 'English' },
-    { code: 'fr', flag: '🇫🇷', label: 'Français' },
+    { code: 'it', flag: 'flag-it', label: 'Italiano' },
+    { code: 'en', flag: 'flag-en', label: 'English' },
+    { code: 'fr', flag: 'flag-fr', label: 'Français' },
   ];
   const LS_LANGUAGE = 'ffr-language';
   function getSiteLanguage() {
@@ -560,8 +560,8 @@
       .ffr-auth-rules{ list-style:none; padding:0; margin:6px 0 14px; font-size:12px; font-weight:700; text-align:left; }
       .ffr-auth-rules li{ padding:2px 0; color:#a04a2a; }
       .ffr-auth-rules li.ok{ color:#14805f; }
-      .ffr-auth-rules li::before{ content:'✗ '; }
-      .ffr-auth-rules li.ok::before{ content:'✓ '; }
+      .ffr-auth-rules li{ display:flex; align-items:center; gap:6px; }
+      .ffr-auth-rules li .ffr-ico{ font-size:14px; }
       .ffr-auth-error{ background:#f8d3c4; color:#8a2f0f; border-radius:10px; padding:8px 10px;
         font-size:13px; font-weight:700; margin-bottom:12px; text-align:left; }
       .ffr-auth-code{ font-family:monospace; font-size:20px; font-weight:700; letter-spacing:1px;
@@ -618,6 +618,13 @@
     document.body.appendChild(el);
     return el;
   }
+  // I pannelli di questo file nascono da innerHTML, quindi gli <span data-ico>
+  // arrivano vuoti: vanno riempiti subito dopo. Si idrata solo il pezzo appena
+  // costruito, non tutta la pagina.
+  function fillIcons(el) {
+    if (window.FFR && window.FFR.icons) window.FFR.icons(el);
+  }
+
   function showOverlay(id, dismissible) {
     const el = buildOverlay(id);
     el.classList.add('show');
@@ -670,8 +677,9 @@
         ${isOffline ? tt('offlineBody') : tt('signedOutBody')}
       </div>
       ${isOffline ? '' : `<button class="ffr-auth-banner-btn" data-act="login">${tt('signedOutLogin')}</button>`}
-      <button class="ffr-auth-banner-x" data-act="close" aria-label="${tt('bannerClose')}">✕</button>
+      <button class="ffr-auth-banner-x" data-act="close" aria-label="${tt('bannerClose')}"><span class="ffr-ico" data-ico="close"></span></button>
     `;
+    fillIcons(el);
     const loginBtn = el.querySelector('[data-act="login"]');
     if (loginBtn) loginBtn.onclick = () => { hideAuthBanner(); openLoginModal(); };
     el.querySelector('[data-act="close"]').onclick = hideAuthBanner;
@@ -691,15 +699,16 @@
     const suggested = browserLanguage();
     const card = showOverlay('ffr-lang-overlay', false);
     card.innerHTML = `
-      <h2>${tt('langTitle')}</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span>${tt('langTitle')}</h2>
       <p>${tt('langSub')}</p>
       ${LANGUAGE_OPTIONS.map(o => `
         <button class="ffr-lang-option${o.code === suggested ? ' suggested' : ''}" data-lang="${o.code}">
-          <span class="ffr-lang-flag">${o.flag}</span><span>${o.label}</span>
+          <span class="ffr-ico ffr-lang-flag" data-ico="${o.flag}"></span><span>${o.label}</span>
         </button>
       `).join('')}
       <p style="font-size:11px;text-align:center;color:#7a6a4a;margin-top:4px;">${tt('langHint')}</p>
     `;
+    fillIcons(card);
     card.querySelectorAll('.ffr-lang-option').forEach(btn => {
       btn.onclick = () => {
         setSiteLanguage(btn.dataset.lang);
@@ -719,10 +728,11 @@
     card.innerHTML = `
       <h2>${tt('welcomeTitle')}</h2>
       <p>${tt('welcomeSub')}</p>
-      <button class="ffr-auth-btn primary" data-act="guest">${tt('guestBtn')}</button>
+      <button class="ffr-auth-btn primary" data-act="guest"><span class="ffr-ico ffr-ico-lead" data-ico="guest"></span>${tt('guestBtn')}</button>
       <button class="ffr-auth-btn" data-act="account">${tt('accountBtn')}</button>
       <p style="font-size:11px;text-align:center;color:#7a6a4a;margin-top:4px;">${tt('welcomeHint')}</p>
     `;
+    fillIcons(card);
     card.querySelector('[data-act="guest"]').onclick = () => { hideOverlay('ffr-welcome-overlay'); openGuestWarnModal(); };
     card.querySelector('[data-act="account"]').onclick = () => { hideOverlay('ffr-welcome-overlay'); openCreateAccountModal(); };
   }
@@ -735,6 +745,7 @@
       <button class="ffr-auth-btn primary" data-act="ok">${tt('guestWarnOk')}</button>
       <button class="ffr-auth-btn ghost" data-act="switch">${tt('guestWarnSwitch')}</button>
     `;
+    fillIcons(card);
     card.querySelector('[data-act="ok"]').onclick = () => {
       try { localStorage.setItem(LS_CHOICE, 'guest'); } catch (e) { /* ignora */ }
       hideOverlay('ffr-guestwarn-overlay');
@@ -780,13 +791,20 @@
     });
   }
 
+  // Segno accanto a ogni regola della password: il baffo verde quando e'
+  // rispettata, la crocetta quando no. Prima erano i caratteri ✓ e ✗ messi dal
+  // CSS, che su qualche telefono uscivano come quadratino vuoto.
+  function ruleMark(ok) {
+    return '<span class="ffr-ico" data-ico="' + (ok ? 'ok' : 'close') + '"></span>';
+  }
+
   function renderPasswordRules(pw) {
     const c = passwordChecks(pw);
     return `
       <ul class="ffr-auth-rules">
-        <li class="${c.length ? 'ok' : ''}">${tt('pwRuleLength')}</li>
-        <li class="${c.digits ? 'ok' : ''}">${tt('pwRuleDigits')}</li>
-        <li class="${c.specials ? 'ok' : ''}">${tt('pwRuleSpecials')}</li>
+        <li class="${c.length ? 'ok' : ''}">${ruleMark(c.length)}${tt('pwRuleLength')}</li>
+        <li class="${c.digits ? 'ok' : ''}">${ruleMark(c.digits)}${tt('pwRuleDigits')}</li>
+        <li class="${c.specials ? 'ok' : ''}">${ruleMark(c.specials)}${tt('pwRuleSpecials')}</li>
       </ul>
     `;
   }
@@ -816,9 +834,10 @@
         ${tt('haveAccount')} <a href="#" data-act="login" style="color:#0B4F6C;font-weight:700;">${tt('loginLink')}</a>
       </p>
     `;
+    fillIcons(card);
     const pwInput = card.querySelector('#ffr-password');
     const rulesBox = card.querySelector('#ffr-pw-rules');
-    const renderRules = () => { rulesBox.innerHTML = renderPasswordRules(pwInput.value); };
+    const renderRules = () => { rulesBox.innerHTML = renderPasswordRules(pwInput.value); fillIcons(rulesBox); };
     pwInput.addEventListener('input', renderRules);
     renderRules();
     attachPasswordEyes(card);
@@ -883,7 +902,7 @@
   function openRecoveryCodeModal(code, onDone) {
     const card = showOverlay('ffr-recovery-overlay', false);
     card.innerHTML = `
-      <h2>${tt('recoveryTitle')}</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="key"></span>${tt('recoveryTitle')}</h2>
       <p>${tt('recoveryBody')}</p>
       <div class="ffr-auth-code" id="ffr-code-text">${code}</div>
       <button class="ffr-auth-btn ghost" data-act="copy">${tt('recoveryCopy')}</button>
@@ -893,6 +912,7 @@
       </label>
       <button class="ffr-auth-btn primary" data-act="continue" disabled style="opacity:0.5;">${tt('recoveryContinue')}</button>
     `;
+    fillIcons(card);
     const ack = card.querySelector('#ffr-recovery-ack');
     const continueBtn = card.querySelector('[data-act="continue"]');
     ack.addEventListener('change', () => {
@@ -926,6 +946,7 @@
         ${tt('noAccountYet')} <a href="#" data-act="create" style="color:#0B4F6C;font-weight:700;">${tt('createLink')}</a>
       </p>
     `;
+    fillIcons(card);
     attachPasswordEyes(card);
     addCloseX(card);
     card.querySelector('[data-act="forgot"]').onclick = (e) => { e.preventDefault(); hideOverlay('ffr-login-overlay'); openForgotModal(); };
@@ -986,9 +1007,10 @@
         <a href="#" data-act="back" style="color:#0B4F6C;font-weight:700;">${tt('backToLogin')}</a>
       </p>
     `;
+    fillIcons(card);
     const pwInput = card.querySelector('#ffr-forgot-password');
     const rulesBox = card.querySelector('#ffr-forgot-pw-rules');
-    const renderRules = () => { rulesBox.innerHTML = renderPasswordRules(pwInput.value); };
+    const renderRules = () => { rulesBox.innerHTML = renderPasswordRules(pwInput.value); fillIcons(rulesBox); };
     pwInput.addEventListener('input', renderRules);
     renderRules();
     attachPasswordEyes(card);
@@ -1033,9 +1055,10 @@
     if (currentUser) {
       card.innerHTML = `
         <h2>${tt('accountPanelSignedIn')(currentNickname || '')}</h2>
-        <button class="ffr-auth-btn primary" data-act="regen">${tt('regenCodeBtn')}</button>
+        <button class="ffr-auth-btn primary" data-act="regen"><span class="ffr-ico ffr-ico-lead" data-ico="key"></span>${tt('regenCodeBtn')}</button>
         <button class="ffr-auth-btn" data-act="logout">${tt('logoutBtn')}</button>
       `;
+      fillIcons(card);
       card.querySelector('[data-act="logout"]').onclick = async () => {
         // segnalato PRIMA di signOut: l'evento SIGNED_OUT arriva da solo e
         // senza questa bandiera farebbe comparire il nastro "sei stato
@@ -1069,6 +1092,7 @@
         <button class="ffr-auth-btn primary" data-act="create">${tt('accountBtn')}</button>
         <button class="ffr-auth-btn" data-act="login">${tt('loginLink')}</button>
       `;
+      fillIcons(card);
       card.querySelector('[data-act="create"]').onclick = () => { hideOverlay('ffr-panel-overlay'); openCreateAccountModal(); };
       card.querySelector('[data-act="login"]').onclick = () => { hideOverlay('ffr-panel-overlay'); openLoginModal(); };
     }
@@ -1092,7 +1116,8 @@
     btn.id = 'ffr-account-icon';
     btn.className = 'ffr-auth-icon-btn';
     btn.setAttribute('aria-label', 'Account');
-    btn.textContent = '👤';
+    btn.innerHTML = '<span class="ffr-ico" data-ico="account"></span>';
+    fillIcons(btn);
     btn.onclick = openAccountPanel;
     wrap.appendChild(label);
     wrap.appendChild(btn);
@@ -1178,7 +1203,7 @@
       if (hasChosenLanguage()) { setTimeout(askWelcome, 400); return; }
       // Chi il sito lo usa già (ha superato la scelta ospite/account) non si
       // vede arrivare una domanda nuova per un aggiornamento: teneva
-      // l'italiano e continua a tenerlo, cambiabile dall'icona 🌍 come prima.
+      // l'italiano e continua a tenerlo, cambiabile dall'icona della lingua.
       if (choice) { setSiteLanguage(getSiteLanguage()); return; }
       // prima visita vera: prima la lingua, poi il benvenuto già tradotto
       setTimeout(() => openFirstLanguageModal(askWelcome), 400);

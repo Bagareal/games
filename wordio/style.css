@@ -177,7 +177,7 @@
     display:flex; align-items:center; justify-content:center;
     font-size:13px;
   }
-  .coin-badge{ background: radial-gradient(circle at 35% 30%, #FFEFAE, var(--gold)); box-shadow: inset 0 -2px 2px rgba(0,0,0,0.15);}
+  .coin-badge{ font-size:22px; }
   .lv-label{
     font-family:'Baloo 2', sans-serif;
     font-weight:800;
@@ -422,6 +422,7 @@
     max-width: 85vw; text-align:center;
   }
   #toast.show{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+  #toast{ display:flex; align-items:center; justify-content:center; }
 
   /* overlays */
   .overlay{
@@ -613,6 +614,8 @@
     cursor:pointer;
   }
   .primary-btn:active{ transform:translateY(3px); box-shadow:0 2px 0 #A2380F;}
+  .primary-btn{ display:inline-flex; align-items:center; justify-content:center; }
+  .ffr-ico-trail{ margin-left:0.45em; }
 
   #loadingScreen{
     position:fixed; inset:0; z-index:50;
@@ -621,7 +624,6 @@
     color:white; font-family:'Baloo 2';
     transition: opacity 0.3s ease;
   }
-  #loadingScreen .emoji{ font-size:54px; margin-bottom:10px; }
   .spinner{
     width:34px; height:34px; border-radius:50%;
     border:4px solid rgba(255,255,255,0.35); border-top-color:white;

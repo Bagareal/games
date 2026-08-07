@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Addy</title>
 <link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../icons/joystick.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16.png">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
@@ -33,8 +34,8 @@
 
   <div class="topbar">
     <div class="icon-group">
-      <a class="icon-btn" href="../" aria-label="Home">⬅️</a>
-      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
+      <a class="icon-btn" href="../" aria-label="Home"><span class="ffr-ico" data-ico="back"></span></a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni"><span class="ffr-ico" data-ico="gear"></span></button>
     </div>
     <div class="goal-display">
       <span class="goal-label" data-i18n="goalLabel">OBIETTIVO</span>
@@ -67,12 +68,12 @@
 
   <div class="action-row">
     <button class="action-btn" id="undoBtn">
-      <span class="action-icon">↺</span>
+      <span class="action-icon"><span class="ffr-ico ffr-flip" data-ico="refresh"></span></span>
       <span data-i18n="undo">Annulla</span>
       <span class="undo-count" id="undoCount">3</span>
     </button>
     <button class="action-btn" id="newGameBtn">
-      <span class="action-icon">✚</span>
+      <span class="action-icon"><span class="ffr-ico" data-ico="plus"></span></span>
       <span data-i18n="newGame">Nuova partita</span>
     </button>
   </div>
@@ -80,10 +81,10 @@
   <!-- impostazioni: lingua / istruzioni -->
   <div class="overlay" id="settingsOverlay">
     <div class="card">
-      <h2 data-i18n="settingsTitle">⚙️ Impostazioni</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="gear"></span><span data-i18n="settingsTitle">Impostazioni</span></h2>
       <div class="menu-list">
-        <button class="menu-row" id="openLanguageBtn">🌍 <span data-i18n="languageMenuLabel">Lingua</span></button>
-        <button class="menu-row" id="openTutorialBtn">❓ <span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openTutorialBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="commands">Istruzioni</span></button>
       </div>
       <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
     </div>
@@ -93,23 +94,23 @@
     <div class="card tutorial-card">
       <h2 data-i18n="tutorialTitle">Come si gioca</h2>
       <div class="tutorial-row">
-        <span class="tutorial-icon">👆</span>
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="touch"></span></span>
         <p data-i18n="tutorialSwipe">Scorri il dito in una direzione: tutte le tessere scivolano fin dove possono</p>
       </div>
       <div class="tutorial-row">
-        <span class="tutorial-icon">＝</span>
+        <span class="tutorial-icon">=</span>
         <p data-i18n="tutorialMerge">Due tessere con lo stesso numero che si scontrano diventano una sola, col doppio</p>
       </div>
       <div class="tutorial-row">
-        <span class="tutorial-icon">🎯</span>
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="target"></span></span>
         <p data-i18n="tutorialGoal">Arriva a 2048. Se ci riesci puoi continuare a giocare</p>
       </div>
       <div class="tutorial-row">
-        <span class="tutorial-icon">↺</span>
+        <span class="tutorial-icon"><span class="ffr-ico ffr-flip" data-ico="refresh"></span></span>
         <p data-i18n="tutorialUndo">Hai 3 annulla per partita, per rimediare a una mossa partita male</p>
       </div>
       <div class="tutorial-row">
-        <span class="tutorial-icon">⌨️</span>
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="mouse"></span></span>
         <p data-i18n="tutorialKeys">Da computer: le frecce della tastiera</p>
       </div>
       <button class="primary-btn" id="closeTutorialBtn" data-i18n="gotIt">Ho capito!</button>
@@ -118,7 +119,7 @@
 
   <div class="overlay" id="languageOverlay">
     <div class="card">
-      <h2 data-i18n="languageTitle">🌍 Lingua</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageTitle">Lingua</span></h2>
       <p data-i18n="languageSub">Scegli la lingua dell'interfaccia</p>
       <div class="language-list" id="languageList"></div>
       <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
@@ -136,14 +137,14 @@
 
   <div class="overlay" id="gameOverOverlay">
     <div class="card">
-      <div class="big-icon">✕</div>
+      <div class="big-icon"><span class="ffr-ico" data-ico="close"></span></div>
       <h2 data-i18n="gameOver">Niente più mosse</h2>
       <p id="gameOverSub"></p>
       <button class="primary-btn" id="retryBtn" data-i18n="playAgain">Rigioca</button>
       <!-- se restano annulli, da qui si torna indietro di una mossa invece di
            buttare via la partita: altrimenti gli annulli sarebbero inutili
            proprio nel momento in cui servono -->
-      <button class="secondary-btn" id="gameOverUndoBtn" data-i18n="undoLastMove">↺ Annulla l'ultima mossa</button>
+      <button class="secondary-btn" id="gameOverUndoBtn"><span class="ffr-ico ffr-flip ffr-ico-lead" data-ico="refresh"></span><span data-i18n="undoLastMove">Annulla l'ultima mossa</span></button>
     </div>
   </div>
 
@@ -158,6 +159,7 @@
 
 </div>
 
+<script src="../shared/icons.js"></script>
 <script>window.FFR_AUTH_HEADLESS = true;</script>
 <script src="../shared/auth.js"></script>
 <script src="script.js"></script>

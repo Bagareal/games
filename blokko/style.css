@@ -160,7 +160,18 @@ body{
   color: var(--spring);
   text-shadow: 0 0 8px rgba(0,255,163,0.7);
 }
-.lines-icon{ font-size:15px; line-height:1; }
+/* le righe fatte: tre barrette disegnate, non un carattere. Il simbolo di
+   prima su qualche telefono non c'era e usciva il quadratino vuoto. */
+.lines-icon{
+  display:inline-flex; flex-direction:column; justify-content:center; gap:2px;
+  width:14px; height:12px;
+}
+.lines-icon i{
+  display:block; height:2px; border-radius:1px;
+  background: currentColor;
+}
+.lines-icon i:nth-child(2){ width:80%; }
+.lines-icon i:nth-child(3){ width:60%; }
 
 /* ---------- hud: punti + prossimi pezzi ---------- */
 .hud-row{
@@ -357,6 +368,30 @@ body{
 }
 .tutorial-icon{ font-size:20px; line-height:1.2; flex:0 0 26px; text-align:center; }
 .tutorial-row p{ margin:0; font-size:14px; }
+/* riga senza icona a sinistra: il testo parte dal bordo come le altre */
+.tutorial-row-plain{ padding-left:38px; }
+
+/* i tasti del computer, uno per riga: il tastino disegnato e poi cosa fa */
+.key-list{
+  display:flex; flex-direction:column; gap:7px;
+  margin: 2px 0 12px 38px;
+  text-align:left;
+}
+.key-row{ display:flex; align-items:center; gap:9px; font-size:13.5px; }
+.key-caps{ display:inline-flex; align-items:center; gap:4px; flex:0 0 auto; }
+.key-caps .ffr-ico, .key-word{
+  font-size:15px;
+  border:1.5px solid var(--panel-line);
+  border-radius:5px;
+  background: rgba(255,255,255,0.05);
+  box-sizing: content-box;
+  padding:3px;
+}
+.key-word{
+  font-family:'Rajdhani', sans-serif; font-weight:700;
+  font-size:12px; line-height:1; letter-spacing:0.5px;
+  padding:5px 8px;
+}
 
 /* lingua */
 .language-list{ display:flex; flex-direction:column; gap:8px; }

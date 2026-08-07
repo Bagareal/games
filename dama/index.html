@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Dama</title>
 <link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../icons/joystick.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16.png">
 <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
@@ -33,9 +34,9 @@
 
   <div class="topbar">
     <div class="icon-group">
-      <a class="icon-btn" href="../" aria-label="Home">⬅️</a>
-      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni">⚙️</button>
-      <button class="icon-btn" id="restartBtn" aria-label="Ricomincia">↻</button>
+      <a class="icon-btn" href="../" aria-label="Home"><span class="ffr-ico" data-ico="back"></span></a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni"><span class="ffr-ico" data-ico="gear"></span></button>
+      <button class="icon-btn" id="restartBtn" aria-label="Ricomincia"><span class="ffr-ico" data-ico="refresh"></span></button>
     </div>
     <div class="turn-pill" id="turnPill">—</div>
   </div>
@@ -73,27 +74,27 @@
     <div class="card rules-card">
       <h2 data-i18n="rulesTitle">Come si gioca</h2>
       <div class="rule-row">
-        <span class="rule-icon">◇</span>
+        <span class="rule-icon">1</span>
         <p data-i18n="rule1">Si gioca solo sulle caselle scure. Le pedine si muovono in diagonale, di una casella, sempre in avanti.</p>
       </div>
       <div class="rule-row">
-        <span class="rule-icon">✕</span>
+        <span class="rule-icon">2</span>
         <p data-i18n="rule2">Si mangia saltando una pedina avversaria vicina, se dietro c'è una casella libera. Le pedine possono mangiare anche all'indietro.</p>
       </div>
       <div class="rule-row">
-        <span class="rule-icon">⚠</span>
+        <span class="rule-icon">3</span>
         <p data-i18n="rule3">Mangiare è obbligatorio: se puoi mangiare, devi farlo. Se dopo il salto puoi mangiare ancora con la stessa pedina, devi continuare.</p>
       </div>
       <div class="rule-row">
-        <span class="rule-icon">♛</span>
+        <span class="rule-icon">4</span>
         <p data-i18n="rule4">Una pedina che arriva in fondo diventa dama e il turno finisce. La dama scorre lungo tutta la diagonale, avanti e indietro, e mangia anche da lontano.</p>
       </div>
       <div class="rule-row">
-        <span class="rule-icon">🏁</span>
+        <span class="rule-icon">5</span>
         <p data-i18n="rule5">Vince chi mangia tutti i pezzi dell'avversario o chi lo lascia senza mosse.</p>
       </div>
       <div class="rule-row">
-        <span class="rule-icon">👆</span>
+        <span class="rule-icon">6</span>
         <p data-i18n="rule6">Tocca un tuo pezzo per vedere dove può andare, poi tocca la casella dove vuoi portarlo.</p>
       </div>
       <button class="primary-btn" id="closeRulesBtn" data-i18n="gotIt">Ho capito!</button>
@@ -105,14 +106,14 @@
     <div class="card">
       <h2 data-i18n="modeTitle">Come vuoi giocare?</h2>
       <button class="choice-btn" id="modeFriendBtn">
-        <span class="choice-icon">👥</span>
+        <span class="choice-icon"><span class="ffr-ico" data-ico="friend"></span></span>
         <span class="choice-text">
           <span class="choice-title" data-i18n="modeFriend">Con un amico</span>
           <span class="choice-sub" data-i18n="modeFriendSub">Sullo stesso dispositivo, a turni</span>
         </span>
       </button>
       <button class="choice-btn" id="modeComputerBtn">
-        <span class="choice-icon">🤖</span>
+        <span class="choice-icon"><span class="ffr-ico" data-ico="robot"></span></span>
         <span class="choice-text">
           <span class="choice-title" data-i18n="modeComputer">Contro il computer</span>
           <span class="choice-sub" data-i18n="modeComputerSub">Tre livelli di difficoltà</span>
@@ -124,7 +125,7 @@
   <!-- ---------------- difficoltà ---------------- -->
   <div class="overlay" id="difficultyOverlay">
     <div class="card">
-      <div class="creator-badge">🤖</div>
+      <div class="creator-badge"><span class="ffr-ico" data-ico="robot"></span></div>
       <h2 data-i18n="creatorTitle">Giocherai contro TheCreator</h2>
       <p data-i18n="creatorSub">il genio dietro questa bellissima app.</p>
       <p class="section-label" data-i18n="chooseDifficulty">Scegli la difficoltà</p>
@@ -140,7 +141,7 @@
   <!-- ---------------- sfottò della difficoltà scelta ---------------- -->
   <div class="overlay" id="tauntOverlay">
     <div class="card">
-      <div class="creator-badge">🤖</div>
+      <div class="creator-badge"><span class="ffr-ico" data-ico="robot"></span></div>
       <p class="taunt-name">TheCreator</p>
       <h2 class="taunt-line" id="tauntLine">—</h2>
       <button class="primary-btn" id="tauntPlayBtn" data-i18n="play">Gioca</button>
@@ -188,7 +189,7 @@
   <!-- ---------------- fine partita ---------------- -->
   <div class="overlay" id="endOverlay">
     <div class="card">
-      <div class="end-icon" id="endIcon">♛</div>
+      <div class="end-icon" id="endIcon"></div>
       <h2 id="endTitle">—</h2>
       <p id="endSub"></p>
       <button class="primary-btn" id="playAgainBtn" data-i18n="playAgain">Rigioca</button>
@@ -199,11 +200,11 @@
   <!-- ---------------- impostazioni ---------------- -->
   <div class="overlay" id="settingsOverlay">
     <div class="card">
-      <h2 data-i18n="settingsTitle">⚙️ Impostazioni</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="gear"></span><span data-i18n="settingsTitle">Impostazioni</span></h2>
       <div class="menu-list">
-        <button class="menu-row" id="openLanguageBtn">🌍 <span data-i18n="languageMenuLabel">Lingua</span></button>
-        <button class="menu-row" id="openRulesBtn">❓ <span data-i18n="commands">Istruzioni</span></button>
-        <button class="menu-row" id="openLeaderboardBtn">🏆 <span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+        <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openRulesBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>
       </div>
       <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
     </div>
@@ -211,7 +212,7 @@
 
   <div class="overlay" id="languageOverlay">
     <div class="card">
-      <h2 data-i18n="languageTitle">🌍 Lingua</h2>
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageTitle">Lingua</span></h2>
       <p data-i18n="languageSub">Scegli la lingua dell'interfaccia</p>
       <div class="language-list" id="languageList"></div>
       <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
@@ -220,7 +221,7 @@
 
   <div class="overlay" id="leaderboardOverlay">
     <div class="card">
-      <div class="end-icon">🏆</div>
+      <div class="end-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
       <h2 data-i18n="leaderboardTitle">Classifica</h2>
       <p class="lb-note" data-i18n="leaderboardNote">Contano solo le partite vinte contro il computer.</p>
       <div class="lb-tabs" id="leaderboardTabs">
@@ -235,6 +236,7 @@
 
 </div>
 
+<script src="../shared/icons.js"></script>
 <script>window.FFR_AUTH_HEADLESS = true;</script>
 <script src="../shared/auth.js"></script>
 <script src="script.js"></script>
