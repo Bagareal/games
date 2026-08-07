@@ -17,11 +17,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  html,body{ height:100%; }
+  /* NB: l'altezza fissa sta solo su html. Se ce l'ha anche il body, il body è
+     alto quanto la finestra pur contenendo una pagina più lunga, e la sfumatura
+     — che si disegna sul suo riquadro — finisce a metà pagina. Con min-height
+     il body cresce fino a contenere tutto. */
+  html{ height:100%; }
+  /* Lo sfondo del body, se l'elemento html non ne ha uno, viene "promosso" a
+     sfondo della pagina intera e disegnato alto quanto la FINESTRA, non quanto
+     il documento: con più giochi in elenco la pagina diventa più lunga di uno
+     schermo e la sfumatura ricominciava da capo a ogni schermata.
+     Dando una tinta piena a html la promozione non avviene più: la sfumatura
+     resta sul body, che è alto quanto tutto il contenuto, e si vede una volta
+     sola dal turchese in cima all'arancio in fondo. */
+  html{ background: #4FC3D9; }
   body{
     margin:0; min-height:100%;
     font-family:'Nunito', sans-serif;
-    background: linear-gradient(160deg, #6FD6E8 0%, #4FC3D9 22%, #7B5FC7 55%, #F2622E 100%);
+    background: linear-gradient(160deg, #6FD6E8 0%, #4FC3D9 22%, #7B5FC7 55%, #F2622E 100%) no-repeat;
     color: #FFFDF8;
     overflow-x:hidden;
   }
@@ -300,7 +312,7 @@
       <div class="logo">🕹️</div>
       <h1>Free For Real</h1>
       <p data-i18n="tagline">Giochi gratis. Per davvero.</p>
-      <p class="offline-note" data-i18n="offlineNote">📶 Apri il gioco con la connessione: da lì in poi puoi giocare anche senza internet.</p>
+      <p class="offline-note" data-i18n="offlineNote">📶 Si può giocare anche senza internet: basta aver aperto il gioco una volta con la connessione.</p>
     </header>
 
     <div class="games">
@@ -382,7 +394,7 @@ const LANGUAGES = {
 const HOME_STRINGS = {
   it: {
     tagline: 'Giochi gratis. Per davvero.',
-    offlineNote: '📶 Apri il gioco con la connessione: da lì in poi puoi giocare anche senza internet.',
+    offlineNote: '📶 Si può giocare anche senza internet: basta aver aperto il gioco una volta con la connessione.',
     wordioDesc: 'Componi tutte le parole usando le lettere sulla ruota. Italiano, inglese, francese.',
     blokkoDesc: 'Incastra i blocchi che cadono prima che si accumulino troppo.',
     boingDesc: 'Rompi tutti i mattoncini rimbalzando la pallina col paddle. 3 vite, potenziamenti e 3 livelli di difficoltà.',
@@ -398,7 +410,7 @@ const HOME_STRINGS = {
   },
   en: {
     tagline: 'Free games. For real.',
-    offlineNote: '📶 Open a game while you are online: from then on you can keep playing with no connection.',
+    offlineNote: '📶 You can play offline too: just open the game once while you are online.',
     wordioDesc: 'Spell out every word using the letters on a wheel. Italian, English, French.',
     blokkoDesc: 'Clear the falling blocks before they stack up.',
     boingDesc: 'Bounce the ball off your paddle to clear every brick. 3 lives, power-ups, and 3 difficulty levels.',
@@ -414,7 +426,7 @@ const HOME_STRINGS = {
   },
   fr: {
     tagline: 'Jeux gratuits. Pour de vrai.',
-    offlineNote: '📶 Ouvre le jeu avec la connexion : ensuite tu peux jouer même sans internet.',
+    offlineNote: '📶 Tu peux aussi jouer hors ligne : il suffit d'avoir ouvert le jeu une fois avec la connexion.',
     wordioDesc: "Compose tous les mots avec les lettres sur la roue. Italien, anglais, français.",
     blokkoDesc: "Range les blocs qui tombent avant qu'ils ne s'accumulent.",
     boingDesc: 'Casse toutes les briques en faisant rebondir la balle sur ta raquette. 3 vies, bonus et 3 niveaux de difficulté.',
