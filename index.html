@@ -232,20 +232,11 @@
       rgba(242,239,228,0.75) calc(50% + 0.7px), rgba(0,0,0,0) calc(50% + 0.7px));
   }
   .kakumal-icon i.chalk{ background:#F5D97A; }
-  /* Findy è il quaderno degli evidenziatori: lilla chiarissimo e caselle
-     bianche, con una passata di pennarello in diagonale — una parola trovata.
-     Niente lettere: a 28px non si leggerebbero. */
-  .game-icon.findy{ background: linear-gradient(160deg, #F3F0FA, #D3C7F2); }
-  .findy-icon{
-    display:grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
-    gap:2px;
-    width:28px; height:28px;
-  }
-  .findy-icon i{ display:block; background:#FFFFFF; border-radius:2px; box-shadow: inset 0 0 0 1px rgba(91,63,191,0.2); }
-  .findy-icon i.hl{ background:#F9AEDB; }
-  .findy-icon i.hl2{ background:#FFDFA3; }
+  /* Findy: la lente d'ingrandimento, la stessa che sta dentro al gioco. Il
+     fondino è il viola di Findy, scuro, perché la lente è grigia e azzurra e
+     sul lilla chiaro del gioco sparirebbe. */
+  .game-icon.findy{ background: radial-gradient(circle at 32% 28%, #7A5CE0, #3F2A8C); }
+  .game-icon.findy .ffr-ico{ width:36px; height:36px; }
   .game-icon.boing{ background: radial-gradient(circle at 32% 28%, #F2622E, #A2380F); }
   .boing-icon{ position:relative; width:26px; height:26px; }
   .boing-icon .boing-ball{
@@ -451,7 +442,7 @@
       </a>
 
       <a class="game-card" href="findy/">
-        <div class="game-icon findy"><span class="findy-icon"><i class="hl"></i><i></i><i class="hl2"></i><i></i><i class="hl"></i><i></i><i></i><i></i><i class="hl"></i></span></div>
+        <div class="game-icon findy"><span class="ffr-ico" data-ico="lens"></span></div>
         <div class="game-info">
           <h2>Findy</h2>
           <p data-i18n="findyDesc">Trova le parole nascoste nella griglia di lettere, in tutte le direzioni. Livelli infiniti, in italiano, inglese o francese.</p>
