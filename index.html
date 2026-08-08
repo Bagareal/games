@@ -211,6 +211,27 @@
   .sudopoku-icon i{ display:block; border:1px solid rgba(42,38,34,0.28); border-radius:1px; }
   .sudopoku-icon i.ink{ background:#2A2622; border-color:#2A2622; }
   .sudopoku-icon i.pen{ background:#2C5AA0; border-color:#2C5AA0; }
+  /* Kakumal è la lavagna dell'aula: ardesia verde e gesso. A 28px i numeri non
+     ci starebbero, quindi si disegna l'angolo che questi schemi hanno sempre —
+     i muri in cima e a sinistra, con la riga diagonale che divide le due somme
+     nell'angolo — e dentro due caselle segnate col gesso. */
+  .game-icon.kakumal{ background: linear-gradient(160deg, #2C463A, #16261F); }
+  .kakumal-icon{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap:2px;
+    width:28px; height:28px;
+  }
+  .kakumal-icon i{ display:block; background:#3A5A4A; border-radius:1px; }
+  .kakumal-icon i.dark{ background:#101C17; }
+  .kakumal-icon i.wall{
+    background:#101C17;
+    background-image: linear-gradient(to bottom right,
+      rgba(0,0,0,0) calc(50% - 0.7px), rgba(242,239,228,0.75) calc(50% - 0.7px),
+      rgba(242,239,228,0.75) calc(50% + 0.7px), rgba(0,0,0,0) calc(50% + 0.7px));
+  }
+  .kakumal-icon i.chalk{ background:#F5D97A; }
   .game-icon.boing{ background: radial-gradient(circle at 32% 28%, #F2622E, #A2380F); }
   .boing-icon{ position:relative; width:26px; height:26px; }
   .boing-icon .boing-ball{
@@ -405,6 +426,15 @@
         </div>
         <span class="badge play" data-i18n="play">Gioca</span>
       </a>
+
+      <a class="game-card" href="kakumal/">
+        <div class="game-icon kakumal"><span class="kakumal-icon"><i class="wall"></i><i class="dark"></i><i class="dark"></i><i class="dark"></i><i class="chalk"></i><i></i><i class="dark"></i><i></i><i class="chalk"></i></span></div>
+        <div class="game-info">
+          <h2>Kakumal</h2>
+          <p data-i18n="kakumalDesc">Somme incrociate: riempi ogni fila di caselle con cifre da 1 a 9, mai due volte la stessa, fino a fare la somma scritta.</p>
+        </div>
+        <span class="badge play" data-i18n="play">Gioca</span>
+      </a>
     </div>
 
     <footer>
@@ -449,6 +479,7 @@ const HOME_STRINGS = {
     addyDesc: 'Fai scivolare i numeri e somma quelli uguali fino ad arrivare a 2048.',
     damaDesc: "Muovi in diagonale e mangia tutti i pezzi dell'avversario. Contro il computer o in due sullo stesso dispositivo.",
     sudopokuDesc: 'Riempi la griglia con le cifre da 1 a 9, senza mai ripeterne una nella stessa riga, colonna o riquadro.',
+    kakumalDesc: 'Somme incrociate: riempi ogni fila di caselle con cifre da 1 a 9, mai due volte la stessa, fino a fare la somma scritta.',
     play: 'Gioca',
     comingSoon: 'In arrivo',
     footer: 'Niente pubblicità · Niente pagamenti — mai. Account facoltativo, solo nickname+password.',
@@ -466,6 +497,7 @@ const HOME_STRINGS = {
     addyDesc: 'Slide the numbers around and add up the matching ones until you reach 2048.',
     damaDesc: "Move diagonally and capture all the other player's pieces. Against the computer or two of you on one device.",
     sudopokuDesc: 'Fill the grid with the digits 1 to 9, never repeating one in the same row, column or box.',
+    kakumalDesc: 'Cross sums: fill every line of squares with digits 1 to 9, never the same one twice, adding up to the total written for it.',
     play: 'Play',
     comingSoon: 'Coming soon',
     footer: 'No ads · No payments — ever. Account optional, just nickname+password.',
@@ -483,6 +515,7 @@ const HOME_STRINGS = {
     addyDesc: "Fais glisser les nombres et additionne ceux qui sont identiques jusqu'à 2048.",
     damaDesc: "Déplace-toi en diagonale et mange toutes les pièces adverses. Contre l'ordinateur ou à deux sur le même appareil.",
     sudopokuDesc: "Remplis la grille avec les chiffres de 1 à 9, sans jamais en répéter un dans la même ligne, colonne ou bloc.",
+    kakumalDesc: "Sommes croisées : remplis chaque file de cases avec des chiffres de 1 à 9, jamais deux fois le même, pour faire la somme indiquée.",
     play: 'Jouer',
     comingSoon: 'Bientôt',
     footer: 'Pas de pubs · Jamais de paiement. Compte facultatif, juste pseudo+mot de passe.',

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Kakumal</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../icons/joystick.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<meta name="theme-color" content="#1E332B">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- sfondo: la lavagna d'aula, ardesia verde con la polvere di gesso che resta
+     dopo il cancellino. Ogni gioco del sito ha la sua grafica: questa non
+     somiglia a nessuna delle altre sei. -->
+<div id="bgLayer">
+  <div class="slate-dust"></div>
+  <div class="slate-shade"></div>
+</div>
+
+<div id="app">
+
+  <div id="loadingScreen">
+    <div class="loading-title">KAKUMAL</div>
+    <div class="spinner"></div>
+  </div>
+
+  <div class="topbar">
+    <div class="icon-group">
+      <a class="icon-btn" href="../" aria-label="Home"><span class="ffr-ico" data-ico="back"></span></a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni"><span class="ffr-ico" data-ico="gear"></span></button>
+      <button class="icon-btn" id="pauseBtn" aria-label="Pausa"><span class="ffr-ico" data-ico="pause"></span></button>
+      <button class="icon-btn" id="topRestartBtn" aria-label="Schema nuovo"><span class="ffr-ico" data-ico="refresh"></span></button>
+    </div>
+    <div class="level-display" id="difficultyDisplay"></div>
+  </div>
+
+  <div class="hud-row">
+    <div class="hud-box">
+      <div class="hud-label" data-i18n="timeLabel">TEMPO</div>
+      <div class="hud-value" id="timeValue">0:00</div>
+    </div>
+    <div class="hud-box">
+      <div class="hud-label" data-i18n="errorsLabel">ERRORI</div>
+      <div class="hud-value" id="errorsValue">0</div>
+    </div>
+    <div class="hud-box">
+      <div class="hud-label" data-i18n="hintsLabel">AIUTI</div>
+      <div class="hud-value" id="hintsValue">3</div>
+    </div>
+  </div>
+
+  <div class="title-wrap">
+    <h1>KAKUMAL</h1>
+    <div class="title-rule"></div>
+  </div>
+
+  <div class="game-zone" id="gameZone">
+    <div class="board-frame" id="boardFrame">
+      <div class="kk-board" id="board"></div>
+    </div>
+    <!-- partita ripresa: il cronometro non riparte da solo, aspetta un tocco -->
+    <div class="resume-hint hidden" id="resumeHint">
+      <span class="resume-hint-text" data-i18n="tapToContinue">Tocca per continuare</span>
+    </div>
+    <!-- schema ancora da fabbricare: si dice cosa sta succedendo -->
+    <div class="resume-hint hidden" id="buildingHint">
+      <span class="resume-hint-text" data-i18n="preparing">Preparo lo schema…</span>
+    </div>
+  </div>
+
+  <!-- le due somme della casella scelta e i gruppi di cifre che possono farle -->
+  <div class="clue-bar" id="clueBar"></div>
+
+  <div class="pad-zone">
+    <div class="tool-row">
+      <button class="tool-btn" id="pencilBtn">
+        <span class="ffr-ico" data-ico="pencil"></span>
+        <span class="tool-label" data-i18n="pencil">Matita</span>
+        <span class="tool-state" id="pencilState"></span>
+      </button>
+      <button class="tool-btn" id="eraseBtn">
+        <span class="ffr-ico" data-ico="eraser"></span>
+        <span class="tool-label" data-i18n="erase">Cancella</span>
+      </button>
+      <button class="tool-btn" id="undoBtn">
+        <span class="ffr-ico ffr-flip" data-ico="refresh"></span>
+        <span class="tool-label" data-i18n="undo">Annulla</span>
+      </button>
+      <button class="tool-btn" id="hintBtn">
+        <span class="ffr-ico" data-ico="bulb"></span>
+        <span class="tool-label" data-i18n="hint">Aiuto</span>
+        <span class="tool-count" id="hintCount">3</span>
+      </button>
+    </div>
+    <div class="keypad" id="keypad"></div>
+  </div>
+
+  <div class="overlay" id="difficultyOverlay" data-no-x>
+    <div class="card">
+      <h2 data-i18n="chooseDifficulty">Scegli la difficoltà</h2>
+      <p data-i18n="chooseDifficultySub">Puoi cambiarla ogni volta che inizi uno schema nuovo</p>
+      <div class="difficulty-list">
+        <button class="difficulty-option" data-difficulty="easy" data-i18n="easy">Facile</button>
+        <button class="difficulty-option" data-difficulty="medium" data-i18n="medium">Medio</button>
+        <button class="difficulty-option" data-difficulty="hard" data-i18n="hard">Difficile</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="pauseOverlay">
+    <div class="card">
+      <div class="big-icon"><span class="ffr-ico" data-ico="pause"></span></div>
+      <h2 data-i18n="paused">Pausa</h2>
+      <p data-i18n="pausedSub">Il cronometro è fermo</p>
+      <button class="primary-btn" id="resumeBtn"><span data-i18n="resume">Riprendi</span><span class="ffr-ico ffr-ico-trail" data-ico="play"></span></button>
+
+      <p class="menu-section-label" data-i18n="difficultyLabel">Difficoltà</p>
+      <div class="difficulty-list">
+        <button class="difficulty-option" data-difficulty="easy" data-i18n="easy">Facile</button>
+        <button class="difficulty-option" data-difficulty="medium" data-i18n="medium">Medio</button>
+        <button class="difficulty-option" data-difficulty="hard" data-i18n="hard">Difficile</button>
+      </div>
+
+      <button class="secondary-btn" id="restartBtn" data-i18n="newPuzzle">Schema nuovo</button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <div class="overlay" id="settingsOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="gear"></span><span data-i18n="settingsTitle">Impostazioni</span></h2>
+      <div class="menu-list">
+        <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openTutorialBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+        <button class="menu-row" id="toggleCombosBtn"><span class="ffr-ico ffr-ico-lead" data-ico="target"></span><span data-i18n="showCombos">Mostra le combinazioni</span><span class="menu-state" id="combosState"></span></button>
+        <button class="menu-row" id="toggleCheckBtn"><span class="ffr-ico ffr-ico-lead" data-ico="ok"></span><span data-i18n="checkErrors">Segnala gli errori</span><span class="menu-state" id="checkState"></span></button>
+      </div>
+      <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="tutorialOverlay">
+    <div class="card tutorial-card">
+      <h2 data-i18n="tutorialTitle">Come si gioca</h2>
+      <div class="tutorial-row tutorial-row-plain">
+        <p data-i18n="tutorialGoal">Ogni fila di caselle bianche vuole cifre da 1 a 9, mai due volte la stessa, che sommate facciano il numero scritto sul muro da cui parte.</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="arrow-lr"></span></span>
+        <p data-i18n="tutorialClues">Il numero in alto a destra è la somma della fila che va a destra, quello in basso a sinistra della fila che scende</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="touch"></span></span>
+        <p data-i18n="tutorialTap">Tocca una casella bianca, poi la cifra da scriverci</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="target"></span></span>
+        <p data-i18n="tutorialCombos">Sotto lo schema, per la casella scelta, ci sono le due somme e i gruppi di cifre che possono farle: 16 in due caselle è per forza 7+9. Si possono spegnere dalle impostazioni, se si preferisce farli a mente</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="pencil"></span></span>
+        <p data-i18n="tutorialPencil">Con la matita accesa le cifre si segnano piccole in un angolo: sono appunti, non risposte</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="eraser"></span></span>
+        <p data-i18n="tutorialErase">La gomma svuota la casella scelta, appunti compresi</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="bulb"></span></span>
+        <p data-i18n="tutorialHint">Tre aiuti a schema: scoprono la cifra giusta della casella scelta, e costano punti</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="mouse"></span></span>
+        <p data-i18n="tutorialKeys">Da computer: le frecce per spostarsi, i tasti da 1 a 9 per scrivere, canc per cancellare</p>
+      </div>
+      <button class="primary-btn" id="closeTutorialBtn" data-i18n="gotIt">Ho capito!</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageTitle">Lingua</span></h2>
+      <p data-i18n="languageSub">Scegli la lingua dell'interfaccia</p>
+      <div class="language-list" id="languageList"></div>
+      <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="leaderboardOverlay">
+    <div class="card">
+      <div class="big-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
+      <h2 data-i18n="leaderboardTitle">Classifica</h2>
+      <div class="lb-tabs" id="leaderboardTabs">
+        <button class="lb-tab" data-difficulty="easy" data-i18n="easy">Facile</button>
+        <button class="lb-tab" data-difficulty="medium" data-i18n="medium">Medio</button>
+        <button class="lb-tab" data-difficulty="hard" data-i18n="hard">Difficile</button>
+      </div>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+      <button class="secondary-btn" id="closeLeaderboardBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="winOverlay" data-no-x>
+    <div class="card">
+      <div class="big-icon"><span class="ffr-ico" data-ico="ok"></span></div>
+      <h2 data-i18n="winTitle">Schema risolto!</h2>
+      <p id="winSub"></p>
+      <button class="primary-btn" id="againBtn" data-i18n="newPuzzle">Schema nuovo</button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <div class="overlay" id="confirmOverlay">
+    <div class="card">
+      <h2 data-i18n="confirmNewTitle">Schema nuovo?</h2>
+      <p data-i18n="confirmNewSub">Quello che stai facendo viene perso, il record resta.</p>
+      <button class="primary-btn" id="confirmNewBtn" data-i18n="confirmYes">Sì, ricomincia</button>
+      <button class="secondary-btn" id="cancelNewBtn" data-i18n="confirmNo">No, continuo</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="../shared/icons.js"></script>
+<script>window.FFR_AUTH_HEADLESS = true;</script>
+<script src="../shared/auth.js"></script>
+<script src="puzzle.js"></script>
+<script src="script.js"></script>
+<script src="../shared/modal-x.js"></script>
+</body>
+</html>

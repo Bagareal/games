@@ -56,6 +56,12 @@ A number-placement puzzle on a 9×9 grid: every row, column and box of nine hold
 
 **[freeforreal.app/sudopoku](https://freeforreal.app/sudopoku/)**
 
+### [Kakumal](kakumal/)
+
+Cross sums: the grid is walls and white squares. Each wall can carry two totals — one for the line of squares running right from it, one for the line running down — and every line takes digits from 1 to 9, never the same one twice, adding up to its total. Puzzles are built in the browser: a wall layout, a filled grid, and then the sums are adjusted one digit at a time until pure reasoning can pin down every single square. That last condition is the whole point — it guarantees at once that the solution is unique and that you can find it without ever guessing. 3 grid sizes (7×7, 9×9, 11×11), pencil notes, 3 hints per puzzle, optional mistake flagging, and — switchable from the settings — the sets of digits that can still make the total of the line you are on (16 in two squares can only be 7+9). Building a big grid takes a moment, so it happens off to the side and the page never freezes. Classroom-blackboard look of its own: green slate, wooden frame, white chalk for the totals and yellow chalk for your digits. Play it at:
+
+**[freeforreal.app/kakumal](https://freeforreal.app/kakumal/)**
+
 ## Credits
 
 **Wordio**'s word lists were cleaned up using [**FrequencyWords**](https://github.com/hermitdave/FrequencyWords) by [**Hermit Dave**](https://github.com/hermitdave) — word-frequency lists built from the OpenSubtitles corpus and published openly. We use them offline, once, to decide which words the game is allowed to *ask* for: a word has to be one people actually use, or it doesn't get asked. That is how `uri`, `ima` and a pile of stray English and French words stopped showing up as Italian answers. None of that data ships with the site — only our own word list, filtered. Thank you.
