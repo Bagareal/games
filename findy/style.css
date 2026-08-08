@@ -1,0 +1,442 @@
+/* ============ FINDY — identità grafica: gli evidenziatori ============
+   Ogni gioco del sito ha una grafica propria. Qui niente neon indaco (è di
+   Blokky), niente pixel art (è di Boing), niente blu petrolio da disegno
+   tecnico (è di Addy), niente noce e ottone (è della Dama), niente laguna e
+   sabbia (è di Wordio), niente lavagna verde (è di Kakumal). E soprattutto
+   niente carta e inchiostro: quella è di Sudopoku, l'altro gioco chiaro del
+   sito. Findy è lilla chiarissimo, lettere in indaco e le parole trovate che
+   restano sotto una passata di evidenziatore — una tinta diversa per ognuna,
+   così si vede a colpo d'occhio quali si incrociano. */
+:root{
+  --paper: #F3F0FA;        /* il fondo */
+  --paper-deep: #E7E1F7;   /* la sfumatura in basso */
+  --ink: #2B2350;          /* le lettere */
+  --ink-soft: rgba(43, 35, 80, 0.58);
+  --ink-faint: rgba(43, 35, 80, 0.16);
+  --violet: #5B3FBF;       /* il colore del gioco: titolo, bordi, pulsanti */
+  --violet-deep: #3F2A8C;
+  --violet-wash: rgba(91, 63, 191, 0.10);
+  --tile: #FFFFFF;
+  --tile-line: rgba(91, 63, 191, 0.14);
+
+  /* gli evidenziatori: sei tinte a pastello, nessuna rossa */
+  --hl-1: #F473C4;   /* rosa */
+  --hl-2: #3FD1A0;   /* menta */
+  --hl-3: #FFC352;   /* ambra */
+  --hl-4: #47C7EE;   /* ciano */
+  --hl-5: #A98BFF;   /* lilla */
+  --hl-6: #9BD94A;   /* lime */
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+html,body{ height:100%; }
+body{
+  margin:0; padding:0; min-height:100%;
+  font-family:'Rubik', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  overscroll-behavior: none;
+}
+
+/* ---------- sfondo ---------- */
+/* tutto fermo: qui non c'è niente da animare, e uno sfondo statico non costa
+   un solo fotogramma mentre si gioca */
+#bgLayer{
+  position:fixed; inset:0; z-index:0;
+  pointer-events:none;
+  background: linear-gradient(170deg, var(--paper) 0%, var(--paper-deep) 100%);
+}
+.bg-wash{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(60% 24% at 18% 12%, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 100%),
+    radial-gradient(50% 20% at 82% 78%, rgba(167,139,255,0.16) 0%, rgba(255,255,255,0) 100%);
+}
+
+#app{
+  position:relative; z-index:1;
+  width:100%;
+  min-height:100vh;
+  min-height:100dvh;
+  max-width:480px;
+  margin:0 auto;
+  display:flex; flex-direction:column;
+  overflow-x:hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ---------- caricamento ---------- */
+#loadingScreen{
+  position:fixed; inset:0; z-index:60;
+  background: var(--paper);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
+  transition: opacity 0.3s ease;
+}
+#loadingScreen.hidden{ display:none; }
+.loading-title{
+  font-family:'Fredoka', sans-serif;
+  font-weight:700; font-size:32px; letter-spacing:6px;
+  color: var(--violet);
+  padding-left:6px; /* compensa lo spazio finale della spaziatura */
+}
+.spinner{
+  width:30px; height:30px;
+  border:3px solid rgba(91,63,191,0.18);
+  border-top-color: var(--violet);
+  border-radius:50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* ---------- topbar ---------- */
+.topbar{
+  position:relative; z-index:5;
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding: max(10px, env(safe-area-inset-top)) 14px 2px;
+}
+.icon-group{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+.icon-btn{
+  width:34px; height:34px; border-radius:11px;
+  display:flex; align-items:center; justify-content:center;
+  background: #FFFFFF;
+  border: 1.5px solid var(--tile-line);
+  color: var(--violet);
+  font-size:18px;
+  cursor:pointer;
+  text-decoration:none;
+  flex:0 0 auto;
+  box-shadow: 0 2px 0 rgba(91,63,191,0.12);
+}
+.icon-btn:active{ transform: translateY(2px); box-shadow:none; }
+/* la freccia della home ha già il suo cerchio disegnato dentro: senza fondino
+   non ne resta uno dentro l'altro */
+a.icon-btn{ background:none; border:none; box-shadow:none; font-size:34px; line-height:0; }
+a.icon-btn:active{ transform: scale(0.94); }
+.level-display{
+  font-family:'Fredoka', sans-serif;
+  font-weight:600; font-size:17px;
+  color: var(--violet);
+  white-space:nowrap;
+}
+.lv-label{ font-size:12px; color: var(--ink-soft); margin-right:2px; }
+/* la lingua delle parole, scritta piccola: qui dentro può essere diversa da
+   quella del resto del sito, quindi va detto senza doverla andare a cercare */
+.lang-chip{
+  flex:0 0 auto;
+  min-width:34px;
+  font-size:11px; font-weight:700; letter-spacing:1.5px;
+  text-align:center;
+  color: var(--violet);
+  background: var(--violet-wash);
+  border-radius:8px;
+  padding:4px 7px;
+}
+
+.title-wrap{ padding: 8px 16px 0; text-align:center; }
+.title-wrap h1{
+  font-family:'Fredoka', sans-serif;
+  font-weight:700; font-size:26px; letter-spacing:6px;
+  margin:0; padding-left:6px;
+  color: var(--violet);
+}
+.title-wrap .sub{
+  font-size:12.5px; font-weight:500;
+  color: var(--ink-soft);
+  margin-top:2px;
+}
+
+/* ---------- la griglia ---------- */
+.game-zone{
+  position:relative;
+  /* base 0, non auto: l'altezza di questa zona è "quello che avanza" fra
+     l'intestazione e l'elenco delle parole, e non dipende da quanto è grande
+     la griglia che ci sta dentro (altrimenti la misura sarebbe circolare) */
+  flex:1 1 0;
+  display:flex; align-items:center; justify-content:center;
+  padding: 10px 12px;
+  min-height:0;
+}
+.board-frame{
+  position:relative;
+  width: var(--board, 300px);
+  height: var(--board, 300px);
+  background: var(--tile);
+  border-radius:16px;
+  box-shadow: 0 4px 0 rgba(91,63,191,0.15), 0 10px 26px rgba(63,42,140,0.14);
+  overflow:hidden;
+  touch-action:none; /* il trascinamento è nostro: la pagina non deve scorrere */
+}
+/* le passate di evidenziatore, disegnate sotto le lettere. Una riga per parola
+   trovata, con i capi tondi: due parole che si incrociano si vedono tutte e
+   due, perché il colore si moltiplica invece di coprire. */
+.bands{
+  position:absolute; inset:0; z-index:1;
+  width:100%; height:100%;
+  mix-blend-mode: multiply;
+}
+.board{
+  position:absolute; inset:0; z-index:2;
+  display:grid;
+  grid-template-columns: repeat(var(--n, 10), 1fr);
+  grid-template-rows: repeat(var(--n, 10), 1fr);
+}
+.cell{
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Fredoka', sans-serif;
+  font-weight:500;
+  font-size: calc(var(--cell, 30px) * 0.56);
+  line-height:1;
+  color: var(--ink);
+  border-right:1px solid var(--tile-line);
+  border-bottom:1px solid var(--tile-line);
+  text-transform:uppercase;
+}
+.cell.last-col{ border-right:none; }
+.cell.last-row{ border-bottom:none; }
+.cell.on{ color: var(--violet-deep); font-weight:700; }
+/* l'aiuto: la prima lettera di una parola che manca, che pulsa qualche secondo */
+.cell.hinted{
+  animation: hint-pulse 0.7s ease-in-out 4;
+  border-radius:50%;
+}
+@keyframes hint-pulse{
+  0%, 100%{ box-shadow: inset 0 0 0 2px rgba(91,63,191,0); }
+  50%{ box-shadow: inset 0 0 0 3px var(--violet); }
+}
+@media (prefers-reduced-motion: reduce){
+  .cell.hinted{ animation:none; box-shadow: inset 0 0 0 3px var(--violet); border-radius:50%; }
+}
+
+/* ---------- l'elenco delle parole ---------- */
+.words-zone{
+  padding: 2px 12px 0;
+  flex:0 0 auto;
+}
+.words-list{
+  display:flex; flex-wrap:wrap; justify-content:center;
+  gap:5px 6px;
+}
+.word-chip{
+  font-family:'Rubik', sans-serif;
+  font-weight:600;
+  font-size: var(--chip-size, 13px);
+  letter-spacing:0.4px;
+  text-transform:uppercase;
+  color: var(--ink);
+  background:#FFFFFF;
+  border:1.5px solid var(--tile-line);
+  border-radius:9px;
+  padding:4px 8px;
+  white-space:nowrap;
+}
+/* trovata: si spegne e resta segnata dal colore del suo evidenziatore, lo
+   stesso che le è rimasto addosso nella griglia */
+.word-chip.found{
+  color: var(--ink-soft);
+  text-decoration: line-through;
+  text-decoration-thickness:2px;
+  text-decoration-color: var(--c, var(--violet));
+  background: var(--c, #FFF);
+  border-color: var(--c, var(--tile-line));
+  opacity:0.55;
+}
+
+/* ---------- il tasto aiuto ---------- */
+.bottom-row{
+  display:flex; justify-content:center;
+  padding: 8px 16px max(10px, env(safe-area-inset-bottom));
+  flex:0 0 auto;
+}
+.hint-btn{
+  display:flex; align-items:center; gap:8px;
+  font-family:'Rubik', sans-serif;
+  font-weight:700; font-size:14px;
+  color: var(--violet-deep);
+  background:#FFFFFF;
+  border:1.5px solid var(--tile-line);
+  border-radius:14px;
+  padding:8px 14px 8px 8px;
+  cursor:pointer;
+  box-shadow: 0 3px 0 rgba(91,63,191,0.15);
+}
+.hint-btn:active{ transform: translateY(3px); box-shadow:none; }
+.hint-btn:disabled{ opacity:0.45; cursor:default; }
+.hint-btn:disabled:active{ transform:none; box-shadow: 0 3px 0 rgba(91,63,191,0.15); }
+.hint-circle{
+  width:30px; height:30px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  background: var(--violet-wash);
+  font-size:17px;
+}
+.hint-count{
+  font-family:'Fredoka', sans-serif;
+  font-weight:600; font-size:14px;
+  color:#FFFFFF;
+  background: var(--violet);
+  border-radius:8px;
+  padding:1px 7px;
+}
+
+/* ---------- toast ---------- */
+#toast{
+  position:fixed; left:50%; bottom:96px;
+  transform: translateX(-50%) translateY(10px);
+  z-index:40;
+  max-width:80%;
+  font-size:13px; font-weight:600;
+  color:#FFFFFF;
+  background: var(--violet-deep);
+  border-radius:12px;
+  padding:9px 16px;
+  opacity:0; pointer-events:none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 6px 18px rgba(63,42,140,0.3);
+}
+#toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+/* ---------- overlay e pannelli ---------- */
+.overlay{
+  position:fixed; inset:0; z-index:50;
+  background: rgba(63, 42, 140, 0.32);
+  backdrop-filter: blur(2px);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  opacity:0; pointer-events:none; transition: opacity 0.2s ease;
+}
+.overlay.show{ opacity:1; pointer-events:auto; }
+.card{
+  position:relative;
+  width:100%; max-width:340px;
+  max-height:88vh; overflow-y:auto;
+  background:#FFFFFF;
+  border:1.5px solid var(--tile-line);
+  border-radius:20px;
+  padding:24px 20px 20px;
+  text-align:center;
+  color: var(--ink);
+  box-shadow: 0 18px 40px rgba(63,42,140,0.28);
+}
+.card h2{
+  font-family:'Fredoka', sans-serif;
+  font-weight:600; font-size:21px;
+  margin:0 0 8px;
+  color: var(--violet-deep);
+}
+.card p{
+  font-size:14px; font-weight:400; line-height:1.45;
+  color: var(--ink-soft);
+  margin:0 0 16px;
+}
+.big-icon{
+  font-size:30px;
+  color: var(--violet);
+  line-height:1; margin-bottom:10px;
+}
+#winSub{ white-space: pre-line; font-weight:500; color: var(--ink); }
+.confirm-text{ color: var(--ink); }
+
+.primary-btn, .secondary-btn, .menu-row, .language-option{
+  font-family:'Rubik', sans-serif;
+  font-weight:700;
+  cursor:pointer;
+  border-radius:14px;
+}
+.primary-btn{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  width:100%;
+  font-size:14px;
+  padding:12px 16px;
+  margin-bottom:8px;
+  color:#FFFFFF;
+  background: var(--violet);
+  border:none;
+  box-shadow: 0 3px 0 var(--violet-deep);
+}
+.primary-btn:active{ transform: translateY(3px); box-shadow:none; }
+.secondary-btn{
+  display:block; width:100%;
+  font-size:13px;
+  padding:11px 16px;
+  margin-top:6px;
+  color: var(--violet-deep);
+  background: var(--violet-wash);
+  border:1.5px solid var(--tile-line);
+}
+.secondary-btn:active{ transform: translateY(2px); }
+.confirm-btn-row{ display:flex; gap:8px; }
+.confirm-btn-row .primary-btn, .confirm-btn-row .secondary-btn{ margin:0; flex:1 1 0; }
+
+.menu-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
+.menu-row{
+  display:flex; align-items:center; gap:10px;
+  width:100%;
+  font-size:13px;
+  padding:12px 14px;
+  color: var(--ink);
+  background: var(--violet-wash);
+  border:1.5px solid var(--tile-line);
+  text-align:left;
+}
+.menu-row:active{ transform: translateY(2px); }
+
+.tutorial-card{ max-width:360px; }
+.tutorial-row{
+  display:flex; align-items:flex-start; gap:12px;
+  text-align:left;
+  margin-bottom:12px;
+}
+.tutorial-icon{ font-size:18px; line-height:1.3; flex:0 0 24px; text-align:center; color: var(--violet); }
+.tutorial-row p{ margin:0; font-size:13.5px; color: var(--ink); }
+
+/* lingua */
+.language-list{ display:flex; flex-direction:column; gap:8px; }
+.language-option{
+  display:flex; align-items:center; gap:12px;
+  width:100%;
+  font-size:13px;
+  padding:11px 14px;
+  color: var(--ink);
+  background: var(--violet-wash);
+  border:1.5px solid var(--tile-line);
+  text-align:left;
+}
+.language-option:active{ transform: translateY(2px); }
+.language-option.active{ border-color: var(--violet); background: rgba(91,63,191,0.16); }
+.language-flag{ font-size:19px; }
+.language-note{ font-size:12px !important; margin-top:12px !important; }
+
+/* classifica */
+.leaderboard-list{ display:flex; flex-direction:column; gap:6px; min-height:60px; }
+.leaderboard-row{
+  display:flex; align-items:center; gap:10px;
+  padding:8px 12px;
+  border-radius:12px;
+  background: var(--violet-wash);
+  border:1.5px solid var(--tile-line);
+  font-size:13px;
+}
+.leaderboard-row.is-me{ border-color: var(--violet); background: rgba(91,63,191,0.16); }
+.leaderboard-rank{ font-weight:700; color: var(--ink-soft); flex:0 0 38px; text-align:left; }
+.leaderboard-name{ flex:1 1 auto; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.leaderboard-score{ font-family:'Fredoka', sans-serif; font-weight:600; font-size:15px; color: var(--violet); }
+.leaderboard-empty{
+  font-size:13px; color: var(--ink-soft);
+  padding:14px 10px; line-height:1.4;
+}
+
+/* l'icona dopo il testo dentro un pulsante */
+.ffr-ico-trail{ margin-left:0.5em; }
+
+/* schermi bassi: la griglia vale più del titolo */
+@media (max-height: 700px){
+  .title-wrap{ display:none; }
+  .bottom-row{ padding-top:6px; }
+}
+@media (min-width: 700px){
+  #app{ max-width: 600px; }
+  .title-wrap h1{ font-size:30px; }
+  .word-chip{ font-size:14px; }
+}
+@media (min-width: 1200px){
+  #app{ max-width: 680px; }
+}

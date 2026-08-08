@@ -19,7 +19,7 @@
 //   con il gioco dentro ai giochi, senza doverle ridipingere una per una.
 //
 // - COLOR: icone che un colore ce l'hanno gia' loro e va tenuto — le bandiere,
-//   la coppa d'oro, la corona, la moneta, la lampadina, il joystick. Una
+//   la coppa d'oro, la corona, la moneta, la lampadina, il joystick, la lente. Una
 //   bandiera a tinta unita non si riconosce piu'. Queste entrano come <img>:
 //   il browser le disegna come immagini, senza riempire la pagina di nodi.
 //
@@ -76,6 +76,7 @@
     ok: 'ok.svg',
     coin: 'coin.svg',
     bulb: 'bulb.svg',
+    lens: 'lens.svg',
     shop: 'shop.svg',
     joystick: 'joystick.svg',
     wordio: 'wordio.svg',

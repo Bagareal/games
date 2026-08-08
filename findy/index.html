@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Findy</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../icons/joystick.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<meta name="theme-color" content="#F3F0FA">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- sfondo: il quaderno degli evidenziatori. Ogni gioco del sito ha la sua
+     grafica: qui lilla chiarissimo e pennarelli a pastello. È il secondo gioco
+     chiaro del sito dopo Sudopoku, che invece è carta e inchiostro — qui non
+     c'è né la carta né il nero. -->
+<div id="bgLayer">
+  <div class="bg-wash"></div>
+</div>
+
+<div id="app">
+
+  <div id="loadingScreen">
+    <div class="loading-title">FINDY</div>
+    <div class="spinner"></div>
+  </div>
+
+  <div class="topbar">
+    <div class="icon-group">
+      <a class="icon-btn" href="../" aria-label="Home"><span class="ffr-ico" data-ico="back"></span></a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni"><span class="ffr-ico" data-ico="gear"></span></button>
+      <button class="icon-btn" id="topRestartBtn" aria-label="Livello nuovo"><span class="ffr-ico" data-ico="refresh"></span></button>
+    </div>
+    <div class="level-display"><span class="lv-label">LV.</span><span id="levelLabel">1</span></div>
+    <div class="lang-chip" id="langChip"></div>
+  </div>
+
+  <div class="title-wrap">
+    <h1>FINDY</h1>
+    <div class="sub" data-i18n="tagline">Trova le parole nascoste</div>
+  </div>
+
+  <div class="game-zone">
+    <div class="board-frame" id="boardFrame">
+      <svg class="bands" id="bands" preserveAspectRatio="none" aria-hidden="true"></svg>
+      <div class="board" id="board"></div>
+    </div>
+  </div>
+
+  <div class="words-zone">
+    <div class="words-list" id="wordsList"></div>
+  </div>
+
+  <div class="bottom-row">
+    <button class="hint-btn" id="hintBtn">
+      <span class="hint-circle"><span class="ffr-ico" data-ico="bulb"></span></span>
+      <span data-i18n="hint">Aiuto</span>
+      <span class="hint-count" id="hintCount">3</span>
+    </button>
+  </div>
+
+  <div id="toast"></div>
+
+  <div class="overlay" id="winOverlay" data-no-x>
+    <div class="card">
+      <div class="big-icon"><span class="ffr-ico" data-ico="lens"></span></div>
+      <h2 data-i18n="levelComplete">Livello completato!</h2>
+      <p id="winSub"></p>
+      <button class="primary-btn" id="nextLevelBtn"><span data-i18n="continueBtn">Continua</span><span class="ffr-ico ffr-ico-trail" data-ico="arrow-right"></span></button>
+    </div>
+  </div>
+
+  <div class="overlay" id="settingsOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="gear"></span><span data-i18n="settingsTitle">Impostazioni</span></h2>
+      <div class="menu-list">
+        <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openTutorialBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+      </div>
+      <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="tutorialOverlay">
+    <div class="card tutorial-card">
+      <h2 data-i18n="tutorialTitle">Come si gioca</h2>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="lens"></span></span>
+        <p data-i18n="tutorialGoal">Nella griglia sono nascoste le parole scritte qui sotto: trovale tutte per passare al livello dopo.</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="touch"></span></span>
+        <p data-i18n="tutorialDrag">Trascina il dito dalla prima all'ultima lettera della parola. Si può anche toccare la prima lettera e poi l'ultima.</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="arrow-lr"></span></span>
+        <p data-i18n="tutorialDirections">Le parole vanno in tutte le direzioni: in orizzontale, in verticale, in diagonale, e anche al contrario.</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="bulb"></span></span>
+        <p data-i18n="tutorialHint">Si possono usare tre aiuti per livello: fanno lampeggiare la prima lettera di una parola che manca.</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="refresh"></span></span>
+        <p data-i18n="tutorialRestart">Il tasto ↻ rifà il livello con parole nuove, senza tornare indietro di livello.</p>
+      </div>
+      <button class="primary-btn" id="closeTutorialBtn" data-i18n="gotIt">Ho capito!</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="leaderboardOverlay">
+    <div class="card">
+      <div class="big-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
+      <h2 data-i18n="leaderboardTitle">Classifica</h2>
+      <p id="leaderboardSub" data-i18n="leaderboardSub">Una classifica per ogni lingua: si vede quella con cui stai giocando.</p>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+      <button class="secondary-btn" id="closeLeaderboardBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageTitle">Lingua</span></h2>
+      <p data-i18n="languageSub">Scegli la lingua delle parole</p>
+      <div class="language-list" id="languageList"></div>
+      <p class="language-note" data-i18n="languageOnlyHere">Vale solo per Findy: la lingua del resto del sito non cambia.</p>
+      <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageConfirmOverlay">
+    <div class="card">
+      <div class="big-icon"><span class="ffr-ico" data-ico="languages"></span></div>
+      <h2 data-i18n="languageChangeTitle">Cambiare lingua?</h2>
+      <p class="confirm-text" id="languageConfirmText"></p>
+      <div class="confirm-btn-row">
+        <button class="secondary-btn" id="cancelLanguageBtn" data-i18n="cancel">Annulla</button>
+        <button class="primary-btn" id="confirmLanguageBtn" data-i18n="confirm">Conferma</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="confirmRestartOverlay">
+    <div class="card">
+      <div class="big-icon"><span class="ffr-ico" data-ico="refresh"></span></div>
+      <h2 data-i18n="confirmRestartTitle">Livello nuovo?</h2>
+      <p class="confirm-text" data-i18n="confirmRestartSub">Questo livello viene rifatto con parole nuove. Il numero del livello resta questo.</p>
+      <div class="confirm-btn-row">
+        <button class="secondary-btn" id="cancelRestartBtn" data-i18n="confirmNo">No, continuo</button>
+        <button class="primary-btn" id="confirmRestartBtn" data-i18n="confirmYes">Sì, rifallo</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../shared/icons.js"></script>
+<script>window.FFR_AUTH_HEADLESS = true;</script>
+<script src="../shared/auth.js"></script>
+<script src="script.js"></script>
+<script src="../shared/modal-x.js"></script>
+</body>
+</html>

@@ -62,6 +62,12 @@ Cross sums: the grid is walls and white squares. Each wall can carry two totals 
 
 **[freeforreal.app/kakumal](https://freeforreal.app/kakumal/)**
 
+### [Findy](findy/)
+
+A word search: the words listed under the grid are hidden inside it, and you drag from the first letter to the last one to take them (or tap the first letter, then the last). Words run in all eight directions — across, down, diagonally, and backwards — from the very first level. Endless levels, no timer and no difficulty to pick: the grid grows on its own from 8×8 up to 12×12 and the words get more numerous, then it stops there, so it never turns impossible. The words are real, used words of at least four letters, drawn from the same curated lists as Wordio, with one extra sieve of its own: in Italian only words ending in a vowel are kept, because the ones ending in a consonant are almost all foreign (*bear*, *baby*, *budget*) or proper names — fine to stumble upon in Wordio, wrong to be *asked* for here (see `findy/words/build_words.py`, a one-off tool that is not part of the site). Italian, English or French, each language keeping its own level and its own leaderboard; three hints per level flash the first letter of a word you are still missing. Its own look: a pale lilac notebook, and every word you find stays under a stroke of highlighter, a different colour each — so where two words cross you see both. Play it at:
+
+**[freeforreal.app/findy](https://freeforreal.app/findy/)**
+
 ## Credits
 
 **Wordio**'s word lists were cleaned up using [**FrequencyWords**](https://github.com/hermitdave/FrequencyWords) by [**Hermit Dave**](https://github.com/hermitdave) — word-frequency lists built from the OpenSubtitles corpus and published openly. We use them offline, once, to decide which words the game is allowed to *ask* for: a word has to be one people actually use, or it doesn't get asked. That is how `uri`, `ima` and a pile of stray English and French words stopped showing up as Italian answers. None of that data ships with the site — only our own word list, filtered. Thank you.

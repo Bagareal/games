@@ -232,6 +232,20 @@
       rgba(242,239,228,0.75) calc(50% + 0.7px), rgba(0,0,0,0) calc(50% + 0.7px));
   }
   .kakumal-icon i.chalk{ background:#F5D97A; }
+  /* Findy è il quaderno degli evidenziatori: lilla chiarissimo e caselle
+     bianche, con una passata di pennarello in diagonale — una parola trovata.
+     Niente lettere: a 28px non si leggerebbero. */
+  .game-icon.findy{ background: linear-gradient(160deg, #F3F0FA, #D3C7F2); }
+  .findy-icon{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap:2px;
+    width:28px; height:28px;
+  }
+  .findy-icon i{ display:block; background:#FFFFFF; border-radius:2px; box-shadow: inset 0 0 0 1px rgba(91,63,191,0.2); }
+  .findy-icon i.hl{ background:#F9AEDB; }
+  .findy-icon i.hl2{ background:#FFDFA3; }
   .game-icon.boing{ background: radial-gradient(circle at 32% 28%, #F2622E, #A2380F); }
   .boing-icon{ position:relative; width:26px; height:26px; }
   .boing-icon .boing-ball{
@@ -435,6 +449,15 @@
         </div>
         <span class="badge play" data-i18n="play">Gioca</span>
       </a>
+
+      <a class="game-card" href="findy/">
+        <div class="game-icon findy"><span class="findy-icon"><i class="hl"></i><i></i><i class="hl2"></i><i></i><i class="hl"></i><i></i><i></i><i></i><i class="hl"></i></span></div>
+        <div class="game-info">
+          <h2>Findy</h2>
+          <p data-i18n="findyDesc">Trova le parole nascoste nella griglia di lettere, in tutte le direzioni. Livelli infiniti, in italiano, inglese o francese.</p>
+        </div>
+        <span class="badge play" data-i18n="play">Gioca</span>
+      </a>
     </div>
 
     <footer>
@@ -480,6 +503,7 @@ const HOME_STRINGS = {
     damaDesc: "Muovi in diagonale e mangia tutti i pezzi dell'avversario. Contro il computer o in due sullo stesso dispositivo.",
     sudopokuDesc: 'Riempi la griglia con le cifre da 1 a 9, senza mai ripeterne una nella stessa riga, colonna o riquadro.',
     kakumalDesc: 'Somme incrociate: riempi ogni fila di caselle con cifre da 1 a 9, mai due volte la stessa, fino a fare la somma scritta.',
+    findyDesc: 'Trova le parole nascoste nella griglia di lettere, in tutte le direzioni. Livelli infiniti, in italiano, inglese o francese.',
     play: 'Gioca',
     comingSoon: 'In arrivo',
     footer: 'Niente pubblicità · Niente pagamenti — mai. Account facoltativo, solo nickname+password.',
@@ -498,6 +522,7 @@ const HOME_STRINGS = {
     damaDesc: "Move diagonally and capture all the other player's pieces. Against the computer or two of you on one device.",
     sudopokuDesc: 'Fill the grid with the digits 1 to 9, never repeating one in the same row, column or box.',
     kakumalDesc: 'Cross sums: fill every line of squares with digits 1 to 9, never the same one twice, adding up to the total written for it.',
+    findyDesc: 'Find the words hidden in the grid of letters, running in every direction. Endless levels, in Italian, English or French.',
     play: 'Play',
     comingSoon: 'Coming soon',
     footer: 'No ads · No payments — ever. Account optional, just nickname+password.',
@@ -516,6 +541,7 @@ const HOME_STRINGS = {
     damaDesc: "Déplace-toi en diagonale et mange toutes les pièces adverses. Contre l'ordinateur ou à deux sur le même appareil.",
     sudopokuDesc: "Remplis la grille avec les chiffres de 1 à 9, sans jamais en répéter un dans la même ligne, colonne ou bloc.",
     kakumalDesc: "Sommes croisées : remplis chaque file de cases avec des chiffres de 1 à 9, jamais deux fois le même, pour faire la somme indiquée.",
+    findyDesc: "Trouve les mots cachés dans la grille de lettres, dans toutes les directions. Niveaux infinis, en italien, anglais ou français.",
     play: 'Jouer',
     comingSoon: 'Bientôt',
     footer: 'Pas de pubs · Jamais de paiement. Compte facultatif, juste pseudo+mot de passe.',
