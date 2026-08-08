@@ -8,6 +8,8 @@ A collection of free, browser-based games. No ads, no payment requirements — j
 
 Everything here is free to play, forever. There are no in-app purchases that unlock content behind a paywall, no ad networks, and no tracking. An account is entirely optional: play as a guest with progress saved only in your browser, or create an account (just a nickname + password — no email, no personal data) to sync your progress across devices and appear on each game's leaderboard. If a game has an in-game currency or "shop", it's just a gameplay mechanic — never a real transaction.
 
+**Clean words, everywhere**: no game on this site will ever show, ask for or accept a vulgar, obscene or sexually explicit word, a slur against anyone, or a word about sexual violence — in any of the three languages. The word lists the games draw from were built from a real-use corpus and that kind of word came with it; it has been taken out at the source, so it isn't a target, isn't a valid answer, and isn't hidden in a grid. This is a rule for any game added later, not a one-off cleanup.
+
 **About accounts**: since no email is attached to your account, if you lose both your password *and* your recovery code, there is no way to recover your account or its progress — save your recovery code somewhere safe when you create an account.
 
 ## Original games

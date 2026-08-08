@@ -25,6 +25,11 @@
 # NB: i dizionari di Wordio arrivano a 8 lettere (la ruota non ne regge di piu'),
 # quindi anche qui la parola piu' lunga e' di 8 lettere.
 #
+# PAROLACCE: non se ne occupa questo script. La regola del sito (niente parole
+# volgari, oscene, sessuali esplicite, insulti o violenza sessuale, in nessuna
+# lingua) e' applicata a monte, dentro ai dizionari di Wordio da cui questi
+# elenchi si ricavano — vedi la nota in wordio/dictionaries/build_targets.py.
+#
 # PER TOGLIERE UNA PAROLA CHE NON PIACE: aggiungila in FUORI qui sotto, nella
 # sua lingua, e rilancia. Vale solo per Findy: gli elenchi di Wordio non si
 # toccano.

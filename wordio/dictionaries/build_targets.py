@@ -11,6 +11,16 @@
 # numero", ordinate dalla piu' usata). Quelle usate vengono da
 # github.com/hermitdave/FrequencyWords — vedi i ringraziamenti nel README.
 #
+# PAROLACCE — regola di base del sito, vale per tutti i giochi: parole volgari,
+# oscene, sessuali esplicite, insulti sulle persone e parole di violenza
+# sessuale NON devono esserci, in nessuna lingua. I tre dizionari qui accanto
+# sono gia' stati ripuliti alla sorgente (nel campo `words`, non solo in
+# `targets`), quindi rilanciare questo script e' sicuro: `targets` si ricava da
+# `words`, che e' pulito. Se invece un giorno si rifa' `words` da capo da una
+# fonte esterna, la ripulitura va rifatta PRIMA di pubblicare — lo strumento sta
+# fuori dalla repo apposta, perche' quelle parole non devono comparire da
+# nessuna parte qui dentro, nemmeno dentro a un elenco di esclusione.
+#
 # PER TOGLIERE UNA PAROLA CHE NON PIACE: aggiungila in EXTRA_FUORI qui sotto,
 # nella sua lingua, e rilancia. Per le parole da 3 lettere invece si lavora
 # direttamente su TRE, che e' scelto a mano una parola per volta.
