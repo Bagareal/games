@@ -100,12 +100,17 @@ body{
   background: rgba(143,182,196,0.08);
   border: 1px solid var(--line-strong);
   color: var(--text);
-  font-size:15px;
+  font-size:18px;
   cursor:pointer;
   text-decoration:none;
   flex:0 0 auto;
 }
 .icon-btn:active{ transform: scale(0.96); }
+/* La freccia per tornare in home ha gia' il suo cerchio disegnato dentro
+   all'icona: il fondino del pulsante ci faceva un secondo cerchio intorno.
+   Via il fondino, e l'icona si prende tutta la misura che aveva il tondo.
+   Il bersaglio da toccare resta largo uguale. */
+a.icon-btn{ background:none; border:none; font-size:34px; line-height:0; }
 /* quota dell'obiettivo, scritta come su un disegno tecnico */
 .goal-display{
   display:flex; align-items:baseline; gap:7px;

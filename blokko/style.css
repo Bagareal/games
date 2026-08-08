@@ -136,12 +136,17 @@ body{
   border: 1.5px solid rgba(177,76,255,0.5);
   box-shadow: 0 0 10px rgba(177,76,255,0.28), inset 0 0 8px rgba(177,76,255,0.14);
   color:var(--text);
-  font-size:15px;
+  font-size:18px;
   cursor:pointer;
   text-decoration:none;
   flex:0 0 auto;
 }
 .icon-btn:active{ transform: scale(0.96); }
+/* La freccia per tornare in home ha gia' il suo cerchio disegnato dentro
+   all'icona: il fondino del pulsante ci faceva un secondo cerchio intorno.
+   Via il fondino, e l'icona si prende tutta la misura che aveva il tondo.
+   Il bersaglio da toccare resta largo uguale. */
+a.icon-btn{ background:none; border:none; box-shadow:none; font-size:34px; line-height:0; }
 .level-display{
   position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
   font-family:'Orbitron', sans-serif;

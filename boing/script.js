@@ -40,8 +40,8 @@ const UI_STRINGS = {
     languageSub: "Scegli la lingua dell'interfaccia",
     close: 'Chiudi',
     powerUpWide: 'Paddle allargato!',
-    powerUpLife: '❤️ Vita extra!',
-    powerUpLifeMax: '❤️ Vite già al massimo (+50 punti)',
+    powerUpLife: 'Vita extra!',
+    powerUpLifeMax: 'Vite già al massimo (+50 punti)',
     powerUpMulti: 'Multi-pallina!',
     powerUpSlow: 'Pallina rallentata!',
     tutorialTitle: 'Come si gioca',
@@ -79,8 +79,8 @@ const UI_STRINGS = {
     languageSub: 'Choose the interface language',
     close: 'Close',
     powerUpWide: 'Paddle widened!',
-    powerUpLife: '❤️ Extra life!',
-    powerUpLifeMax: '❤️ Already max lives (+50 points)',
+    powerUpLife: 'Extra life!',
+    powerUpLifeMax: 'Already max lives (+50 points)',
     powerUpMulti: 'Multi-ball!',
     powerUpSlow: 'Ball slowed down!',
     tutorialTitle: 'How to play',
@@ -118,8 +118,8 @@ const UI_STRINGS = {
     languageSub: "Choisis la langue de l'interface",
     close: 'Fermer',
     powerUpWide: 'Raquette élargie !',
-    powerUpLife: '❤️ Vie supplémentaire !',
-    powerUpLifeMax: '❤️ Vies déjà au maximum (+50 points)',
+    powerUpLife: 'Vie supplémentaire !',
+    powerUpLifeMax: 'Vies déjà au maximum (+50 points)',
     powerUpMulti: 'Multi-balle !',
     powerUpSlow: 'Balle ralentie !',
     tutorialTitle: 'Comment jouer',
@@ -294,8 +294,19 @@ function updateHUD() {
 }
 
 let toastTimer = null;
-function showToast(msg) {
-  els.centerToast.textContent = msg;
+// L'icona sta FUORI dal testo tradotto: il messaggio arriva da t(), che e' una
+// stringa e basta, e finisce in un nodo di testo suo. Se l'icona fosse dentro
+// alla frase la prima traduzione la cancellerebbe.
+function showToast(msg, icon) {
+  els.centerToast.textContent = '';
+  if (icon) {
+    const span = document.createElement('span');
+    span.className = 'ffr-ico toast-ico' + (icon === 'heart' ? ' toast-ico-life' : '');
+    span.dataset.ico = icon;
+    els.centerToast.appendChild(span);
+    if (window.FFR && FFR.icons) FFR.icons(els.centerToast);
+  }
+  els.centerToast.appendChild(document.createTextNode(msg));
   els.centerToast.classList.remove('hidden');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
@@ -412,14 +423,14 @@ function applyPowerUp(type) {
   if (type === 'wide') {
     state.paddle.width = DIFFICULTIES[state.difficulty].paddleWidth * 1.5;
     state.wideUntil = performance.now() + 10000;
-    showToast(t().powerUpWide);
+    showToast(t().powerUpWide, 'arrow-lr');
   } else if (type === 'life') {
     if (state.lives < MAX_LIVES) {
       state.lives += 1;
-      showToast(t().powerUpLife);
+      showToast(t().powerUpLife, 'heart');
     } else {
       state.score += 50;
-      showToast(t().powerUpLifeMax);
+      showToast(t().powerUpLifeMax, 'heart');
     }
     updateHUD();
   } else if (type === 'multi') {
@@ -434,10 +445,10 @@ function applyPowerUp(type) {
         });
       }
     }
-    showToast(t().powerUpMulti);
+    showToast(t().powerUpMulti, 'balls');
   } else if (type === 'slow') {
     state.slowUntil = performance.now() + 9000;
-    showToast(t().powerUpSlow);
+    showToast(t().powerUpSlow, 'snail');
   }
 }
 

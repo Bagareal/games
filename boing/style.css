@@ -63,12 +63,17 @@ body{
   border: 1.5px solid rgba(255,255,255,0.22);
   backdrop-filter: blur(6px);
   color:var(--white);
-  font-size:16px;
+  font-size:19px;
   cursor:pointer;
   text-decoration:none;
   flex:0 0 auto;
 }
 .icon-btn:active{ transform: scale(0.96); }
+/* La freccia per tornare in home ha gia' il suo cerchio disegnato dentro
+   all'icona: il fondino del pulsante ci faceva un secondo cerchio intorno.
+   Via il fondino, e l'icona si prende tutta la misura che aveva il tondo.
+   Il bersaglio da toccare resta largo uguale. */
+a.icon-btn{ background:none; border:none; backdrop-filter:none; font-size:34px; line-height:0; }
 .level-display{
   position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
   font-family:'Press Start 2P', monospace;
@@ -155,6 +160,16 @@ body{
   pointer-events:none;
   z-index:10;
 }
+/* icona del potenziamento appena preso, davanti alla frase. Un filo piu' grande
+   del testo: il font del gioco e' minuto e a 11px la lumaca non si capiva. */
+.center-toast .toast-ico{
+  font-size:16px;
+  margin-right:7px;
+  vertical-align:-0.22em;
+}
+/* il cuore e' rosso sempre, non del colore del testo: e' lo stesso rosso delle
+   vite disegnate in alto */
+.toast-ico-life{ color: var(--coral); }
 
 /* overlay/card: estetica propria di Boing (arcade scuro/neon), non quella
    "da spiaggia" di Wordio — anche i modal condivisi seguono il tema del
@@ -274,6 +289,9 @@ body{
   flex:0 0 auto; width:44px; text-align:center;
   font-size:20px;
 }
+/* nella riga dei potenziamenti il cuore sta in fila ai quadratini colorati,
+   che sono allineati a meta' altezza */
+.tutorial-icon .ffr-ico{ vertical-align:middle; }
 .tutorial-row p{ margin:0; font-size:12.5px; line-height:1.4; }
 .pu-swatch{
   display:inline-block; width:11px; height:11px; margin:0 2px;
@@ -347,7 +365,8 @@ body{
      occupi davvero quell'intestazione, tenendo il gioco piccolo anche dove
      c'era spazio verticale abbondante (tablet alti) */
   #gameCanvas{ max-width: min(88vw, calc((100dvh - 170px) / 1.5), 900px); }
-  .icon-btn{ width:42px; height:42px; font-size:19px; }
+  .icon-btn{ width:42px; height:42px; font-size:23px; }
+  a.icon-btn{ font-size:42px; }
   .level-display{ font-size:16px; }
   .lives{ width:90px; height:22px; }
   #scoreValue{ font-size:30px; }
@@ -362,7 +381,8 @@ body{
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     overflow-y:auto;
   }
-  .icon-btn{ width:48px; height:48px; font-size:22px; }
+  .icon-btn{ width:48px; height:48px; font-size:26px; }
+  a.icon-btn{ font-size:48px; }
   .level-display{ font-size:18px; }
   .lives{ width:104px; height:26px; }
   #scoreValue{ font-size:34px; }

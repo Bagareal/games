@@ -572,9 +572,13 @@
       .ffr-auth-label{ font-family:'Baloo 2', sans-serif; font-weight:700; font-size:13px; color:#fff;
         text-shadow:0 1px 3px rgba(0,0,0,0.35); max-width:120px; overflow:hidden; text-overflow:ellipsis;
         white-space:nowrap; }
-      .ffr-auth-icon-btn{ width:38px; height:38px; border-radius:50%; display:flex; align-items:center;
-        justify-content:center; background:rgba(255,255,255,0.22); border:1.5px solid rgba(255,255,255,0.4);
-        backdrop-filter:blur(6px); color:#fff; font-size:17px; cursor:pointer; flex:0 0 auto; }
+      /* Niente fondino tondo qui: l'icona account e' gia' un tondo suo, e il
+         cerchio del pulsante gliene faceva un secondo intorno. Il pulsante
+         resta della stessa misura di prima (38px, l'area da toccare non
+         cambia), ma adesso quei 38px se li prende tutti l'icona. */
+      .ffr-auth-icon-btn{ width:38px; height:38px; display:flex; align-items:center;
+        justify-content:center; background:none; border:none; padding:0;
+        color:#fff; font-size:38px; line-height:0; cursor:pointer; flex:0 0 auto; }
       .ffr-auth-icon-btn:active{ transform:scale(0.94); }
       .ffr-lang-option{ display:flex; align-items:center; gap:12px; width:100%; background:#fff;
         border:none; border-radius:14px; padding:13px 16px; margin-bottom:10px; cursor:pointer;

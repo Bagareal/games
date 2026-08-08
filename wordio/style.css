@@ -134,12 +134,17 @@
     border: 1.5px solid rgba(255,255,255,0.35);
     backdrop-filter: blur(6px);
     color:var(--white);
-    font-size:16px;
+    font-size:19px;
     cursor:pointer;
     text-decoration:none;
     flex: 0 0 auto;
   }
   .icon-btn:active{ transform: scale(0.96); }
+  /* La freccia per tornare in home ha gia' il suo cerchio disegnato dentro
+     all'icona: il fondino del pulsante ci faceva un secondo cerchio intorno.
+     Via il fondino, e l'icona si prende tutta la misura che aveva il tondo.
+     Il bersaglio da toccare resta largo uguale. */
+  a.icon-btn{ background:none; border:none; backdrop-filter:none; font-size:34px; line-height:0; }
   .icon-btn-wrap{ position:relative; display:inline-block; flex: 0 0 auto; }
   .lang-badge{
     position:absolute; bottom:-3px; right:-5px;
@@ -158,12 +163,17 @@
     text-shadow: 0 2px 0 rgba(0,0,0,0.18);
   }
   .level-display #levelLabel{ font-size:28px; }
+  .coin-group{ display:flex; align-items:center; gap:8px; flex: 0 0 auto; }
   .pill{
     display:flex; align-items:center; gap:6px;
-    background: rgba(255,255,255,0.18);
+    /* Fondino scuro, non chiaro: la pillola sta nell'angolo in alto a destra e
+       li' dietro passa il sole del tema (e la luna, di notte). Su bianco caldo
+       il testo bianco spariva. Scuro tiene su tutti e cinque i temi. */
+    background: rgba(9,40,58,0.42);
     border: 1.5px solid rgba(255,255,255,0.35);
     backdrop-filter: blur(6px);
     color:var(--white);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.45);
     padding:5px 12px 5px 6px;
     border-radius:999px;
     font-family:'Baloo 2', sans-serif;
@@ -172,6 +182,16 @@
   }
   button.pill{ cursor:pointer; }
   button.pill:active{ transform: scale(0.96); }
+  /* Il negozio: icona a colori sua, senza fondino intorno (il fondino chiaro
+     le spegneva i colori). L'ombra la stacca dallo sfondo del tema. */
+  .shop-btn{
+    width:32px; height:32px;
+    background:none; border:none; padding:0;
+    font-size:32px; line-height:0;
+    cursor:pointer; flex: 0 0 auto;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+  }
+  .shop-btn:active{ transform: scale(0.94); }
   .pill .icon-badge{
     width:22px; height:22px; border-radius:50%;
     display:flex; align-items:center; justify-content:center;

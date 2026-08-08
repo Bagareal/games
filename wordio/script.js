@@ -419,7 +419,7 @@ const els = {
   extraModalOverlay: document.getElementById('extraModalOverlay'),
   extraWordsGrid: document.getElementById('extraWordsGrid'),
   closeExtraModalBtn: document.getElementById('closeExtraModalBtn'),
-  coinBtn: document.getElementById('coinBtn'),
+  shopBtn: document.getElementById('shopBtn'),
   shopOverlay: document.getElementById('shopOverlay'),
   closeShopBtn: document.getElementById('closeShopBtn'),
   shopBalance: document.getElementById('shopBalance'),
@@ -1273,7 +1273,9 @@ async function init() {
     if (e.target === els.extraModalOverlay) closeExtraModal();
   });
 
-  els.coinBtn.addEventListener('click', openShop);
+  // il negozio si apre SOLO dal suo pulsante: la pillola delle monete e' un
+  // cartellino, dice quanto hai e basta
+  els.shopBtn.addEventListener('click', openShop);
   els.closeShopBtn.addEventListener('click', closeShop);
   els.shopOverlay.addEventListener('click', (e) => {
     if (e.target === els.shopOverlay) closeShop();

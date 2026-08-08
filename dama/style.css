@@ -102,12 +102,17 @@ body{
   background: rgba(201,162,39,0.09);
   border: 1px solid var(--brass-soft);
   color: var(--text);
-  font-size:16px; line-height:1;
+  font-size:19px; line-height:1;
   cursor:pointer;
   text-decoration:none;
   flex:0 0 auto;
 }
 .icon-btn:active{ transform: scale(0.94); }
+/* La freccia per tornare in home ha gia' il suo cerchio disegnato dentro
+   all'icona: il fondino del pulsante ci faceva un secondo cerchio intorno.
+   Via il fondino, e l'icona si prende tutta la misura che aveva il tondo.
+   Il bersaglio da toccare resta largo uguale. */
+a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
 /* di chi è il turno: la riga più importante dell'interfaccia, sempre in alto */
 .turn-pill{
   font-size:12px; font-weight:700;
