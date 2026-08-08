@@ -122,6 +122,18 @@
         <button class="menu-row" id="openTutorialBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="commands">Istruzioni</span></button>
         <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>
       </div>
+
+      <!-- la difficoltà sta anche qui, non solo nel pannello di pausa: è la
+           prima cosa che si viene a cercare nelle impostazioni, e trovarla solo
+           dietro al tasto pausa vuol dire non trovarla. Qui cambiarla vuol dire
+           partita nuova, quindi passa dalla conferma. -->
+      <p class="menu-section-label" data-i18n="difficultyLabel">Difficoltà</p>
+      <div class="difficulty-list">
+        <button class="difficulty-option" data-difficulty="easy" data-i18n="easy">Facile</button>
+        <button class="difficulty-option" data-difficulty="medium" data-i18n="medium">Medio</button>
+        <button class="difficulty-option" data-difficulty="hard" data-i18n="hard">Difficile</button>
+      </div>
+
       <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
     </div>
   </div>

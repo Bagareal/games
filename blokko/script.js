@@ -982,7 +982,35 @@ function hideAllOverlays() {
 }
 // ↻ in barra: ricomincia la partita sulla stessa difficoltà, chiedendo conferma.
 // Fuori da una partita porta alla scelta della difficoltà, come il ⏸.
+// Scegliere una difficoltà qui vuol dire cominciare una partita nuova, quindi
+// perdere quella in corso: si chiede conferma, come per il ↻ in barra. Vale sia
+// dal pannello di pausa sia dalle impostazioni — due pulsanti identici non
+// possono comportarsi in due modi diversi. Scegliere la difficoltà su cui si sta
+// già giocando non perde niente: chiude il pannello e basta.
+let pendingDifficulty = null;   // scelta in attesa di conferma
+let confirmReturnTo = null;     // dove tornare se si risponde "no": 'pause' | 'settings' | null
+function chooseDifficulty(difficultyKey, from) {
+  if (state.difficulty && !state.gameOver) {
+    if (difficultyKey === state.difficulty) {
+      if (from === 'settings') closeSettingsMenu();
+      else if (from === 'pause') closePause();
+      return;
+    }
+    pendingDifficulty = difficultyKey;
+    confirmReturnTo = from;
+    hideAllOverlays();
+    state.paused = true;
+    releaseTouch();
+    els.restartOverlay.classList.add('show');
+    return;
+  }
+  pendingDifficulty = null;
+  confirmReturnTo = null;
+  startNewGame(difficultyKey);
+}
 function openRestartConfirm() {
+  pendingDifficulty = null;      // stessa difficoltà, solo una partita nuova
+  confirmReturnTo = null;
   if (!state.difficulty || state.gameOver) { els.difficultyOverlay.classList.add('show'); return; }
   state.paused = true;
   releaseTouch();
@@ -1003,7 +1031,7 @@ function openPause() {
 // la difficoltà in corso si vede: aprendo il pannello si capisce subito su quale
 // si sta giocando, invece di trovare tre pulsanti tutti uguali
 function markCurrentDifficulty() {
-  document.querySelectorAll('#pauseOverlay .difficulty-option').forEach(btn => {
+  document.querySelectorAll('.difficulty-option').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.difficulty === state.difficulty);
   });
 }
@@ -1013,6 +1041,7 @@ function closePause() {
 }
 function openSettingsMenu() {
   if (state.difficulty && !state.gameOver) { state.paused = true; releaseTouch(); }
+  markCurrentDifficulty();
   els.settingsOverlay.classList.add('show');
 }
 function closeSettingsMenu() {
@@ -1325,8 +1354,14 @@ async function init() {
   window.addEventListener('resize', resizeCanvas);
   window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 250));
 
-  document.querySelectorAll('.difficulty-option').forEach(btn => {
+  document.querySelectorAll('#difficultyOverlay .difficulty-option').forEach(btn => {
     btn.addEventListener('click', () => startNewGame(btn.dataset.difficulty));
+  });
+  document.querySelectorAll('#pauseOverlay .difficulty-option').forEach(btn => {
+    btn.addEventListener('click', () => chooseDifficulty(btn.dataset.difficulty, 'pause'));
+  });
+  document.querySelectorAll('#settingsOverlay .difficulty-option').forEach(btn => {
+    btn.addEventListener('click', () => chooseDifficulty(btn.dataset.difficulty, 'settings'));
   });
   els.retryBtn.addEventListener('click', () => {
     els.gameOverOverlay.classList.remove('show');
@@ -1348,14 +1383,25 @@ async function init() {
   els.topRestartBtn.addEventListener('click', openRestartConfirm);
   els.confirmRestartBtn.addEventListener('click', () => {
     els.restartOverlay.classList.remove('show');
-    if (state.difficulty) startNewGame(state.difficulty);
+    const key = pendingDifficulty || state.difficulty;
+    pendingDifficulty = null;
+    confirmReturnTo = null;
+    if (key) startNewGame(key);
   });
   els.cancelRestartBtn.addEventListener('click', () => {
     els.restartOverlay.classList.remove('show');
-    resumePlay();
+    pendingDifficulty = null;
+    if (confirmReturnTo === 'pause') els.pauseOverlay.classList.add('show');
+    else if (confirmReturnTo === 'settings') els.settingsOverlay.classList.add('show');
+    else resumePlay();
+    confirmReturnTo = null;
   });
   els.restartOverlay.addEventListener('click', (e) => {
-    if (e.target === els.restartOverlay) { els.restartOverlay.classList.remove('show'); resumePlay(); }
+    if (e.target !== els.restartOverlay) return;
+    els.restartOverlay.classList.remove('show');
+    pendingDifficulty = null;
+    confirmReturnTo = null;
+    resumePlay();
   });
   els.resumeBtn.addEventListener('click', closePause);
   els.pauseOverlay.addEventListener('click', (e) => {
@@ -1455,6 +1501,7 @@ window.FFR_ON_MODAL_CLOSE = function (id) {
     }
     return;
   }
+  if (id === 'restartOverlay') { pendingDifficulty = null; confirmReturnTo = null; }
   const resumes = ['pauseOverlay', 'settingsOverlay', 'tutorialOverlay', 'languageOverlay', 'leaderboardOverlay', 'restartOverlay'];
   if (resumes.indexOf(id) !== -1) resumePlay();
 };

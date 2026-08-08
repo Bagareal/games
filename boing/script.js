@@ -381,10 +381,15 @@ function openPause() {
   // chi la chiude resta davanti a un campo vuoto senza modo di ricominciare.
   if (state.difficulty == null) { els.difficultyOverlay.classList.add('show'); return; }
   state.paused = true;
-  document.querySelectorAll('#pauseOverlay .difficulty-option').forEach(btn => {
+  markCurrentDifficulty();
+  els.pauseOverlay.classList.add('show');
+}
+// la difficoltà in corso si vede ovunque sia in elenco (pausa e impostazioni):
+// tre pulsanti tutti uguali non direbbero su quale si sta giocando
+function markCurrentDifficulty() {
+  document.querySelectorAll('.difficulty-option').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.difficulty === state.difficulty);
   });
-  els.pauseOverlay.classList.add('show');
 }
 function closePause() {
   els.pauseOverlay.classList.remove('show');
@@ -400,6 +405,7 @@ function resetLevel() {
 function openSettingsMenu() {
   if (state.difficulty == null) return;
   state.paused = true;
+  markCurrentDifficulty();
   els.settingsOverlay.classList.add('show');
 }
 function closeSettingsMenu() {

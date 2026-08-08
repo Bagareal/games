@@ -352,7 +352,6 @@ const state = {
   byDifficulty: {},
 };
 let history = [];          // per l'annulla: vale per la sessione, non si salva
-let tornaAllaPausa = false; // la conferma "schema nuovo" è stata aperta dal pannello di pausa?
 // Tutorial del primo avvio: si chiude solo con "Ho capito!". Prima bastava un
 // dito appoggiato sullo sfondo per farlo sparire, e siccome quel tocco lo
 // segnava anche come "gia' visto", non tornava mai piu': chi apriva il gioco
@@ -671,6 +670,34 @@ function startClock() {
     els.timeValue.textContent = formatTime(state.seconds);
     if (state.seconds - lastTick >= 20) { lastTick = state.seconds; scheduleSave(); }
   }, 1000);
+}
+
+// ---------- Scelta della difficoltà ----------
+// Scegliere una difficoltà vuol dire cominciare uno schema nuovo, quindi buttare
+// via quello a metà: si chiede conferma, come per il ↻ in barra. Vale sia dal
+// pannello di pausa sia dalle impostazioni — due pulsanti identici non possono
+// comportarsi in due modi diversi. Scegliere la difficoltà su cui si sta già
+// giocando non butta via niente: chiude il pannello e basta.
+let pendingDifficulty = null;   // scelta in attesa di conferma
+let confirmReturnTo = null;     // dove tornare se si risponde "no": 'pause' | 'settings' | null
+function chooseDifficulty(difficultyKey, from) {
+  if (state.difficulty && !state.solved) {
+    if (difficultyKey === state.difficulty) {
+      if (from === 'settings') closeSettingsMenu();
+      else if (from === 'pause') closePause();
+      return;
+    }
+    pendingDifficulty = difficultyKey;
+    confirmReturnTo = from;
+    hideAllOverlays();
+    state.paused = true;
+    updateHUD();
+    els.confirmOverlay.classList.add('show');
+    return;
+  }
+  pendingDifficulty = null;
+  confirmReturnTo = null;
+  startNewGame(difficultyKey);
 }
 
 // ---------- Partita ----------
@@ -1062,8 +1089,17 @@ async function init() {
     resumePlay();
   });
 
-  document.querySelectorAll('.difficulty-option').forEach(btn => {
+  // dal pannello di partenza non c'è niente da perdere: si parte e basta.
+  // Dalla pausa e dalle impostazioni invece una partita in corso c'è, e va
+  // chiesto prima di buttarla.
+  document.querySelectorAll('#difficultyOverlay .difficulty-option').forEach(btn => {
     btn.addEventListener('click', () => startNewGame(btn.dataset.difficulty));
+  });
+  document.querySelectorAll('#pauseOverlay .difficulty-option').forEach(btn => {
+    btn.addEventListener('click', () => chooseDifficulty(btn.dataset.difficulty, 'pause'));
+  });
+  document.querySelectorAll('#settingsOverlay .difficulty-option').forEach(btn => {
+    btn.addEventListener('click', () => chooseDifficulty(btn.dataset.difficulty, 'settings'));
   });
 
   els.pencilBtn.addEventListener('click', togglePencil);
@@ -1078,7 +1114,8 @@ async function init() {
     if (!state.difficulty || state.solved) { els.difficultyOverlay.classList.add('show'); return; }
     state.paused = true;
     updateHUD();
-    tornaAllaPausa = false;
+    pendingDifficulty = null;      // stessa difficoltà, solo uno schema nuovo
+    confirmReturnTo = null;
     els.confirmOverlay.classList.add('show');
   });
   els.resumeBtn.addEventListener('click', closePause);
@@ -1089,18 +1126,26 @@ async function init() {
   // mezz'ora di ragionamenti per un tocco storto sarebbe una brutta sorpresa
   els.restartBtn.addEventListener('click', () => {
     els.pauseOverlay.classList.remove('show');
-    tornaAllaPausa = true;
+    pendingDifficulty = null;
+    confirmReturnTo = 'pause';
     els.confirmOverlay.classList.add('show');
   });
   els.confirmNewBtn.addEventListener('click', () => {
     els.confirmOverlay.classList.remove('show');
-    startNewGame(state.difficulty);
+    const key = pendingDifficulty || state.difficulty;
+    pendingDifficulty = null;
+    confirmReturnTo = null;
+    startNewGame(key);
   });
   // "no, continuo": si torna da dove si era arrivati — dal pannello di pausa se
   // era aperto lui, direttamente allo schema se si era passati dal ↻ in barra
   els.cancelNewBtn.addEventListener('click', () => {
     els.confirmOverlay.classList.remove('show');
-    if (tornaAllaPausa) els.pauseOverlay.classList.add('show'); else resumePlay();
+    pendingDifficulty = null;
+    if (confirmReturnTo === 'pause') els.pauseOverlay.classList.add('show');
+    else if (confirmReturnTo === 'settings') els.settingsOverlay.classList.add('show');
+    else resumePlay();
+    confirmReturnTo = null;
   });
   els.againBtn.addEventListener('click', () => {
     els.winOverlay.classList.remove('show');
@@ -1202,6 +1247,7 @@ window.FFR_ON_MODAL_CLOSE = function (id) {
     }
     return;
   }
+  if (id === 'confirmOverlay') { pendingDifficulty = null; confirmReturnTo = null; }
   const resumes = ['pauseOverlay', 'settingsOverlay', 'tutorialOverlay', 'languageOverlay', 'leaderboardOverlay', 'confirmOverlay'];
   if (resumes.indexOf(id) !== -1) resumePlay();
 };
