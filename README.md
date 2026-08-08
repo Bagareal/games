@@ -32,11 +32,11 @@ A brick-breaker: bounce the ball off your paddle to clear every brick. 3 lives, 
 
 **[freeforreal.app/boing](https://freeforreal.app/boing/)**
 
-### [Blokko](blokko/)
+### [Blokky](blokko/)
 
-A falling-blocks puzzle: rotate and slide the pieces to fill complete rows before the stack reaches the top. 9 piece shapes (two of them our own), 3 difficulty levels, and a neon arcade look of its own. Touch controls: tap to rotate, drag to move, hold to drop fast, swipe down to slam. Play it at:
+A falling-blocks puzzle: rotate and slide the pieces to fill complete rows before the stack reaches the top. 9 piece shapes (two of them our own), 3 difficulty levels, and a neon arcade look of its own. Touch controls: tap to rotate, drag to move, hold to drop fast, swipe down to slam. Come back to a game you left half-played and it waits on "tap to continue" instead of dropping a piece while you're still looking. Play it at:
 
-**[freeforreal.app/blokko](https://freeforreal.app/blokko/)**
+**[freeforreal.app/blokko](https://freeforreal.app/blokko/)** — the game was first published as *Blokko* and the address keeps that name, so old links and saved progress still work.
 
 ### [Addy](addy/)
 
@@ -49,6 +49,12 @@ A slide-and-add puzzle: swipe and every tile slides as far as it can, and two ti
 Draughts is a traditional game, centuries old, with no author and no owner — its rules belong to everyone, like those of chess. Ours is the classic 8×8 variant: men capture forwards and backwards, kings fly along the whole diagonal, and capturing is compulsory. Play against the computer — three levels, from a genuinely careless one to a search that looks several moves ahead — or against a friend on the same device, laid flat on the table between you, so the board never rotates. Walnut-and-brass club-table look of its own. Play it at:
 
 **[freeforreal.app/dama](https://freeforreal.app/dama/)**
+
+### [Sudopoku](sudopoku/)
+
+A number-placement puzzle on a 9×9 grid: every row, column and box of nine holds each digit from 1 to 9 exactly once. Puzzles are generated in the browser — a random full solution, then cells dug out in symmetric pairs, each removal checked to keep the solution unique — so you never get a grid that can only be guessed at. 3 difficulty levels, pencil notes, 3 hints per puzzle, optional mistake flagging, and a leaderboard per difficulty scored on time, mistakes and hints used. The only light-coloured game on the site: paper and ink, black print for the given digits, blue pen for yours, grey pencil for your notes. Play it at:
+
+**[freeforreal.app/sudopoku](https://freeforreal.app/sudopoku/)**
 
 ## Credits
 

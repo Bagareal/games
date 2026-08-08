@@ -1,0 +1,512 @@
+/* ============ SUDOPOKU — identità grafica: carta e inchiostro ============
+   Ogni gioco del sito ha una grafica propria. Qui niente neon indaco (è di
+   Blokky), niente pixel art (è di Boing), niente blu petrolio da disegno
+   tecnico (è di Addy), niente noce e ottone (è della Dama), niente laguna e
+   sabbia (è di Wordio). Sudopoku è l'unico gioco CHIARO del sito: una pagina di
+   quaderno appoggiata sulla scrivania. Le cifre dello schema sono stampate in
+   inchiostro nero, quelle scritte da chi gioca sono di penna blu, gli appunti
+   sono di matita grigia e gli sbagli sono di penna rossa. */
+:root{
+  --desk: #D9CBAE;        /* la scrivania sotto al foglio */
+  --paper: #F7F1E1;       /* il foglio */
+  --paper-2: #F2EAD5;     /* riga e colonna della casella scelta */
+  --paper-3: #E7DCBB;     /* la casella scelta */
+  --paper-4: #F0E6C6;     /* le caselle con la stessa cifra */
+  --rule: rgba(45, 42, 34, 0.20);       /* righine sottili dello schema */
+  --rule-strong: rgba(45, 42, 34, 0.72); /* le righe grosse dei riquadri */
+
+  --ink: #2A2622;         /* le cifre stampate e i titoli */
+  --ink-soft: rgba(42, 38, 34, 0.62);
+  --pen: #2C5AA0;         /* la penna blu di chi gioca */
+  --pencil: #8A8474;      /* gli appunti */
+  --red: #B3382F;         /* gli sbagli */
+  --green: #3F7150;       /* schema risolto */
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+html,body{ height:100%; }
+body{
+  margin:0; padding:0; min-height:100%;
+  font-family:'Karla', sans-serif;
+  background: var(--desk);
+  color: var(--ink);
+  overscroll-behavior: none;
+}
+
+/* ---------- sfondo: il foglio sulla scrivania ---------- */
+/* tutto fermo: non c'è niente da animare qui, e uno sfondo statico non costa un
+   solo fotogramma mentre si gioca */
+#bgLayer{
+  position:fixed; inset:0; z-index:0;
+  pointer-events:none;
+  background: var(--paper);
+}
+.paper-rules{
+  position:absolute; inset:0;
+  background-image: repeating-linear-gradient(to bottom, rgba(45,42,34,0.055) 0 1px, transparent 1px 30px);
+}
+.paper-shade{
+  position:absolute; inset:0;
+  background: radial-gradient(130% 95% at 50% 20%, rgba(255,255,255,0.5) 0%, rgba(0,0,0,0) 55%, rgba(90,74,44,0.16) 100%);
+}
+
+#app{
+  position:relative; z-index:1;
+  width:100%;
+  min-height:100vh;
+  min-height:100dvh;
+  max-width:480px;
+  margin:0 auto;
+  display:flex; flex-direction:column;
+  overflow-x:hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ---------- caricamento ---------- */
+#loadingScreen{
+  position:fixed; inset:0; z-index:60;
+  background: var(--paper);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
+  transition: opacity 0.3s ease;
+}
+#loadingScreen.hidden{ display:none; }
+.loading-title{
+  font-family:'Lora', serif;
+  font-weight:700; font-size:26px; letter-spacing:7px;
+  color: var(--ink);
+  padding-left:7px; /* compensa lo spazio finale della spaziatura */
+}
+.spinner{
+  width:30px; height:30px;
+  border:2px solid rgba(42,38,34,0.18);
+  border-top-color: var(--pen);
+  border-radius:50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* ---------- topbar ---------- */
+.topbar{
+  position:relative; z-index:5;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: max(10px, env(safe-area-inset-top)) 16px 2px;
+}
+.icon-group{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+.icon-btn{
+  width:34px; height:34px; border-radius:4px;
+  display:flex; align-items:center; justify-content:center;
+  background: rgba(42,38,34,0.06);
+  border: 1px solid rgba(42,38,34,0.22);
+  color: var(--ink);
+  font-size:18px;
+  cursor:pointer;
+  text-decoration:none;
+  flex:0 0 auto;
+}
+.icon-btn:active{ transform: scale(0.96); }
+/* la freccia della home ha già il suo cerchio disegnato dentro: senza fondino
+   non ne resta uno dentro l'altro */
+a.icon-btn{ background:none; border:none; font-size:34px; line-height:0; }
+.level-display{
+  font-family:'Lora', serif;
+  font-weight:600; font-size:13px; letter-spacing:1.5px;
+  color: var(--ink-soft);
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+/* ---------- hud ---------- */
+.hud-row{
+  display:flex; align-items:stretch; gap:8px;
+  padding: 10px 16px 0;
+}
+.hud-box{
+  flex:1 1 0;
+  border:1px solid rgba(42,38,34,0.18);
+  border-radius:4px;
+  background: rgba(255,255,255,0.4);
+  padding:6px 10px 7px;
+  text-align:center;
+}
+.hud-label{
+  font-weight:700; font-size:9px; letter-spacing:1.8px;
+  color: var(--ink-soft);
+  margin-bottom:1px;
+}
+.hud-value{
+  font-family:'Lora', serif;
+  font-weight:700; font-size:21px; line-height:1.1;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.title-wrap{ padding: 10px 16px 0; }
+.title-wrap h1{
+  font-family:'Lora', serif;
+  font-weight:700; font-size:19px; letter-spacing:7px;
+  margin:0; padding-left:7px;
+  color: var(--ink);
+  text-align:center;
+}
+.title-rule{
+  height:1px; margin-top:6px;
+  background: rgba(42,38,34,0.22);
+}
+
+/* ---------- lo schema ---------- */
+.game-zone{
+  position:relative;
+  /* base 0, non auto: l'altezza di questa zona è "quello che avanza" fra
+     l'intestazione e il tastierino, e non dipende da quanto è grande lo schema
+     che ci sta dentro (altrimenti la misura sarebbe circolare) */
+  flex:1 1 0;
+  display:flex; align-items:center; justify-content:center;
+  padding: 10px 14px;
+  min-height:0;
+}
+.board-frame{
+  position:relative;
+  width: var(--board, 300px);
+  height: var(--board, 300px);
+  background: var(--paper);
+  border:2px solid var(--rule-strong);
+  border-radius:2px;
+  box-shadow: 0 6px 18px rgba(90,74,44,0.18);
+}
+.sudo-board{
+  position:absolute; inset:0;
+  display:grid;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(9, 1fr);
+}
+.sudo-cell{
+  position:relative;
+  display:flex; align-items:center; justify-content:center;
+  border-right:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  font-family:'Lora', serif;
+  font-weight:600;
+  font-size: calc(var(--cell, 32px) * 0.62);
+  line-height:1;
+  color: var(--pen);
+  cursor:pointer;
+  overflow:hidden;
+}
+/* le righe grosse che separano i tre riquadri, e nessun bordo sull'ultima
+   casella di ogni lato: lì il bordo lo fa già la cornice */
+.sudo-cell.edge-x{ border-right:2px solid var(--rule-strong); }
+.sudo-cell.edge-y{ border-bottom:2px solid var(--rule-strong); }
+.sudo-cell.last-x{ border-right:none; }
+.sudo-cell.last-y{ border-bottom:none; }
+
+.sudo-cell.given{ color: var(--ink); font-weight:700; }
+.sudo-cell.wrong{ color: var(--red); }
+.sudo-cell.peer{ background: var(--paper-2); }
+.sudo-cell.same{ background: var(--paper-4); }
+.sudo-cell.sel{ background: var(--paper-3); box-shadow: inset 0 0 0 2px var(--pen); }
+.sudo-cell.hinted{ animation: hint-flash 0.6s ease-out; }
+@keyframes hint-flash{
+  from{ background: #F6DFA0; }
+  to{ background: transparent; }
+}
+
+/* gli appunti: nove posti fissi dentro la casella, così il 5 sta sempre in
+   mezzo e si ritrova a colpo d'occhio */
+.notes{
+  position:absolute; inset:1px;
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  font-family:'Karla', sans-serif;
+  font-weight:600;
+  font-size: calc(var(--cell, 32px) * 0.26);
+  color: var(--pencil);
+  line-height:1;
+}
+.notes span{ display:flex; align-items:center; justify-content:center; }
+
+/* ---------- "tocca per continuare" ---------- */
+.resume-hint{
+  position:absolute; inset:0; z-index:10;
+  display:flex; align-items:center; justify-content:center;
+  padding:16px;
+  background: rgba(247,241,225,0.72);
+  cursor:pointer;
+}
+.resume-hint.hidden{ display:none; }
+.resume-hint-text{
+  font-family:'Lora', serif;
+  font-weight:700; font-size:17px; letter-spacing:1px;
+  text-align:center; line-height:1.5;
+  color: var(--ink);
+  background: var(--paper);
+  border:1px solid rgba(42,38,34,0.3);
+  border-radius:4px;
+  padding:10px 18px;
+  box-shadow: 0 4px 14px rgba(90,74,44,0.2);
+  animation: resume-pulse 1.8s ease-in-out infinite;
+}
+@keyframes resume-pulse{
+  0%, 100%{ opacity:1; }
+  50%{ opacity:0.55; }
+}
+@media (prefers-reduced-motion: reduce){
+  .resume-hint-text{ animation:none; }
+}
+
+/* ---------- attrezzi e tastierino ---------- */
+.pad-zone{
+  padding: 4px 14px max(12px, env(safe-area-inset-bottom));
+}
+.tool-row{
+  display:flex; gap:7px;
+  margin-bottom:8px;
+}
+.tool-btn{
+  position:relative;
+  flex:1 1 0;
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  font-family:'Karla', sans-serif;
+  font-weight:600; font-size:11px;
+  padding:8px 4px 7px;
+  border-radius:4px;
+  color: var(--ink);
+  background: rgba(255,255,255,0.45);
+  border:1px solid rgba(42,38,34,0.2);
+  cursor:pointer;
+}
+.tool-btn .ffr-ico{ font-size:17px; color: var(--ink-soft); }
+.tool-btn:active{ transform: translateY(1px); }
+.tool-btn:disabled{ opacity:0.4; cursor:default; }
+.tool-btn:disabled:active{ transform:none; }
+/* matita accesa: si vede da lontano che si stanno scrivendo appunti e non
+   risposte, altrimenti si riempie la griglia di numerini per sbaglio */
+.tool-btn.on{
+  background: var(--pen);
+  border-color: var(--pen);
+  color: #FBF7EC;
+}
+.tool-btn.on .ffr-ico{ color:#FBF7EC; }
+.tool-state{ font-size:9px; letter-spacing:1px; opacity:0.85; }
+.tool-count{
+  position:absolute; top:4px; right:6px;
+  font-weight:700; font-size:10px;
+  color: var(--pen);
+}
+.tool-btn.on .tool-count{ color:#FBF7EC; }
+
+.keypad{
+  display:grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap:5px;
+}
+.key{
+  font-family:'Lora', serif;
+  font-weight:700;
+  font-size:19px;
+  padding:11px 0 12px;
+  border-radius:4px;
+  color: var(--pen);
+  background: rgba(255,255,255,0.55);
+  border:1px solid rgba(42,38,34,0.2);
+  cursor:pointer;
+}
+.key:active{ transform: translateY(1px); }
+/* cifra già messa tutte e nove le volte: resta al suo posto ma spenta, così il
+   tastierino non cambia forma sotto le dita a metà partita */
+.key.done{ opacity:0.28; }
+
+/* ---------- overlay e pannelli ---------- */
+.overlay{
+  position:fixed; inset:0; z-index:50;
+  background: rgba(90, 74, 44, 0.42);
+  backdrop-filter: blur(2px);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  opacity:0; pointer-events:none; transition: opacity 0.2s ease;
+}
+.overlay.show{ opacity:1; pointer-events:auto; }
+.card{
+  position:relative;
+  width:100%; max-width:340px;
+  max-height:88vh; overflow-y:auto;
+  background: var(--paper);
+  border:1px solid rgba(42,38,34,0.28);
+  border-radius:5px;
+  padding:24px 20px 20px;
+  text-align:center;
+  color: var(--ink);
+  box-shadow: 0 18px 40px rgba(60,48,26,0.35);
+}
+.card h2{
+  font-family:'Lora', serif;
+  font-weight:700; font-size:17px; letter-spacing:1px;
+  margin:0 0 8px;
+  color: var(--ink);
+}
+.card p{
+  font-size:14px; font-weight:500; line-height:1.45;
+  color: var(--ink-soft);
+  margin:0 0 16px;
+}
+.big-icon{
+  font-size:30px;
+  color: var(--pen);
+  line-height:1; margin-bottom:10px;
+}
+#winSub{ white-space: pre-line; font-family:'Lora', serif; color: var(--ink); }
+
+.primary-btn, .secondary-btn, .menu-row, .language-option, .difficulty-option, .lb-tab{
+  font-family:'Karla', sans-serif;
+  font-weight:700;
+  cursor:pointer;
+  border-radius:4px;
+}
+.primary-btn{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  width:100%;
+  font-size:14px;
+  padding:12px 16px;
+  margin-bottom:8px;
+  color:#FBF7EC;
+  background: var(--pen);
+  border:1px solid #24487F;
+}
+.primary-btn:active{ transform: translateY(1px); }
+.secondary-btn{
+  display:block; width:100%;
+  font-size:13px;
+  padding:11px 16px;
+  margin-top:6px;
+  color: var(--ink);
+  background: rgba(42,38,34,0.06);
+  border:1px solid rgba(42,38,34,0.22);
+}
+.secondary-btn:active{ transform: translateY(1px); }
+.home-link{
+  display:block;
+  margin-top:12px;
+  font-size:13px; font-weight:600;
+  color: var(--ink-soft);
+  text-decoration:none;
+}
+
+.menu-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
+.menu-row{
+  display:flex; align-items:center; gap:10px;
+  width:100%;
+  font-size:13px;
+  padding:12px 14px;
+  color: var(--ink);
+  background: rgba(42,38,34,0.06);
+  border:1px solid rgba(42,38,34,0.22);
+  text-align:left;
+}
+.menu-row:active{ transform: translateY(1px); }
+/* lo stato acceso/spento sta in fondo alla riga, non dentro al testo: il testo
+   tradotto si scrive con textContent e si porterebbe via qualsiasi cosa
+   annidata */
+.menu-state{
+  margin-left:auto;
+  font-size:11px; font-weight:700; letter-spacing:1px;
+  color: var(--pen);
+}
+
+.menu-section-label{
+  font-size:10px; font-weight:700; letter-spacing:2px;
+  text-transform:uppercase;
+  color: var(--ink-soft);
+  margin:14px 0 8px;
+}
+.difficulty-list{ display:flex; flex-direction:column; gap:8px; }
+.difficulty-option{
+  display:block; width:100%;
+  font-size:14px;
+  padding:12px 16px;
+  color: var(--ink);
+  background: rgba(255,255,255,0.55);
+  border:1px solid rgba(42,38,34,0.22);
+}
+.difficulty-option:active{ transform: translateY(1px); }
+.difficulty-option.active{ border-color: var(--pen); color: var(--pen); }
+
+.tutorial-card{ max-width:360px; }
+.tutorial-row{
+  display:flex; align-items:flex-start; gap:12px;
+  text-align:left;
+  margin-bottom:12px;
+}
+.tutorial-icon{ font-size:18px; line-height:1.3; flex:0 0 24px; text-align:center; color: var(--pen); }
+.tutorial-row p{ margin:0; font-size:14px; color: var(--ink); }
+.tutorial-row-plain p{ color: var(--ink-soft); }
+
+/* lingua */
+.language-list{ display:flex; flex-direction:column; gap:8px; }
+.language-option{
+  display:flex; align-items:center; gap:12px;
+  width:100%;
+  font-size:13px;
+  padding:11px 14px;
+  color: var(--ink);
+  background: rgba(42,38,34,0.06);
+  border:1px solid rgba(42,38,34,0.22);
+  text-align:left;
+}
+.language-option:active{ transform: translateY(1px); }
+.language-option.active{ border-color: var(--pen); background: rgba(44,90,160,0.1); }
+.language-flag{ font-size:19px; }
+
+/* classifica */
+.lb-tabs{ display:flex; gap:6px; margin-bottom:12px; }
+.lb-tab{
+  flex:1 1 0;
+  font-size:12px;
+  padding:8px 4px;
+  color: var(--ink-soft);
+  background: rgba(42,38,34,0.06);
+  border:1px solid rgba(42,38,34,0.18);
+}
+.lb-tab.active{ color: var(--pen); border-color: var(--pen); background: rgba(44,90,160,0.1); }
+.leaderboard-list{ display:flex; flex-direction:column; gap:6px; min-height:60px; }
+.leaderboard-row{
+  display:flex; align-items:center; gap:10px;
+  padding:8px 12px;
+  border-radius:4px;
+  background: rgba(255,255,255,0.5);
+  border:1px solid rgba(42,38,34,0.16);
+  font-size:13px;
+}
+.leaderboard-row.is-me{ border-color: var(--pen); background: rgba(44,90,160,0.1); }
+.leaderboard-rank{ font-weight:700; color: var(--ink-soft); flex:0 0 38px; text-align:left; }
+.leaderboard-name{ flex:1 1 auto; text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.leaderboard-score{ font-family:'Lora', serif; font-weight:700; color: var(--pen); }
+.leaderboard-empty{
+  font-size:13px; color: var(--ink-soft);
+  padding:14px 10px; line-height:1.4;
+}
+
+/* l'icona dopo il testo dentro un pulsante (il triangolo di "Riprendi") */
+.ffr-ico-trail{ margin-left:0.5em; }
+
+/* schermi bassi: lo schema vale più del titolo */
+@media (max-height: 680px){
+  .title-wrap{ display:none; }
+  .hud-value{ font-size:18px; }
+  .tool-btn{ font-size:10px; padding:6px 3px; }
+}
+/* tablet: lo schema è quadrato, quindi in verticale è la LARGHEZZA a decidere
+   quanto può crescere — lo spazio in altezza lì avanza sempre */
+@media (min-width: 700px){
+  #app{ max-width: 620px; }
+  .title-wrap h1{ font-size:23px; }
+  .hud-value{ font-size:26px; }
+  .key{ font-size:22px; padding:13px 0 14px; }
+}
+@media (min-width: 900px){
+  #app{ max-width: 700px; }
+  .tool-btn{ font-size:12px; }
+}
+@media (min-width: 1200px){
+  #app{ max-width: 760px; }
+  .title-wrap h1{ font-size:26px; letter-spacing:9px; }
+}

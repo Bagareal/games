@@ -27,7 +27,10 @@
   // ogni gioco che salva progresso va elencato qui, non solo quelli con una
   // chiave localStorage "storica" in GAME_LOCAL_KEYS — altrimenti il suo
   // progresso da ospite non viene mai migrato quando si crea un account
-  const KNOWN_GAMES = ['wordio', 'boing', 'blokko', 'addy', 'dama'];
+  // NB: 'blokko' è la chiave storica di Blokky — il gioco è stato pubblicato con
+  // quel nome e la chiave NON si rinomina, o si azzererebbero progressi e record
+  // di chi ci ha già giocato.
+  const KNOWN_GAMES = ['wordio', 'boing', 'blokko', 'addy', 'dama', 'sudopoku'];
 
   // ---------------- testi (it/en/fr) ----------------
   const STR = {

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Blokko</title>
+<title>Blokky</title>
 <link rel="icon" href="../favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="../icons/joystick.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
@@ -29,7 +29,7 @@
 <div id="app">
 
   <div id="loadingScreen">
-    <div class="loading-title">BLOKKO</div>
+    <div class="loading-title">BLOKKY</div>
     <div class="spinner"></div>
   </div>
 
@@ -55,7 +55,7 @@
   </div>
 
   <div class="title-wrap">
-    <h1>BLOKKO</h1>
+    <h1>BLOKKY</h1>
   </div>
 
   <div class="game-zone" id="gameZone">
@@ -63,6 +63,12 @@
       <canvas id="gameCanvas"></canvas>
     </div>
     <div class="center-toast hidden" id="centerToast"></div>
+    <!-- partita ripresa da dove era rimasta: il pezzo NON riparte da solo,
+         altrimenti scende mentre si sta ancora guardando lo schermo. Questo
+         strato si prende il primo tocco (o il primo tasto) e poi sparisce. -->
+    <div class="resume-hint hidden" id="resumeHint">
+      <span class="resume-hint-text" data-i18n="tapToContinue">Tocca per continuare</span>
+    </div>
   </div>
 
   <div class="overlay" id="difficultyOverlay">

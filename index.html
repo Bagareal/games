@@ -152,17 +152,27 @@
      restare un dischetto dentro un altro disco */
   .game-icon.wordio .ffr-ico{ width:46px; height:46px; }
   .game-icon.blokko{ background: radial-gradient(circle at 32% 28%, #3B1080, #10032E); }
-  /* colonnine al neon: richiamano la palette di Blokko senza disegnare un pezzo */
-  .blokko-icon{ display:flex; align-items:flex-end; gap:3px; height:26px; }
-  .blokko-icon i{
-    display:block; width:5px; border-radius:2px;
-    background: var(--c);
-    box-shadow: 0 0 6px var(--c);
+  /* Il pozzetto di Blokky: la pila sul fondo, la riga piena che sta per sparire
+     e un pezzo che scende. Prima erano quattro colonnine al neon, che dicevano
+     "sala giochi" ma non dicevano di che gioco si trattasse. Niente sagome
+     riconoscibili di giochi esistenti: due caselle in fila non sono di nessuno. */
+  .blokky-icon{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap:1.2px;
+    width:33px; height:33px;
+    padding:2px;
+    border-left:1.5px solid rgba(0,229,255,0.5);
+    border-right:1.5px solid rgba(0,229,255,0.5);
+    border-bottom:1.5px solid rgba(0,229,255,0.5);
+    border-radius:0 0 3px 3px;
   }
-  .blokko-icon i:nth-child(1){ height:11px; }
-  .blokko-icon i:nth-child(2){ height:20px; }
-  .blokko-icon i:nth-child(3){ height:7px; }
-  .blokko-icon i:nth-child(4){ height:15px; }
+  .blokky-icon i{
+    display:block; border-radius:1.5px;
+    background: var(--c);
+    box-shadow: 0 0 4px var(--c);
+  }
   .game-icon.addy{ background: radial-gradient(circle at 32% 28%, #17495B, #061A22); }
   /* mini reticolo da disegno tecnico con una tessera stampata dentro:
      richiama la grafica di Addy senza scrivere un numero */
@@ -184,6 +194,23 @@
     border-radius:50%; background: var(--p);
     box-shadow: 0 1px 0 rgba(0,0,0,0.4);
   }
+  /* Sudopoku è l'unico gioco chiaro del sito e la sua tessera lo dice subito:
+     un pezzo di foglio con tre caselle segnate, due a inchiostro e una a penna
+     blu. Nessuna cifra scritta: a 28px non si leggerebbe comunque. */
+  .game-icon.sudopoku{ background: linear-gradient(160deg, #F7F1E1, #E3D7BF); }
+  .sudopoku-icon{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap:2px;
+    width:28px; height:28px;
+    padding:2px;
+    border:1.5px solid #2A2622;
+    border-radius:2px;
+  }
+  .sudopoku-icon i{ display:block; border:1px solid rgba(42,38,34,0.28); border-radius:1px; }
+  .sudopoku-icon i.ink{ background:#2A2622; border-color:#2A2622; }
+  .sudopoku-icon i.pen{ background:#2C5AA0; border-color:#2C5AA0; }
   .game-icon.boing{ background: radial-gradient(circle at 32% 28%, #F2622E, #A2380F); }
   .boing-icon{ position:relative; width:26px; height:26px; }
   .boing-icon .boing-ball{
@@ -335,9 +362,9 @@
       </a>
 
       <a class="game-card" href="blokko/">
-        <div class="game-icon blokko"><span class="blokko-icon"><i style="--c:#FF2E88"></i><i style="--c:#00E5FF"></i><i style="--c:#B14CFF"></i><i style="--c:#FFE14D"></i></span></div>
+        <div class="game-icon blokko"><span class="blokky-icon"><i style="--c:#FF2E88; grid-area:1/2/3/3"></i><i style="--c:#00E5FF; grid-area:4/1/5/2"></i><i style="--c:#B14CFF; grid-area:4/2/5/3"></i><i style="--c:#FFE14D; grid-area:4/4/5/5"></i><i style="--c:#39FF6A; grid-area:5/1/6/2"></i><i style="--c:#4D6BFF; grid-area:5/2/6/3"></i><i style="--c:#FF9F1C; grid-area:5/3/6/4"></i><i style="--c:#00FFA3; grid-area:5/4/6/5"></i></span></div>
         <div class="game-info">
-          <h2>Blokko</h2>
+          <h2>Blokky</h2>
           <p data-i18n="blokkoDesc">Incastra i blocchi che cadono prima che si accumulino troppo.</p>
         </div>
         <span class="badge play" data-i18n="play">Gioca</span>
@@ -366,6 +393,15 @@
         <div class="game-info">
           <h2>Addy</h2>
           <p data-i18n="addyDesc">Fai scivolare i numeri e somma quelli uguali fino ad arrivare a 2048.</p>
+        </div>
+        <span class="badge play" data-i18n="play">Gioca</span>
+      </a>
+
+      <a class="game-card" href="sudopoku/">
+        <div class="game-icon sudopoku"><span class="sudopoku-icon"><i></i><i class="pen"></i><i></i><i></i><i></i><i class="ink"></i><i class="ink"></i><i></i><i></i></span></div>
+        <div class="game-info">
+          <h2>Sudopoku</h2>
+          <p data-i18n="sudopokuDesc">Riempi la griglia con le cifre da 1 a 9, senza mai ripeterne una nella stessa riga, colonna o riquadro.</p>
         </div>
         <span class="badge play" data-i18n="play">Gioca</span>
       </a>
@@ -412,6 +448,7 @@ const HOME_STRINGS = {
     boingDesc: 'Rompi tutti i mattoncini rimbalzando la pallina col paddle. 3 vite, potenziamenti e 3 livelli di difficoltà.',
     addyDesc: 'Fai scivolare i numeri e somma quelli uguali fino ad arrivare a 2048.',
     damaDesc: "Muovi in diagonale e mangia tutti i pezzi dell'avversario. Contro il computer o in due sullo stesso dispositivo.",
+    sudopokuDesc: 'Riempi la griglia con le cifre da 1 a 9, senza mai ripeterne una nella stessa riga, colonna o riquadro.',
     play: 'Gioca',
     comingSoon: 'In arrivo',
     footer: 'Niente pubblicità · Niente pagamenti — mai. Account facoltativo, solo nickname+password.',
@@ -428,6 +465,7 @@ const HOME_STRINGS = {
     boingDesc: 'Bounce the ball off your paddle to clear every brick. 3 lives, power-ups, and 3 difficulty levels.',
     addyDesc: 'Slide the numbers around and add up the matching ones until you reach 2048.',
     damaDesc: "Move diagonally and capture all the other player's pieces. Against the computer or two of you on one device.",
+    sudopokuDesc: 'Fill the grid with the digits 1 to 9, never repeating one in the same row, column or box.',
     play: 'Play',
     comingSoon: 'Coming soon',
     footer: 'No ads · No payments — ever. Account optional, just nickname+password.',
@@ -444,6 +482,7 @@ const HOME_STRINGS = {
     boingDesc: 'Casse toutes les briques en faisant rebondir la balle sur ta raquette. 3 vies, bonus et 3 niveaux de difficulté.',
     addyDesc: "Fais glisser les nombres et additionne ceux qui sont identiques jusqu'à 2048.",
     damaDesc: "Déplace-toi en diagonale et mange toutes les pièces adverses. Contre l'ordinateur ou à deux sur le même appareil.",
+    sudopokuDesc: "Remplis la grille avec les chiffres de 1 à 9, sans jamais en répéter un dans la même ligne, colonne ou bloc.",
     play: 'Jouer',
     comingSoon: 'Bientôt',
     footer: 'Pas de pubs · Jamais de paiement. Compte facultatif, juste pseudo+mot de passe.',

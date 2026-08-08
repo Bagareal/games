@@ -254,6 +254,34 @@ a.icon-btn{ background:none; border:none; box-shadow:none; font-size:34px; line-
   animation: toast-pop 0.3s ease-out;
 }
 .center-toast.hidden{ display:none; }
+
+/* "Tocca per continuare": copre tutta la zona di gioco quando si rientra su una
+   partita salvata. Prende lei il primo tocco, così quel tocco non fa anche
+   ruotare il pezzo. Il campo sotto si vede: si guarda com'era prima di ripartire. */
+.resume-hint{
+  position:absolute; inset:0; z-index:10;
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  background: rgba(6,2,26,0.55);
+  cursor:pointer;
+}
+.resume-hint.hidden{ display:none; }
+.resume-hint-text{
+  font-family:'Orbitron', sans-serif;
+  font-weight:800; font-size:17px; letter-spacing:2px;
+  text-align:center; line-height:1.5;
+  color:#fff;
+  text-shadow: 0 0 8px var(--cyan), 0 0 22px rgba(0,229,255,0.7);
+  animation: resume-pulse 1.6s ease-in-out infinite;
+}
+@keyframes resume-pulse{
+  0%, 100%{ opacity:1; }
+  50%{ opacity:0.45; }
+}
+/* chi ha chiesto meno animazioni si tiene la scritta ferma */
+@media (prefers-reduced-motion: reduce){
+  .resume-hint-text{ animation:none; }
+}
 @keyframes toast-pop{
   from{ opacity:0; transform: translate(-50%,-50%) scale(0.7); }
   to{ opacity:1; transform: translate(-50%,-50%) scale(1); }

@@ -1,4 +1,4 @@
-/* ============ BLOKKO — motore di gioco ============
+/* ============ BLOKKY — motore di gioco ============
    Blocchi che scendono, righe piene che spariscono. Tutto (forme, colori,
    misure del campo, punteggio, rotazione) è roba nostra: nessun riferimento,
    nome o aspetto preso da giochi esistenti. */
@@ -43,7 +43,8 @@ const UI_STRINGS = {
     tutorialSwipe: 'Trascina il dito a destra o a sinistra per spostarlo',
     tutorialHold: 'Tieni premuto per farlo scendere veloce',
     tutorialDrop: 'Scorri verso il basso per farlo cadere di colpo',
-    tutorialLines: 'Riempi una riga intera e sparisce. Quattro righe in un colpo solo = BLOKKO!',
+    tutorialLines: 'Riempi una riga intera e sparisce. Quattro righe in un colpo solo = BLOKKY!',
+    tapToContinue: 'Tocca per continuare',
     tutorialKeys: 'Da computer, con la tastiera:',
     keyMove: 'per muovere',
     keyRotate: 'per ruotare',
@@ -85,7 +86,8 @@ const UI_STRINGS = {
     tutorialSwipe: 'Drag your finger right or left to move it',
     tutorialHold: 'Press and hold to make it drop fast',
     tutorialDrop: 'Swipe down to slam it into place',
-    tutorialLines: 'Fill a whole row and it disappears. Four rows at once = BLOKKO!',
+    tutorialLines: 'Fill a whole row and it disappears. Four rows at once = BLOKKY!',
+    tapToContinue: 'Tap to continue',
     tutorialKeys: 'On a computer, with the keyboard:',
     keyMove: 'to move',
     keyRotate: 'to rotate',
@@ -127,7 +129,8 @@ const UI_STRINGS = {
     tutorialSwipe: 'Glisse ton doigt à droite ou à gauche pour la déplacer',
     tutorialHold: 'Reste appuyé pour la faire descendre vite',
     tutorialDrop: 'Glisse vers le bas pour la faire tomber d\'un coup',
-    tutorialLines: 'Remplis une ligne entière et elle disparaît. Quatre lignes d\'un coup = BLOKKO !',
+    tutorialLines: 'Remplis une ligne entière et elle disparaît. Quatre lignes d\'un coup = BLOKKY !',
+    tapToContinue: 'Touche pour continuer',
     tutorialKeys: 'Sur ordinateur, au clavier :',
     keyMove: 'pour déplacer',
     keyRotate: 'pour tourner',
@@ -266,6 +269,7 @@ const els = {
   levelValue: document.getElementById('levelValue'),
   linesValue: document.getElementById('linesValue'),
   centerToast: document.getElementById('centerToast'),
+  resumeHint: document.getElementById('resumeHint'),
   difficultyOverlay: document.getElementById('difficultyOverlay'),
   pauseOverlay: document.getElementById('pauseOverlay'),
   settingsOverlay: document.getElementById('settingsOverlay'),
@@ -440,7 +444,7 @@ function finishClear() {
   state.level = 1 + Math.floor(state.lines / preset().linesPerLevel);
   state.best = Math.max(state.best, state.score);
 
-  if (n >= 4) showToast('BLOKKO!', 900);
+  if (n >= 4) showToast('BLOKKY!', 900);
   else if (state.combo > 2) showToast(t().comboToast(state.combo), 700);
   if (state.level > oldLevel) showToast(t().levelUp(state.level), 900);
 
@@ -459,6 +463,7 @@ function endGame() {
   els.gameOverSub.textContent =
     t().gameOverSub(state.score, state.lines) + '\n' + t().gameOverBest(state.best);
   els.gameOverOverlay.classList.add('show');
+  hideResumeHint();
   saveProgress();
 }
 
@@ -486,6 +491,7 @@ function startNewGame(difficultyKey) {
   resizeCanvas();
   updateHUD();
   hideAllOverlays();
+  hideResumeHint();
   state.paused = false;
   saveProgress();
 }
@@ -921,7 +927,16 @@ function stopRepeat() {
   clearInterval(repeat.timer);
   repeat.dir = 0; repeat.delay = null; repeat.timer = null;
 }
+const IGNORED_KEYS = ['Shift', 'Control', 'Alt', 'Meta', 'Tab', 'CapsLock'];
 function onKeyDown(e) {
+  // partita ripresa e ancora ferma: il primo tasto serve solo a farla ripartire,
+  // non deve già muovere o far cadere il pezzo
+  if (resumeHintVisible() && !anyOverlayOpen()) {
+    if (IGNORED_KEYS.indexOf(e.key) !== -1) return;
+    if (e.key === ' ') e.preventDefault();
+    resumePlay();
+    return;
+  }
   if (e.key === 'p' || e.key === 'P') {
     if (state.difficulty && !state.gameOver) {
       if (els.pauseOverlay.classList.contains('show')) closePause(); else openPause();
@@ -962,7 +977,7 @@ function openPause() {
 }
 function closePause() {
   els.pauseOverlay.classList.remove('show');
-  if (state.difficulty && !state.gameOver) state.paused = false;
+  resumePlay();
 }
 function openSettingsMenu() {
   if (state.difficulty && !state.gameOver) { state.paused = true; releaseTouch(); }
@@ -970,6 +985,30 @@ function openSettingsMenu() {
 }
 function closeSettingsMenu() {
   els.settingsOverlay.classList.remove('show');
+  resumePlay();
+}
+
+// ---------- "Tocca per continuare" ----------
+// Rientrando su una partita lasciata a metà, il pezzo non riparte da solo:
+// resterebbe fermo il giocatore e non il gioco. Si mostra la scritta sopra al
+// campo, che si prende il primo tocco (così non ruota anche il pezzo), e si
+// riparte da lì. Vale anche per il primo tasto premuto, da computer.
+function showResumeHint() {
+  state.paused = true;
+  els.resumeHint.classList.remove('hidden');
+}
+function hideResumeHint() {
+  els.resumeHint.classList.add('hidden');
+}
+function resumeHintVisible() {
+  return !els.resumeHint.classList.contains('hidden');
+}
+function anyOverlayOpen() {
+  return !!document.querySelector('.overlay.show');
+}
+// unico punto da cui la partita riparte: toglie la scritta e leva la pausa
+function resumePlay() {
+  hideResumeHint();
   if (state.difficulty && !state.gameOver) state.paused = false;
 }
 // se si apre un menu mentre il dito è sullo schermo, il gesto va annullato:
@@ -1225,7 +1264,7 @@ function resumeFromSaved(saved) {
   resizeCanvas();
   updateHUD();
   hideAllOverlays();
-  state.paused = false;
+  showResumeHint();
 }
 
 // ---------- Avvio ----------
@@ -1254,6 +1293,14 @@ async function init() {
   });
   els.restartBtn.addEventListener('click', () => {
     if (state.difficulty) startNewGame(state.difficulty);
+  });
+
+  // il tocco sulla scritta si ferma qui: se lo lasciassi salire fino alla zona di
+  // gioco, lo stesso dito farebbe ripartire la partita E ruotare il pezzo
+  els.resumeHint.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    resumePlay();
   });
 
   els.pauseBtn.addEventListener('click', openPause);
@@ -1337,8 +1384,20 @@ init();
 // La X dei pannelli (shared/modal-x.js) chiude e basta: qui si rimette in moto
 // la partita, perché aprire la pausa o le impostazioni la aveva messa in pausa.
 window.FFR_ON_MODAL_CLOSE = function (id) {
-  const resumes = ['pauseOverlay', 'settingsOverlay', 'tutorialOverlay', 'languageOverlay', 'leaderboardOverlay'];
-  if (resumes.indexOf(id) !== -1 && state.difficulty && !state.gameOver) {
-    state.paused = false;
+  // Il tutorial del primo avvio è l'unico che ha qualcosa dietro di sé: chiuso
+  // con la X saltava il pezzo di codice che sceglie fra riprendere la partita
+  // salvata e chiedere la difficoltà, e si restava davanti a un campo fermo.
+  if (id === 'tutorialOverlay' && state.difficulty == null) {
+    try { localStorage.setItem('blokko-tutorial-seen', '1'); } catch (e) { /* ignora */ }
+    if (pendingResume) {
+      const saved = pendingResume;
+      pendingResume = null;
+      resumeFromSaved(saved);
+    } else {
+      els.difficultyOverlay.classList.add('show');
+    }
+    return;
   }
+  const resumes = ['pauseOverlay', 'settingsOverlay', 'tutorialOverlay', 'languageOverlay', 'leaderboardOverlay'];
+  if (resumes.indexOf(id) !== -1) resumePlay();
 };
