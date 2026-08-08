@@ -36,6 +36,10 @@ const UI_STRINGS = {
     leaderboardTitle: 'Classifica',
     leaderboardEmpty: 'Nessun punteggio ancora: gioca da loggato per essere il primo!',
     resetLevel: 'Reset livello',
+    restartTitle: 'Ricominciare il livello?',
+    restartBody: 'Il livello riparte da capo con i mattoncini al loro posto. Vite e punteggio restano.',
+    restartYes: 'Sì, ricomincia',
+    restartNo: 'No, continuo',
     languageTitle: 'Lingua',
     languageSub: "Scegli la lingua dell'interfaccia",
     close: 'Chiudi',
@@ -75,6 +79,10 @@ const UI_STRINGS = {
     leaderboardTitle: 'Leaderboard',
     leaderboardEmpty: 'No scores yet: play while signed in to be the first!',
     resetLevel: 'Reset level',
+    restartTitle: 'Restart the level?',
+    restartBody: 'The level starts over with every brick back in place. Lives and score stay as they are.',
+    restartYes: 'Yes, restart',
+    restartNo: 'No, keep going',
     languageTitle: 'Language',
     languageSub: 'Choose the interface language',
     close: 'Close',
@@ -114,6 +122,10 @@ const UI_STRINGS = {
     leaderboardTitle: 'Classement',
     leaderboardEmpty: 'Aucun score pour l\'instant : joue connecté pour être le premier !',
     resetLevel: 'Réinitialiser le niveau',
+    restartTitle: 'Recommencer le niveau ?',
+    restartBody: 'Le niveau repart de zéro avec toutes les briques en place. Vies et score sont conservés.',
+    restartYes: 'Oui, recommencer',
+    restartNo: 'Non, je continue',
     languageTitle: 'Langue',
     languageSub: "Choisis la langue de l'interface",
     close: 'Fermer',
@@ -247,6 +259,10 @@ const els = {
   pauseOverlay: document.getElementById('pauseOverlay'),
   resumeBtn: document.getElementById('resumeBtn'),
   resetLevelBtn: document.getElementById('resetLevelBtn'),
+  topRestartBtn: document.getElementById('topRestartBtn'),
+  restartOverlay: document.getElementById('restartOverlay'),
+  confirmRestartBtn: document.getElementById('confirmRestartBtn'),
+  cancelRestartBtn: document.getElementById('cancelRestartBtn'),
   settingsBtn: document.getElementById('settingsBtn'),
   settingsOverlay: document.getElementById('settingsOverlay'),
   closeSettingsBtn: document.getElementById('closeSettingsBtn'),
@@ -910,6 +926,26 @@ async function init() {
   els.pauseBtn.addEventListener('click', openPause);
   els.resumeBtn.addEventListener('click', closePause);
   els.resetLevelBtn.addEventListener('click', resetLevel);
+
+  // ↻ in barra: ricomincia il livello. Fuori da una partita è la strada per
+  // sceglierne una nuova, come fa il ⏸ — così chi chiude un pannello con la X
+  // non resta davanti a un campo fermo.
+  els.topRestartBtn.addEventListener('click', () => {
+    if (state.difficulty == null) { els.difficultyOverlay.classList.add('show'); return; }
+    state.paused = true;
+    els.restartOverlay.classList.add('show');
+  });
+  els.confirmRestartBtn.addEventListener('click', () => {
+    els.restartOverlay.classList.remove('show');
+    resetLevel();
+  });
+  els.cancelRestartBtn.addEventListener('click', () => {
+    els.restartOverlay.classList.remove('show');
+    state.paused = false;
+  });
+  els.restartOverlay.addEventListener('click', (e) => {
+    if (e.target === els.restartOverlay) { els.restartOverlay.classList.remove('show'); state.paused = false; }
+  });
   els.pauseOverlay.addEventListener('click', (e) => {
     if (e.target === els.pauseOverlay) closePause();
   });
@@ -987,6 +1023,6 @@ init();
 // Fuori da questo elenco resta com'è: dopo un game over il campo deve restare
 // fermo, e da lì si riparte dal menu di pausa.
 window.FFR_ON_MODAL_CLOSE = function (id) {
-  const resumes = ['pauseOverlay', 'settingsOverlay', 'tutorialOverlay', 'languageOverlay', 'leaderboardOverlay'];
+  const resumes = ['pauseOverlay', 'settingsOverlay', 'tutorialOverlay', 'languageOverlay', 'leaderboardOverlay', 'restartOverlay'];
   if (resumes.indexOf(id) !== -1 && state.difficulty != null) state.paused = false;
 };

@@ -157,6 +157,7 @@ const els = {
   undoBtn: document.getElementById('undoBtn'),
   undoCount: document.getElementById('undoCount'),
   newGameBtn: document.getElementById('newGameBtn'),
+  topRestartBtn: document.getElementById('topRestartBtn'),
   settingsBtn: document.getElementById('settingsBtn'),
   settingsOverlay: document.getElementById('settingsOverlay'),
   closeSettingsBtn: document.getElementById('closeSettingsBtn'),
@@ -713,6 +714,9 @@ async function init() {
   els.undoBtn.addEventListener('click', undo);
   els.gameOverUndoBtn.addEventListener('click', undo);
   els.newGameBtn.addEventListener('click', () => els.confirmOverlay.classList.add('show'));
+  // stessa cosa dall'icona in barra: il ricomincia deve vedersi anche senza
+  // scorrere fino ai pulsanti sotto al campo
+  els.topRestartBtn.addEventListener('click', () => els.confirmOverlay.classList.add('show'));
   els.confirmNewBtn.addEventListener('click', startNewGame);
   els.cancelNewBtn.addEventListener('click', () => els.confirmOverlay.classList.remove('show'));
   els.confirmOverlay.addEventListener('click', (e) => {

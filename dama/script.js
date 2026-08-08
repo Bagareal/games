@@ -992,6 +992,13 @@ function hideAllOverlays() {
 }
 function showOnly(el) {
   hideAllOverlays();
+  // la difficoltà con cui si sta giocando (o l'ultima usata) si vede accesa:
+  // aprendo il pannello si capisce da dove si riparte
+  if (el === els.difficultyOverlay) {
+    el.querySelectorAll('.difficulty-option').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.difficulty === state.difficulty);
+    });
+  }
   el.classList.add('show');
 }
 function startNewBoard() {

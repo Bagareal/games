@@ -38,6 +38,7 @@
       <a class="icon-btn" href="../" aria-label="Home"><span class="ffr-ico" data-ico="back"></span></a>
       <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni"><span class="ffr-ico" data-ico="gear"></span></button>
       <button class="icon-btn" id="pauseBtn" aria-label="Pausa"><span class="ffr-ico" data-ico="pause"></span></button>
+      <button class="icon-btn" id="topRestartBtn" aria-label="Ricomincia"><span class="ffr-ico" data-ico="refresh"></span></button>
     </div>
     <div class="level-display"><span class="lv-label">LV.</span><span id="levelValue">1</span></div>
     <div class="lines-display"><span class="lines-icon" aria-hidden="true"><i></i><i></i><i></i></span><span id="linesValue">0</span></div>
@@ -99,6 +100,16 @@
 
       <button class="secondary-btn" id="restartBtn" data-i18n="restart">Ricomincia</button>
       <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <!-- conferma del ↻ in barra: a metà partita un tocco storto costerebbe caro -->
+  <div class="overlay" id="restartOverlay">
+    <div class="card">
+      <h2 data-i18n="restartTitle">Ricominciare la partita?</h2>
+      <p data-i18n="restartBody">La partita in corso viene persa, il record resta.</p>
+      <button class="primary-btn" id="confirmRestartBtn" data-i18n="restartYes">Sì, ricomincia</button>
+      <button class="secondary-btn" id="cancelRestartBtn" data-i18n="restartNo">No, continuo</button>
     </div>
   </div>
 

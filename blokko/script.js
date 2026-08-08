@@ -28,6 +28,10 @@ const UI_STRINGS = {
     paused: 'Pausa',
     resume: 'Riprendi',
     restart: 'Ricomincia',
+    restartTitle: 'Ricominciare la partita?',
+    restartBody: 'La partita in corso viene persa, il record resta.',
+    restartYes: 'Sì, ricomincia',
+    restartNo: 'No, continuo',
     difficultyLabel: 'Difficoltà',
     settingsTitle: 'Impostazioni',
     languageMenuLabel: 'Lingua',
@@ -71,6 +75,10 @@ const UI_STRINGS = {
     paused: 'Paused',
     resume: 'Resume',
     restart: 'Restart',
+    restartTitle: 'Restart the game?',
+    restartBody: 'The game in progress is lost, your best score stays.',
+    restartYes: 'Yes, restart',
+    restartNo: 'No, keep going',
     difficultyLabel: 'Difficulty',
     settingsTitle: 'Settings',
     languageMenuLabel: 'Language',
@@ -114,6 +122,10 @@ const UI_STRINGS = {
     paused: 'Pause',
     resume: 'Reprendre',
     restart: 'Recommencer',
+    restartTitle: 'Recommencer la partie ?',
+    restartBody: 'La partie en cours est perdue, ton record reste.',
+    restartYes: 'Oui, recommencer',
+    restartNo: 'Non, je continue',
     difficultyLabel: 'Difficulté',
     settingsTitle: 'Paramètres',
     languageMenuLabel: 'Langue',
@@ -284,6 +296,10 @@ const els = {
   pauseBtn: document.getElementById('pauseBtn'),
   resumeBtn: document.getElementById('resumeBtn'),
   restartBtn: document.getElementById('restartBtn'),
+  topRestartBtn: document.getElementById('topRestartBtn'),
+  restartOverlay: document.getElementById('restartOverlay'),
+  confirmRestartBtn: document.getElementById('confirmRestartBtn'),
+  cancelRestartBtn: document.getElementById('cancelRestartBtn'),
   retryBtn: document.getElementById('retryBtn'),
   settingsBtn: document.getElementById('settingsBtn'),
   closeSettingsBtn: document.getElementById('closeSettingsBtn'),
@@ -964,6 +980,14 @@ function onKeyUp(e) {
 function hideAllOverlays() {
   document.querySelectorAll('.overlay').forEach(el => el.classList.remove('show'));
 }
+// ↻ in barra: ricomincia la partita sulla stessa difficoltà, chiedendo conferma.
+// Fuori da una partita porta alla scelta della difficoltà, come il ⏸.
+function openRestartConfirm() {
+  if (!state.difficulty || state.gameOver) { els.difficultyOverlay.classList.add('show'); return; }
+  state.paused = true;
+  releaseTouch();
+  els.restartOverlay.classList.add('show');
+}
 function openPause() {
   // Senza difficoltà scelta (o a partita finita) non c'è niente da mettere in
   // pausa, ma il pulsante deve comunque servire a qualcosa: da quando i pannelli
@@ -973,7 +997,15 @@ function openPause() {
   state.paused = true;
   releaseTouch();
   saveProgress();
+  markCurrentDifficulty();
   els.pauseOverlay.classList.add('show');
+}
+// la difficoltà in corso si vede: aprendo il pannello si capisce subito su quale
+// si sta giocando, invece di trovare tre pulsanti tutti uguali
+function markCurrentDifficulty() {
+  document.querySelectorAll('#pauseOverlay .difficulty-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.difficulty === state.difficulty);
+  });
 }
 function closePause() {
   els.pauseOverlay.classList.remove('show');
@@ -1304,6 +1336,18 @@ async function init() {
   });
 
   els.pauseBtn.addEventListener('click', openPause);
+  els.topRestartBtn.addEventListener('click', openRestartConfirm);
+  els.confirmRestartBtn.addEventListener('click', () => {
+    els.restartOverlay.classList.remove('show');
+    if (state.difficulty) startNewGame(state.difficulty);
+  });
+  els.cancelRestartBtn.addEventListener('click', () => {
+    els.restartOverlay.classList.remove('show');
+    resumePlay();
+  });
+  els.restartOverlay.addEventListener('click', (e) => {
+    if (e.target === els.restartOverlay) { els.restartOverlay.classList.remove('show'); resumePlay(); }
+  });
   els.resumeBtn.addEventListener('click', closePause);
   els.pauseOverlay.addEventListener('click', (e) => {
     if (e.target === els.pauseOverlay) closePause();
@@ -1398,6 +1442,6 @@ window.FFR_ON_MODAL_CLOSE = function (id) {
     }
     return;
   }
-  const resumes = ['pauseOverlay', 'settingsOverlay', 'tutorialOverlay', 'languageOverlay', 'leaderboardOverlay'];
+  const resumes = ['pauseOverlay', 'settingsOverlay', 'tutorialOverlay', 'languageOverlay', 'leaderboardOverlay', 'restartOverlay'];
   if (resumes.indexOf(id) !== -1) resumePlay();
 };

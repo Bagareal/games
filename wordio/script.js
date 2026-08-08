@@ -186,6 +186,13 @@ function applyTranslations() {
 
 let ALL_WORDS = [];
 let COMMON_WORDS = new Set();
+// Le parole che il gioco può CHIEDERE. È un elenco più piccolo e scelto: parole
+// che la gente usa davvero, niente parole grammaticali (del, sul, che), niente
+// versi (uhm), niente sigle (dna) e niente parole finite qui dalle altre due
+// lingue. Quelle da tre lettere sono scelte a mano una per una. Tutto il resto
+// del dizionario resta valido come parola BONUS: si può trovare e dà monete,
+// semplicemente non viene mai chiesta. Vedi il README per come è stato costruito.
+let TARGET_WORDS = new Set();
 let WORD_DATA = [];
 let BY_LEN = {};
 let NORMALIZED_TO_WORD = new Map(); // "metier" -> "métier": per riconoscere/mostrare le parole a partire dalle lettere "semplici" della ruota
@@ -203,6 +210,9 @@ async function loadDictionary(lang) {
   const data = await res.json();
   ALL_WORDS = data.words.split(',');
   COMMON_WORDS = new Set(data.common.split(','));
+  // dizionario vecchio rimasto in cache nel browser: si ripiega sulle "comuni",
+  // che è esattamente come funzionava prima
+  TARGET_WORDS = data.targets ? new Set(data.targets.split(',')) : COMMON_WORDS;
   WORD_DATA = ALL_WORDS.map(w => {
     const normalized = normalizeWord(w);
     return { word: w, normalized, len: normalized.length, counts: countLetters(normalized) };
@@ -292,16 +302,16 @@ function generateLevel(level, usedAnchors) {
   const minTargets = 4;
   const maxTargets = Math.min(10, 5 + Math.floor(level / 8));
 
-  // la "parola madre" viene scelta solo tra parole comuni, così le lettere
-  // disponibili formano sempre un termine riconoscibile
+  // la "parola madre" esce dalle parole richiedibili, così le lettere
+  // disponibili formano sempre un termine che si riconosce
   let anchorPool = [];
   for (let len = minLen; len <= maxLen; len++) {
     const bucket = BY_LEN[len];
     if (!bucket) continue;
-    bucket.forEach(wd => { if (COMMON_WORDS.has(wd.word)) anchorPool.push(wd); });
+    bucket.forEach(wd => { if (TARGET_WORDS.has(wd.word)) anchorPool.push(wd); });
   }
   if (anchorPool.length === 0) {
-    // fallback: nessuna parola comune di quella lunghezza, usa il dizionario intero
+    // fallback: nessuna parola richiedibile di quella lunghezza, usa il dizionario intero
     for (let len = minLen; len <= maxLen; len++) if (BY_LEN[len]) anchorPool.push(...BY_LEN[len]);
   }
   if (anchorPool.length === 0) return generateLevel(1, usedAnchors);
@@ -318,20 +328,19 @@ function generateLevel(level, usedAnchors) {
     const anchorWd = pick(anchorPool, rnd);
     const anchor = anchorWd.word;
     const anchorNormalized = anchorWd.normalized;
-    const subwords = findSubwords(anchorNormalized, anchorWd.counts);
-    const pool = Array.from(new Set(subwords)).filter(w => w.length >= 3);
+    const subwords = Array.from(new Set(findSubwords(anchorNormalized, anchorWd.counts)));
+    // da chiedere si prendono SOLO le parole richiedibili. Tutte le altre
+    // restano trovabili come bonus (vedi isValidExtraWord, che accetta
+    // qualunque parola del dizionario componibile con queste lettere): chi
+    // scrive una parola rara si prende le monete lo stesso.
+    const pool = subwords.filter(w => w.length >= 3 && TARGET_WORDS.has(w));
     if (pool.length < minTargets - 1) continue; // -1 perché l'anchor stesso è sempre un target
 
-    // dividi il pool per lunghezza, e dentro ogni lunghezza metti prima le parole comuni
+    // dividi il pool per lunghezza, e dentro ogni lunghezza mescola in modo
+    // ripetibile (il seme dipende dal livello, non dall'orologio)
     const byLenPool = {};
     pool.forEach(w => { (byLenPool[w.length] = byLenPool[w.length] || []).push(w); });
-    Object.values(byLenPool).forEach(bucket => {
-      bucket.sort((a, b) => {
-        const ca = COMMON_WORDS.has(a) ? 0 : 1;
-        const cb = COMMON_WORDS.has(b) ? 0 : 1;
-        return ca - cb || (rnd() - 0.5);
-      });
-    });
+    Object.values(byLenPool).forEach(bucket => shuffleInPlace(bucket, rnd));
     const lengths = Object.keys(byLenPool).map(Number).sort((a, b) => b - a);
 
     const targetsSet = new Set([anchor]);
@@ -341,9 +350,7 @@ function generateLevel(level, usedAnchors) {
       const len = lengths[li % lengths.length];
       const bucket = byLenPool[len];
       if (bucket && bucket.length > 0) {
-        // preferisci sempre la prima (più comune) della lista rimasta
-        const w = bucket.shift();
-        targetsSet.add(w);
+        targetsSet.add(bucket.shift());
       }
       if (!bucket || bucket.length === 0) {
         lengths.splice(li % lengths.length, 1);
@@ -354,7 +361,7 @@ function generateLevel(level, usedAnchors) {
 
     if (targetsSet.size >= minTargets) {
       const targets = Array.from(targetsSet).sort((a, b) => a.length - b.length || a.localeCompare(b));
-      const extra = pool.filter(w => !targetsSet.has(w));
+      const extra = subwords.filter(w => !targetsSet.has(w));
       return {
         anchor,
         anchorNormalized,
@@ -370,6 +377,39 @@ function generateLevel(level, usedAnchors) {
   return generateLevel(level + 1000, usedAnchors);
 }
 
+// Ricostruisce un livello da quello che c'è nel salvataggio, senza generarlo di
+// nuovo. È il cuore della correzione del bug delle "parole sparite": prima, alla
+// riapertura, il livello veniva rifatto pescando di nuovo la parola madre da un
+// elenco che nel frattempo era cambiato di dimensione — e usciva un puzzle
+// DIVERSO con lo stesso numero. Le parole trovate non combaciavano più: caselle
+// vuote, e il livello che si dichiarava completato con una parola sola.
+// Ora il livello che stai giocando è scritto nel salvataggio e si rilegge com'è.
+// Vantaggio in più: se un domani cambiamo il dizionario, le partite in corso non
+// si accorgono di niente.
+function buildLevelFrom(anchor, targets, level) {
+  if (typeof anchor !== 'string' || !anchor || !Array.isArray(targets) || targets.length < 2) return null;
+  if (!targets.includes(anchor)) return null;
+  const anchorNormalized = normalizeWord(anchor);
+  const counts = countLetters(anchorNormalized);
+  // le parole devono ancora poter essere composte con queste lettere: un
+  // salvataggio rovinato non deve dare un livello impossibile
+  for (const w of targets) {
+    if (typeof w !== 'string' || !isSubset(countLetters(normalizeWord(w)), counts)) return null;
+  }
+  const rnd = seededRandom(level * 104729 + 17);
+  const subwords = Array.from(new Set(findSubwords(anchorNormalized, counts)));
+  const extra = subwords.filter(w => !targets.includes(w));
+  return {
+    anchor,
+    anchorNormalized,
+    letters: shuffleInPlace(anchorNormalized.split(''), rnd),
+    targets: targets.slice(),
+    targetsByNormalized: new Map(targets.map(w => [normalizeWord(w), w])),
+    extraWords: new Set(extra),
+    extraByNormalized: new Map(extra.map(w => [normalizeWord(w), w])),
+  };
+}
+
 // ---------- Stato di gioco ----------
 const EXTRA_PER_HINT = 10; // ogni N parole extra (a vita) si guadagna un aiuto
 const MAX_HINTS = 10; // tetto massimo di aiuti accumulabili contemporaneamente
@@ -378,6 +418,7 @@ const state = {
   level: 1,
   coins: 0,
   currentLevelData: null,
+  savedLevelData: null, // { anchor, targets } letti dal salvataggio, per la ripresa
   foundTargets: new Set(),
   foundExtras: new Set(),
   revealedLetters: {}, // parola -> Set di indici lettera rivelati da un aiuto
@@ -485,17 +526,27 @@ function snapshotCurrentProgress() {
   for (const word in state.revealedLetters) {
     revealedLetters[word] = Array.from(state.revealedLetters[word]);
   }
+  const data = state.currentLevelData;
   return {
     level: state.level,
     foundTargets: Array.from(state.foundTargets),
     foundExtras: Array.from(state.foundExtras),
-    revealedLetters
+    revealedLetters,
+    // il livello in corso, scritto per intero: alla riapertura si rilegge da qui
+    // invece di rigenerarlo e sperare che venga uguale (vedi buildLevelFrom)
+    anchor: data ? data.anchor : null,
+    targets: data ? data.targets.slice() : null
   };
 }
 function applyLanguageProgress(saved) {
   state.level = saved ? saved.level : 1;
   state.foundTargets = new Set(saved ? saved.foundTargets : []);
   state.foundExtras = new Set(saved ? saved.foundExtras : []);
+  // salvataggi fatti prima di questo aggiornamento non hanno il livello dentro:
+  // resta null e il livello viene rigenerato, una volta sola
+  state.savedLevelData = (saved && saved.anchor && Array.isArray(saved.targets))
+    ? { anchor: saved.anchor, targets: saved.targets }
+    : null;
   state.revealedLetters = {};
   if (saved && saved.revealedLetters) {
     for (const word in saved.revealedLetters) {
@@ -942,9 +993,18 @@ function updateHintBadge(justEarned) {
   }
 }
 
+// Quante parole DI QUESTO livello sono state trovate. Prima si guardava solo
+// quante ne avevi in memoria: se per qualunque motivo lì dentro finivano parole
+// di un altro livello, il conto tornava lo stesso e il livello si dichiarava
+// completato senza che tu l'avessi finito.
+function targetsTrovati() {
+  const data = state.currentLevelData;
+  if (!data) return 0;
+  return data.targets.filter(w => state.foundTargets.has(w)).length;
+}
 function checkLevelComplete() {
   const data = state.currentLevelData;
-  if (state.foundTargets.size >= data.targets.length) {
+  if (targetsTrovati() >= data.targets.length) {
     setTimeout(showWinOverlay, 400);
   }
 }
@@ -1021,13 +1081,20 @@ function applyLevelBackground(level) {
 // non si azzerano le parole già trovate/gli aiuti già usati nel livello.
 function startLevel(level, resume) {
   const usedList = state.usedAnchorsByLanguage[state.language] || (state.usedAnchorsByLanguage[state.language] = []);
-  // "resume" rigenera lo STESSO identico livello (riapertura, cambio lingua
-  // e ritorno, ecc.): nessuna esclusione, altrimenti la parola madre già
-  // usata da questo stesso livello verrebbe scartata e si rigenererebbe un
-  // puzzle diverso con lo stesso numero — le parole già trovate smetterebbero
-  // di combaciare con le nuove parole target e sembrerebbero sparite
-  const usedSet = resume ? new Set() : new Set(usedList);
-  state.currentLevelData = generateLevel(level, usedSet);
+  // Riapertura (o cambio lingua e ritorno): il livello si RILEGGE dal
+  // salvataggio, non si rigenera. Rigenerandolo bastava che l'elenco delle
+  // parole madri già usate fosse cambiato di dimensione per pescarne un'altra e
+  // servire un puzzle diverso con lo stesso numero.
+  let ricostruito = null;
+  if (resume && state.savedLevelData) {
+    ricostruito = buildLevelFrom(state.savedLevelData.anchor, state.savedLevelData.targets, level);
+  }
+  if (ricostruito) {
+    state.currentLevelData = ricostruito;
+  } else {
+    state.currentLevelData = generateLevel(level, resume ? new Set() : new Set(usedList));
+    state.savedLevelData = null;
+  }
   if (!usedList.includes(state.currentLevelData.anchor)) {
     usedList.push(state.currentLevelData.anchor);
     saveProgress();
@@ -1036,6 +1103,18 @@ function startLevel(level, resume) {
     state.foundTargets = new Set();
     state.foundExtras = new Set();
     state.revealedLetters = {};
+  } else {
+    // Salvataggio vecchio, senza il livello dentro: il livello è stato
+    // rigenerato e può non essere quello di prima. Le parole trovate che non
+    // esistono più in questo livello si tolgono, altrimenti restano a contare
+    // per un livello che non c'è. Succede una volta sola, al primo avvio dopo
+    // questo aggiornamento; livello, monete e aiuti non si toccano.
+    const validi = new Set(state.currentLevelData.targets);
+    let ripulito = false;
+    Array.from(state.foundTargets).forEach(w => {
+      if (!validi.has(w)) { state.foundTargets.delete(w); ripulito = true; }
+    });
+    if (ripulito) saveProgress();
   }
   els.extraCount.textContent = state.foundExtras.size;
   els.subLabel.textContent = t().wordsToFind(state.currentLevelData.targets.length);
@@ -1044,7 +1123,7 @@ function startLevel(level, resume) {
   updateHintBadge(false);
   renderWordsList();
   renderWheel();
-  if (resume && state.foundTargets.size >= state.currentLevelData.targets.length) {
+  if (resume && targetsTrovati() >= state.currentLevelData.targets.length) {
     // il livello era già stato completato prima del refresh: riapri il
     // riepilogo senza riassegnare di nuovo le monete del bonus
     els.winCoins.textContent = '+' + LEVEL_COMPLETE_COINS;

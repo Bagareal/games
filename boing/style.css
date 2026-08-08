@@ -74,8 +74,13 @@ body{
    Via il fondino, e l'icona si prende tutta la misura che aveva il tondo.
    Il bersaglio da toccare resta largo uguale. */
 a.icon-btn{ background:none; border:none; backdrop-filter:none; font-size:34px; line-height:0; }
+/* Il livello sta nello spazio fra le icone e le vite, non centrato di forza
+   sullo schermo: con la quarta icona (il ↻) il centro esatto cade DENTRO al
+   gruppo di icone e la scritta ci finiva sotto su un telefono stretto. */
 .level-display{
-  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  flex:1 1 auto;
+  justify-content:center;
+  min-width:0;
   font-family:'Press Start 2P', monospace;
   font-size:13px;
   letter-spacing:1px;

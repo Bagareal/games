@@ -352,6 +352,7 @@ const state = {
   byDifficulty: {},
 };
 let history = [];          // per l'annulla: vale per la sessione, non si salva
+let tornaAllaPausa = false; // la conferma "schema nuovo" è stata aperta dal pannello di pausa?
 let checkErrors = true;    // segnalare gli sbagli appena si scrivono
 
 const els = {
@@ -384,6 +385,7 @@ const els = {
   winSub: document.getElementById('winSub'),
   confirmOverlay: document.getElementById('confirmOverlay'),
   pauseBtn: document.getElementById('pauseBtn'),
+  topRestartBtn: document.getElementById('topRestartBtn'),
   resumeBtn: document.getElementById('resumeBtn'),
   restartBtn: document.getElementById('restartBtn'),
   againBtn: document.getElementById('againBtn'),
@@ -1061,6 +1063,15 @@ async function init() {
   els.hintBtn.addEventListener('click', useHint);
 
   els.pauseBtn.addEventListener('click', openPause);
+  // ↻ in barra: schema nuovo, chiedendo conferma. Fuori da una partita porta
+  // alla scelta della difficoltà, come il ⏸.
+  els.topRestartBtn.addEventListener('click', () => {
+    if (!state.difficulty || state.solved) { els.difficultyOverlay.classList.add('show'); return; }
+    state.paused = true;
+    updateHUD();
+    tornaAllaPausa = false;
+    els.confirmOverlay.classList.add('show');
+  });
   els.resumeBtn.addEventListener('click', closePause);
   els.pauseOverlay.addEventListener('click', (e) => {
     if (e.target === els.pauseOverlay) closePause();
@@ -1069,15 +1080,18 @@ async function init() {
   // mezz'ora di ragionamenti per un tocco storto sarebbe una brutta sorpresa
   els.restartBtn.addEventListener('click', () => {
     els.pauseOverlay.classList.remove('show');
+    tornaAllaPausa = true;
     els.confirmOverlay.classList.add('show');
   });
   els.confirmNewBtn.addEventListener('click', () => {
     els.confirmOverlay.classList.remove('show');
     startNewGame(state.difficulty);
   });
+  // "no, continuo": si torna da dove si era arrivati — dal pannello di pausa se
+  // era aperto lui, direttamente allo schema se si era passati dal ↻ in barra
   els.cancelNewBtn.addEventListener('click', () => {
     els.confirmOverlay.classList.remove('show');
-    els.pauseOverlay.classList.add('show');
+    if (tornaAllaPausa) els.pauseOverlay.classList.add('show'); else resumePlay();
   });
   els.againBtn.addEventListener('click', () => {
     els.winOverlay.classList.remove('show');

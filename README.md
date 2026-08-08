@@ -22,7 +22,7 @@ The full source is right here, so you can check any of that for yourself. If you
 
 ### [Wordio](wordio/)
 
-A word-finding puzzle: spell out all the target words using the letters on a wheel, in Italian, English, or French. Play it at:
+A word-finding puzzle: spell out all the target words using the letters on a wheel, in Italian, English, or French. The words it *asks* for are drawn from a curated list per language — real, used words only, no grammar words, no interjections, no acronyms, and the three-letter ones picked by hand one at a time (see `wordio/dictionaries/build_targets.py`, which is a one-off tool and not part of the site). Every other word in the dictionary still counts as a bonus find. Play it at:
 
 **[freeforreal.app/wordio](https://freeforreal.app/wordio/)**
 
@@ -57,6 +57,8 @@ A number-placement puzzle on a 9×9 grid: every row, column and box of nine hold
 **[freeforreal.app/sudopoku](https://freeforreal.app/sudopoku/)**
 
 ## Credits
+
+**Wordio**'s word lists were cleaned up using [**FrequencyWords**](https://github.com/hermitdave/FrequencyWords) by [**Hermit Dave**](https://github.com/hermitdave) — word-frequency lists built from the OpenSubtitles corpus and published openly. We use them offline, once, to decide which words the game is allowed to *ask* for: a word has to be one people actually use, or it doesn't get asked. That is how `uri`, `ima` and a pile of stray English and French words stopped showing up as Italian answers. None of that data ships with the site — only our own word list, filtered. Thank you.
 
 **Addy** follows a set of rules made popular by [**2048**](https://github.com/gabrielecirulli/2048), written by [**Gabriele Cirulli**](https://github.com/gabrielecirulli) and released openly under the MIT licence. Addy's code, graphics and text are entirely our own — not a single line is taken from that project, so there is nothing here we are required to credit. We credit it anyway: putting the work out in the open, for free, for anyone to read and build on, is the same thing this whole site is trying to do. Thank you.
 
