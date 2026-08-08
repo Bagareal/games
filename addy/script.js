@@ -573,7 +573,16 @@ function openTutorial() {
 // partita salvata trovata all'avvio mentre era in corso il tutorial: si
 // riprende alla sua chiusura
 let pendingResume = null;
+// Tutorial del primo avvio: si chiude solo con "Ho capito!". Prima bastava un
+// dito appoggiato sullo sfondo per farlo sparire, e siccome quel tocco lo
+// segnava anche come "gia' visto", non tornava mai piu': chi apriva il gioco
+// per la prima volta poteva restare senza istruzioni senza nemmeno accorgersene.
+// Finche' e' quello del primo avvio non ha nemmeno la X (classe x-off, la stessa
+// che usa la Dama). Riaperto dal menu si chiude come tutti gli altri pannelli.
+let tutorialPrimoAvvio = false;
 function closeTutorial() {
+  tutorialPrimoAvvio = false;
+  els.tutorialOverlay.classList.remove('x-off');
   els.tutorialOverlay.classList.remove('show');
   try { localStorage.setItem('addy-tutorial-seen', '1'); } catch (e) { /* ignora */ }
   if (pendingResume) {
@@ -749,7 +758,7 @@ async function init() {
   els.openTutorialBtn.addEventListener('click', openTutorial);
   els.closeTutorialBtn.addEventListener('click', closeTutorial);
   els.tutorialOverlay.addEventListener('click', (e) => {
-    if (e.target === els.tutorialOverlay) closeTutorial();
+    if (e.target === els.tutorialOverlay && !tutorialPrimoAvvio) closeTutorial();
   });
 
   // chiudendo la scheda (o passando ad un'altra app) si salva: sul telefono è
@@ -770,6 +779,10 @@ async function init() {
   if (!tutorialSeen) {
     pendingResume = saved;
     updateHUD();
+    // primo avvio: si esce solo da "Ho capito!" — niente X e niente chiusura
+    // toccando lo sfondo, o basta un dito per sbaglio per non vederlo mai piu'
+    tutorialPrimoAvvio = true;
+    els.tutorialOverlay.classList.add('x-off');
     els.tutorialOverlay.classList.add('show');
   } else if (saved) {
     resumeFromSaved(saved);
