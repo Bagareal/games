@@ -182,6 +182,11 @@ function applyTranslations() {
     const val = t()[key];
     if (typeof val === 'string') el.textContent = val;
   });
+  // Era l'unico gioco che non lo scriveva, ed è la riga che dice in che lingua
+  // è la pagina: la leggono i lettori di schermo e i motori di ricerca, e da
+  // qui shared/seo.js si accorge del cambio di lingua per rifare titolo e
+  // descrizione. Restava "it" anche giocando in francese.
+  document.documentElement.lang = state.language;
 }
 
 let ALL_WORDS = [];

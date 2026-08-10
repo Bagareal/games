@@ -1,0 +1,13 @@
+# Free For Real — freeforreal.app
+# Tutto il sito è aperto: sono otto giochi, non c'è niente da nascondere.
+
+User-agent: *
+Allow: /
+
+# Le cartelle di servizio non servono a chi cerca giochi, e finire nei
+# risultati con un vocabolario o un file di configurazione è solo rumore.
+Disallow: /supabase/
+Disallow: /wordio/dictionaries/
+Disallow: /findy/words/
+
+Sitemap: https://freeforreal.app/sitemap.xml
