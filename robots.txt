@@ -1,5 +1,5 @@
 # Free For Real — freeforreal.app
-# Tutto il sito è aperto: sono otto giochi, non c'è niente da nascondere.
+# Tutto il sito è aperto: sono nove giochi, non c'è niente da nascondere.
 
 User-agent: *
 Allow: /

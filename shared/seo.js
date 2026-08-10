@@ -1,6 +1,6 @@
 /* La parte SEO del sito, in tre lingue, con un file solo per pagina.
  *
- * Il problema da risolvere: le pagine sono nove e la lingua non sta
+ * Il problema da risolvere: le pagine sono dieci e la lingua non sta
  * nell'indirizzo, sta in localStorage. Per un motore di ricerca esiste quindi
  * un solo indirizzo per gioco, e di quell'indirizzo può indicizzare una lingua
  * sola — l'italiano. Ricerche in inglese e in francese: niente.
@@ -77,12 +77,12 @@
   const TEXT = {
     home: {
       en: {
-        title: 'Free For Real — eight free online games, no ads',
-        desc: 'Eight free games to play in your browser, on phone or computer: words, numbers, logic and reflexes. No ads, no payments, and they work offline too.',
+        title: 'Free For Real — nine free online games, no ads',
+        desc: 'Nine free games to play in your browser, on phone or computer: words, numbers, logic and reflexes. No ads, no payments, and they work offline too.',
       },
       fr: {
-        title: 'Free For Real — huit jeux gratuits en ligne, sans publicité',
-        desc: "Huit jeux gratuits à ouvrir dans le navigateur, sur téléphone ou ordinateur : mots, nombres, logique et réflexes. Sans publicité, sans paiement, et jouables hors ligne.",
+        title: 'Free For Real — neuf jeux gratuits en ligne, sans publicité',
+        desc: "Neuf jeux gratuits à ouvrir dans le navigateur, sur téléphone ou ordinateur : mots, nombres, logique et réflexes. Sans publicité, sans paiement, et jouables hors ligne.",
       },
     },
     wordio: {
@@ -153,6 +153,16 @@
       fr: {
         title: 'Kakumal — sommes croisées, les mots croisés en chiffres | Free For Real',
         desc: 'Remplis chaque file de cases avec des chiffres de 1 à 9, jamais deux fois le même, pour faire la somme indiquée. Grilles à solution unique, quatre difficultés.',
+      },
+    },
+    cosmy: {
+      en: {
+        title: 'Cosmy — dodge the asteroids and take down the bosses | Free For Real',
+        desc: 'Fly your ship through asteroids and mines, collect coins and beat the ten bosses of the galaxy. 100 levels, free, no ads, straight in your browser.',
+      },
+      fr: {
+        title: 'Cosmy — esquive les astéroïdes et abats les boss | Free For Real',
+        desc: "Pilote ton vaisseau entre astéroïdes et mines, ramasse les pièces et bats les dix boss de la galaxie. 100 niveaux, gratuit, sans publicité, dans le navigateur.",
       },
     },
     findy: {
@@ -245,7 +255,7 @@
   // Da qui in poi la pagina va per conto suo: la home e ogni gioco, quando
   // cambiano lingua, scrivono la lingua nuova su <html lang="..">. Stando a
   // guardare quell'attributo, titolo e descrizione seguono senza che nessuno
-  // dei nove file debba chiamare niente.
+  // dei dieci file debba chiamare niente.
   // (In Wordio e in Findy quell'attributo è la lingua delle PAROLE, che è anche
   // quella di tutto il resto della pagina: è comunque la risposta giusta.)
   new MutationObserver(() => {

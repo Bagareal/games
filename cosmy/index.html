@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Cosmy — schiva gli asteroidi e abbatti i boss | Free For Real</title>
+<meta name="description" content="Guida la navicella fra asteroidi e mine, raccogli monete e abbatti i dieci boss della galassia. 100 livelli, gratis, senza pubblicità, nel browser.">
+<!-- SEO in tre lingue senza triplicare i file: la stessa pagina risponde a tre
+     indirizzi — questo, ?lang=en e ?lang=fr — che i tag hreflang qui sotto
+     legano fra loro. Qui c'è l'italiano, scritto per esteso perché è quello che
+     legge chi non esegue il JavaScript (le anteprime dei link di WhatsApp,
+     Telegram, Facebook, X). Inglese e francese li mette shared/seo.js. -->
+<link rel="canonical" href="https://freeforreal.app/cosmy/">
+<link rel="alternate" hreflang="it" href="https://freeforreal.app/cosmy/">
+<link rel="alternate" hreflang="en" href="https://freeforreal.app/cosmy/?lang=en">
+<link rel="alternate" hreflang="fr" href="https://freeforreal.app/cosmy/?lang=fr">
+<link rel="alternate" hreflang="x-default" href="https://freeforreal.app/cosmy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Free For Real">
+<meta property="og:url" content="https://freeforreal.app/cosmy/">
+<meta property="og:title" content="Cosmy — schiva gli asteroidi e abbatti i boss | Free For Real">
+<meta property="og:description" content="Guida la navicella fra asteroidi e mine, raccogli monete e abbatti i dieci boss della galassia. 100 livelli, gratis, senza pubblicità, nel browser.">
+<meta property="og:image" content="https://freeforreal.app/icons/og/cosmy.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Cosmy — freeforreal.app">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cosmy — schiva gli asteroidi e abbatti i boss | Free For Real">
+<meta name="twitter:description" content="Guida la navicella fra asteroidi e mine, raccogli monete e abbatti i dieci boss della galassia. 100 livelli, gratis, senza pubblicità, nel browser.">
+<meta name="twitter:image" content="https://freeforreal.app/icons/og/cosmy.png">
+<script type="application/ld+json" id="ld-json">{"@context":"https://schema.org","@type":"VideoGame","name":"Cosmy","url":"https://freeforreal.app/cosmy/","image":"https://freeforreal.app/icons/og/cosmy.png","description":"Guida la navicella fra asteroidi e mine, raccogli monete e abbatti i dieci boss della galassia. 100 livelli, gratis, senza pubblicità, nel browser.","inLanguage":"it","genre":"Arcade","playMode":["SinglePlayer"],"gamePlatform":"Web browser","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"publisher":{"@type":"Organization","name":"Free For Real","url":"https://freeforreal.app/"}}</script>
+<script src="../shared/seo.js" data-page="cosmy"></script>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../icons/ship.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<meta name="theme-color" content="#0A1024">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <div id="loadingScreen">
+    <div style="font-size:22px; letter-spacing:2px;">COSMY</div>
+    <div class="spinner"></div>
+  </div>
+
+  <div class="topbar">
+    <div class="icon-group">
+      <a class="icon-btn" href="../" aria-label="Home"><span class="ffr-ico" data-ico="back"></span></a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni"><span class="ffr-ico" data-ico="gear"></span></button>
+      <button class="icon-btn" id="pauseBtn" aria-label="Pausa"><span class="ffr-ico" data-ico="pause"></span></button>
+      <button class="icon-btn" id="topRestartBtn" aria-label="Ricomincia"><span class="ffr-ico" data-ico="refresh"></span></button>
+    </div>
+    <div class="level-display"><span class="lv-label">LV.</span><span id="levelValue">1</span></div>
+    <canvas class="lives" id="livesCanvas" width="34" height="6"></canvas>
+  </div>
+
+  <div class="score-block">
+    <span class="ffr-ico coin-ico" data-ico="coin"></span><span id="scoreValue">0</span>
+  </div>
+  <div class="sector-line" id="sectorLine"></div>
+
+  <div class="title-wrap">
+    <h1>COSMY</h1>
+  </div>
+
+  <div class="game-zone">
+    <!-- il campo e quello che ci sta sopra stanno in un riquadro solo, grande
+         quanto il canvas: se lo strato del tocco misurasse tutta la zona di
+         gioco, la scritta finirebbe sotto al campo invece che sopra -->
+    <div class="stage">
+      <canvas id="gameCanvas" width="240" height="160"></canvas>
+      <!-- strato "tocca per continuare": copre l'area di gioco a partita ferma
+           e si prende lui il tocco, così lo stesso dito non riprende E gioca -->
+      <div class="tap-layer hidden" id="tapLayer"><span class="tap-hint" id="tapHint" data-i18n="tapToContinue">Tocca per continuare</span></div>
+      <div class="center-toast hidden" id="centerToast"></div>
+    </div>
+  </div>
+
+  <!-- pausa: riprendi / ricomincia il settore -->
+  <div class="overlay" id="pauseOverlay">
+    <div class="card">
+      <div class="card-icon"><span class="ffr-ico" data-ico="pause"></span></div>
+      <h2 data-i18n="paused">Pausa</h2>
+      <button class="primary-btn" id="resumeBtn"><span data-i18n="resume">Riprendi</span><span class="ffr-ico ffr-ico-trail" data-ico="play"></span></button>
+      <button class="secondary-btn" id="restartSectorBtn" data-i18n="restartSector">Ricomincia il settore</button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <!-- conferma del ↻ in barra: il settore riparte da capo, e a metà settore un
+       tocco storto costerebbe caro -->
+  <div class="overlay" id="restartOverlay">
+    <div class="card">
+      <h2 data-i18n="restartTitle">Ricominciare il settore?</h2>
+      <p data-i18n="restartBody">Il settore riparte dal suo primo livello, con tre vite. Le monete tornano a quante ne avevi entrando nel settore.</p>
+      <button class="primary-btn" id="confirmRestartBtn" data-i18n="restartYes">Sì, ricomincia</button>
+      <button class="secondary-btn" id="cancelRestartBtn" data-i18n="restartNo">No, continuo</button>
+    </div>
+  </div>
+
+  <!-- impostazioni: lingua / istruzioni / classifica (e i titoli di coda, una
+       volta che si è visto il finale) -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="gear"></span><span data-i18n="settingsTitle">Impostazioni</span></h2>
+      <div class="menu-list">
+        <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openTutorialBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+        <button class="menu-row hidden" id="openCreditsBtn"><span class="ffr-ico ffr-ico-lead" data-ico="ship"></span><span data-i18n="creditsMenuLabel">Titoli di coda</span></button>
+      </div>
+      <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="tutorialOverlay">
+    <div class="card tutorial-card">
+      <h2 data-i18n="tutorialTitle">Come si gioca</h2>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="arrow-up"></span><span class="ffr-ico" data-ico="arrow-down"></span></span>
+        <p data-i18n="tutorialMove">Muovi la navicella su e giù: trascina il dito dove vuoi nell'area di gioco, anche sotto al campo, o usa il mouse e le frecce</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico ico-rock" data-ico="asteroid"></span></span>
+        <p data-i18n="tutorialDodge">Asteroidi, mine e detriti si schivano: toccarli costa una vita</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico ico-coin" data-ico="coin"></span></span>
+        <p data-i18n="tutorialCoins">Le monete che raccogli sono il tuo punteggio</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico ico-shield" data-ico="shield"></span><span class="ffr-ico ico-life" data-ico="heart"></span><span class="ffr-ico ico-double" data-ico="double-shot"></span></span>
+        <p data-i18n="tutorialBonus">Prendi i bonus che passano: scudo per 3 secondi, vita extra e doppio colpo</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico ico-boss" data-ico="robot"></span></span>
+        <p data-i18n="tutorialBoss">Ogni 10 livelli c'è un boss: lì la navicella spara da sola, tu pensa a mirare e a schivare i suoi colpi</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico ico-life" data-ico="heart"></span></span>
+        <p data-i18n="tutorialLives">Tre vite per settore: se le finisci, il settore riparte dal suo primo livello</p>
+      </div>
+      <button class="primary-btn" id="closeTutorialBtn" data-i18n="gotIt">Ho capito!</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="sectorCompleteOverlay" data-no-x>
+    <div class="card">
+      <div class="card-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
+      <h2 data-i18n="sectorComplete">Settore ripulito!</h2>
+      <p id="sectorCompleteSub"></p>
+      <button class="primary-btn" id="nextSectorBtn"><span data-i18n="continueBtn">Continua</span><span class="ffr-ico ffr-ico-trail" data-ico="arrow-right"></span></button>
+    </div>
+  </div>
+
+  <div class="overlay" id="gameOverOverlay" data-no-x>
+    <div class="card">
+      <h2 data-i18n="gameOver">Navicella distrutta</h2>
+      <p id="gameOverSub"></p>
+      <button class="primary-btn" id="retryBtn" data-i18n="retryBtn">Riprova il settore</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageTitle">Lingua</span></h2>
+      <p data-i18n="languageSub">Scegli la lingua dell'interfaccia</p>
+      <div class="language-list" id="languageList"></div>
+      <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="leaderboardOverlay">
+    <div class="card">
+      <div class="card-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
+      <h2 data-i18n="leaderboardTitle">Classifica</h2>
+      <p class="lb-note" data-i18n="leaderboardNote">Una sola classifica per tutti: conta il livello raggiunto e, a parità di livello, le monete.</p>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+      <button class="secondary-btn" id="closeLeaderboardBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <!-- titoli di coda: scorrono dal basso, si saltano con un tocco -->
+  <div class="overlay credits-overlay" id="creditsOverlay" data-no-x>
+    <div class="credits-viewport" id="creditsViewport">
+      <div class="credits-scroll" id="creditsScroll"></div>
+    </div>
+    <button class="secondary-btn credits-skip" id="creditsSkipBtn" data-i18n="creditsSkip">Salta</button>
+  </div>
+
+</div>
+
+<script src="../shared/icons.js"></script>
+<script>window.FFR_AUTH_HEADLESS = true;</script>
+<script src="../shared/auth.js"></script>
+<script src="script.js"></script>
+<script src="../shared/modal-x.js"></script>
+</body>
+</html>

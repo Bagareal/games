@@ -70,6 +70,12 @@ A word search: the words listed under the grid are hidden inside it, and you dra
 
 **[freeforreal.app/findy](https://freeforreal.app/findy/)**
 
+### [Cosmy](cosmy/)
+
+A side-scrolling space game: your ship sits on the left of the screen, the galaxy scrolls past it, and you move up and down to get through what comes at you. 100 levels in 10 sectors — asteroids, mines and walls of debris to dodge, coins to pick up (they are the score), and a shield, an extra life or a double shot drifting by every so often. The last level of every sector is a boss, ten of them, each one drawn differently and each one attacking in its own way; only there does the ship shoot, and it does it on its own, so one finger is always enough. No difficulty to pick: it rises on its own, level after level, along a curve that flattens out near the end. Three lives per sector and a sector has to be finished in one go — lose them all and it starts again from its first level, coins included, so nothing can be farmed. One single worldwide leaderboard: the level you reached comes first, and coins break the tie between two players on the same level. Its own look: "orbital sunset", deep night blue with the warm ambers of a sunset seen from orbit, and a sector's palette, nebulae and rocks change with every level. Play it at:
+
+**[freeforreal.app/cosmy](https://freeforreal.app/cosmy/)**
+
 ## Credits
 
 **Wordio**'s word lists were cleaned up using [**FrequencyWords**](https://github.com/hermitdave/FrequencyWords) by [**Hermit Dave**](https://github.com/hermitdave) — word-frequency lists built from the OpenSubtitles corpus and published openly. We use them offline, once, to decide which words the game is allowed to *ask* for: a word has to be one people actually use, or it doesn't get asked. That is how `uri`, `ima` and a pile of stray English and French words stopped showing up as Italian answers. None of that data ships with the site — only our own word list, filtered. Thank you.

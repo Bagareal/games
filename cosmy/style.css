@@ -1,0 +1,433 @@
+/* ============ COSMY — foglio di stile ============
+   Identità visiva sua: "tramonto orbitale". Blu notte profondo, e sopra i
+   caldi di un tramonto visto dall'orbita — ambra, arancio, brace. Niente in
+   comune con il viola/stellato di Boing né col neon di Blokky: il carattere
+   è un altro (Silkscreen per i titoli, Share Tech Mono per i testi lunghi,
+   che a 13px si legge davvero), i pannelli sono lastre di metallo scuro con
+   un filo di luce ambrata sopra, e lo sfondo è un alone caldo fermo — non
+   un'animazione: una cosa che si muove di continuo dietro a un gioco che gira
+   a 60 fotogrammi la paga tutta il gioco. */
+:root{
+  --space: #0A1024;
+  --space-deep: #04070F;
+  --panel: #131B33;
+  --panel-line: rgba(255,214,160,0.16);
+  --amber: #FFB23F;
+  --orange: #FF7133;
+  --ember: #C93A22;
+  --ember-dark: #7C2312;
+  --cream: #FFEBCF;
+  --ice: #6FD3E8;
+  --dim: rgba(255,235,207,0.62);
+}
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+html,body{ height:100%; }
+body{
+  margin:0; padding:0; min-height:100%;
+  font-family:'Share Tech Mono', monospace;
+  color: var(--cream);
+  background:
+    radial-gradient(120% 80% at 12% 100%, rgba(255,113,51,0.20) 0%, rgba(255,113,51,0) 58%),
+    radial-gradient(90% 60% at 88% 0%, rgba(111,211,232,0.10) 0%, rgba(111,211,232,0) 60%),
+    linear-gradient(180deg, var(--space) 0%, var(--space-deep) 100%);
+  background-attachment: fixed;
+}
+
+#app{
+  position:relative; z-index:1;
+  width:100%;
+  min-height:100vh;
+  min-height:100dvh;
+  max-width:520px;
+  margin:0 auto;
+  display:flex; flex-direction:column;
+  overflow-x:hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* topbar (icone / livello / vite: stesso standard del sito) */
+.topbar{
+  position:relative; z-index:5;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: max(10px, env(safe-area-inset-top)) 16px 2px;
+}
+.icon-group{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+.icon-btn{
+  width:34px; height:34px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  background: rgba(255,214,160,0.08);
+  border: 1.5px solid var(--panel-line);
+  color: var(--cream);
+  font-size:19px;
+  cursor:pointer;
+  text-decoration:none;
+  flex:0 0 auto;
+}
+.icon-btn:active{ transform: scale(0.96); }
+/* la freccia di casa ha già il suo cerchio dentro all'icona: niente fondino,
+   o intorno ci finiscono due tondi uno dentro l'altro */
+a.icon-btn{ background:none; border:none; font-size:34px; line-height:0; }
+/* il livello sta nello spazio fra icone e vite, non centrato di forza sullo
+   schermo: con quattro icone il centro esatto cade dentro al gruppo */
+.level-display{
+  flex:1 1 auto;
+  justify-content:center;
+  min-width:0;
+  font-family:'Silkscreen', monospace;
+  font-size:13px;
+  letter-spacing:1px;
+  display:flex; align-items:center; gap:5px;
+  white-space:nowrap;
+}
+.lv-label{ opacity:0.7; }
+.lives{
+  flex:0 0 auto;
+  width:85px; height:15px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* monete: sono il punteggio, quindi stanno grosse e in ambra */
+.score-block{
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  padding: 4px 0 0;
+  font-family:'Silkscreen', monospace;
+  font-size:24px;
+  color: var(--amber);
+  line-height:1.15;
+}
+.coin-ico{ font-size:22px; }
+.sector-line{
+  text-align:center;
+  font-family:'Silkscreen', monospace;
+  font-size:10px;
+  letter-spacing:1px;
+  color: var(--dim);
+  padding: 4px 8px 6px;
+  min-height:16px;
+}
+
+/* il nome del gioco, come in tutti gli altri: riempie anche lo spazio che a un
+   campo 3:2 avanza per forza in verticale su un telefono */
+.title-wrap{
+  text-align:center;
+  padding: 2px 0 6px;
+}
+.title-wrap h1{
+  font-family:'Silkscreen', monospace;
+  font-weight:700;
+  font-size:20px;
+  letter-spacing:4px;
+  margin:0;
+  color: var(--cream);
+}
+
+/* zona di gioco */
+/* tutta la zona è comando, non solo il campo: si trascina anche nello spazio
+   che avanza sotto, dove sta il pollice, senza coprire il gioco */
+.game-zone{
+  position:relative;
+  flex:1 1 auto;
+  display:flex; align-items:center; justify-content:center;
+  padding: 6px 14px max(14px, env(safe-area-inset-bottom));
+  min-height:0;
+  touch-action:none;
+}
+.stage{
+  position:relative;
+  width:100%;
+  max-width:420px;
+}
+#gameCanvas{
+  display:block;
+  width:100%;
+  aspect-ratio: 3 / 2;
+  height:auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: #04070F;
+  border-radius:8px;
+  border: 3px solid rgba(255,214,160,0.14);
+  touch-action:none;
+}
+/* strato che intercetta il primo tocco a partita ferma */
+.tap-layer{
+  position:absolute; inset:0;
+  display:flex; align-items:flex-end; justify-content:center;
+  padding-bottom: 14%;
+  cursor:pointer;
+}
+.tap-hint{
+  font-family:'Silkscreen', monospace;
+  font-size:12px;
+  color: var(--cream);
+  text-shadow: 0 2px 6px rgba(0,0,0,0.85);
+  text-align:center;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse{ 0%,100%{ opacity:0.55; } 50%{ opacity:1; } }
+.center-toast{
+  position:absolute; top:26%; left:50%; transform:translateX(-50%);
+  text-align:center;
+  font-family:'Silkscreen', monospace;
+  font-size:11px;
+  line-height:1.6;
+  color: var(--cream);
+  background: rgba(4,7,15,0.82);
+  border: 1px solid var(--panel-line);
+  border-radius:8px;
+  padding:8px 14px;
+  max-width:80%;
+  pointer-events:none;
+  z-index:10;
+}
+.center-toast .toast-ico{
+  font-size:15px;
+  margin-right:7px;
+  vertical-align:-0.22em;
+}
+.toast-ico-life{ color: var(--ember); }
+.toast-ico-shield{ color: var(--ice); }
+.toast-ico-double{ color: var(--amber); }
+
+/* contatore fotogrammi, solo con ?fps=1 in fondo all'indirizzo: così "va
+   meglio?" si risponde con un numero preso dal telefono di chi gioca */
+#fpsBox{
+  position:fixed; top:6px; right:8px; z-index:60;
+  font-family:'Silkscreen', monospace; font-size:11px;
+  color:#7CFF9B; background:rgba(0,0,0,0.55); padding:3px 6px; border-radius:6px;
+}
+
+/* ---- pannelli: lastre scure con la luce ambrata sul bordo alto ---- */
+.overlay{
+  position:fixed; inset:0; z-index:30;
+  background: rgba(4,7,15,0.86);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transition:opacity 0.25s ease;
+}
+.overlay.show{ opacity:1; pointer-events:auto; }
+.card{
+  position:relative;
+  background: linear-gradient(180deg, #1A2440 0%, var(--panel) 100%);
+  border: 1.5px solid var(--panel-line);
+  border-top: 2px solid rgba(255,178,63,0.55);
+  border-radius:14px;
+  padding: 24px 22px 20px;
+  width: 84%;
+  max-width:340px;
+  max-height: 84vh;
+  overflow-y: auto;
+  text-align:center;
+  color: var(--cream);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.65), 0 0 26px rgba(255,113,51,0.10);
+  transform: translateY(10px) scale(0.97);
+  transition: transform 0.25s ease;
+}
+.overlay.show .card{ transform: translateY(0) scale(1); }
+.card h2{
+  font-family:'Silkscreen', monospace;
+  font-size:14px; line-height:1.6;
+  letter-spacing:1px;
+  margin:4px 0 10px;
+  color: var(--amber);
+}
+.card p{ font-size:14px; color: var(--dim); margin:4px 0 16px; line-height:1.5; }
+.card-icon{ font-size:36px; margin-bottom:2px; }
+
+.primary-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  font-family:'Silkscreen', monospace; font-size:13px; letter-spacing:1px;
+  background: linear-gradient(180deg, var(--orange), var(--ember));
+  color:#fff; border:none; padding:13px 26px; border-radius:8px;
+  box-shadow: 0 4px 0 var(--ember-dark);
+  cursor:pointer;
+  margin-bottom: 4px;
+}
+.primary-btn:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--ember-dark); }
+.secondary-btn{
+  font-family:'Silkscreen', monospace; font-size:11px; letter-spacing:1px;
+  background: transparent; color: var(--dim); border: 2px solid var(--panel-line);
+  padding:10px 18px; border-radius:8px;
+  cursor:pointer;
+  margin-top:8px;
+}
+.secondary-btn:active{ transform:scale(0.96); }
+.home-link{
+  display:block; margin-top:14px;
+  font-family:'Silkscreen', monospace;
+  font-size:9px;
+  color: rgba(255,235,207,0.45);
+  text-decoration:underline;
+}
+
+.menu-list{ display:flex; flex-direction:column; gap:8px; margin-top:12px; }
+.menu-row{
+  display:flex; align-items:center; gap:10px;
+  font-family:'Silkscreen', monospace; font-size:12px;
+  background: rgba(255,214,160,0.06); color: var(--cream);
+  border: 1px solid var(--panel-line); border-radius:8px;
+  padding:12px 14px;
+  cursor:pointer;
+  text-align:left;
+}
+.menu-row:active{ background: rgba(255,214,160,0.13); }
+
+.language-list{ display:flex; flex-direction:column; gap:8px; padding: 4px 0 8px; }
+.language-option{
+  display:flex; align-items:center; gap:12px;
+  width:100%;
+  background: rgba(255,214,160,0.06); border-radius:8px; padding:11px 14px;
+  border: 1px solid var(--panel-line); cursor:pointer;
+  font-family:'Silkscreen', monospace; font-size:13px;
+  color: var(--cream);
+  text-align:left;
+}
+.language-option:active{ background: rgba(255,214,160,0.13); }
+.language-option.active{ outline: 2px solid var(--amber); outline-offset: -2px; }
+.language-flag{ font-size:22px; }
+
+/* tutorial */
+.tutorial-card{ max-width:360px; }
+.tutorial-row{
+  display:flex; align-items:center; gap:12px;
+  text-align:left;
+  margin-bottom:14px;
+}
+.tutorial-icon{
+  flex:0 0 auto; width:52px; text-align:center;
+  font-size:18px;
+  display:flex; align-items:center; justify-content:center; gap:3px;
+}
+.tutorial-icon .ffr-ico{ vertical-align:middle; }
+.tutorial-row p{ margin:0; font-size:13.5px; line-height:1.45; color: var(--cream); }
+.ico-coin{ font-size:21px; }
+.ico-life{ color: var(--ember); }
+.ico-shield{ color: var(--ice); }
+.ico-double{ color: var(--amber); }
+.ico-rock{ color: #9A8C7A; }
+.ico-boss{ color: var(--orange); font-size:22px; }
+
+/* classifica: una sola tabella per tutti, con bandiera, livello e monete */
+.lb-note{ font-size:12.5px; margin: 0 0 12px; }
+/* 6 righe visibili, poi si scorre — 6 × 40px + 5 × 8px */
+.leaderboard-list{ display:flex; flex-direction:column; gap:8px; margin: 4px 0 12px; max-height:280px; overflow-y:auto; }
+.leaderboard-row{
+  display:flex; align-items:center; gap:8px;
+  background: rgba(255,214,160,0.06); border: 1px solid var(--panel-line);
+  border-radius:8px; padding:8px 10px;
+  font-family:'Silkscreen', monospace; font-size:10px; color: var(--cream);
+  flex: 0 0 auto;
+}
+.leaderboard-row.is-me{
+  background: rgba(255,113,51,0.20);
+  border-color: var(--orange);
+}
+.leaderboard-row.is-me .leaderboard-rank{ color: var(--orange); }
+.leaderboard-rank{ flex:0 0 auto; min-width:34px; text-align:left; color: rgba(255,235,207,0.5); }
+.leaderboard-flag{ flex:0 0 auto; font-size:14px; }
+.leaderboard-name{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
+.leaderboard-score{ flex:0 0 auto; display:flex; align-items:center; gap:4px; color: var(--amber); white-space:nowrap; }
+.leaderboard-score .lb-lv{ color: var(--cream); }
+.leaderboard-score .ffr-ico{ font-size:12px; }
+.leaderboard-empty{ font-size:13.5px; color: var(--dim); padding: 6px 4px 16px; line-height:1.5; }
+
+/* titoli di coda: scorrono dal basso come alla fine di un film */
+.credits-overlay{
+  background: linear-gradient(180deg, #050912 0%, #0A1024 55%, #1A1020 100%);
+  flex-direction:column;
+}
+.credits-viewport{
+  position:relative;
+  width:100%; max-width:520px;
+  flex:1 1 auto;
+  overflow:hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+}
+.credits-scroll{
+  position:absolute; left:0; right:0; top:0;
+  padding: 0 26px;
+  text-align:center;
+  will-change: transform;
+}
+.credits-title{
+  font-family:'Silkscreen', monospace; font-size:26px; letter-spacing:3px;
+  color: var(--amber);
+  margin: 0 0 6px;
+}
+.credits-sub{
+  font-family:'Silkscreen', monospace; font-size:12px; letter-spacing:1px;
+  color: var(--dim); margin: 0 0 34px;
+}
+.credits-scroll p{ font-size:15px; line-height:1.7; color: var(--cream); margin: 0 0 18px; }
+.credits-scroll p.small{ font-size:13px; color: var(--dim); }
+.credits-boss{
+  display:block;
+  font-family:'Silkscreen', monospace; font-size:13px; letter-spacing:1px;
+  color: var(--orange);
+  margin-bottom:4px;
+}
+.credits-head{
+  font-family:'Silkscreen', monospace; font-size:12px; letter-spacing:2px;
+  color: var(--ice);
+  margin: 30px 0 18px;
+}
+.credits-end{
+  font-family:'Silkscreen', monospace; font-size:16px; letter-spacing:2px;
+  color: var(--amber);
+  margin: 26px 0 10px;
+}
+.credits-skip{
+  flex:0 0 auto;
+  margin: 0 0 max(18px, env(safe-area-inset-bottom));
+  background: rgba(4,7,15,0.6);
+}
+
+#loadingScreen{
+  position:fixed; inset:0; z-index:50;
+  background: linear-gradient(180deg, var(--space) 0%, var(--space-deep) 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  color: var(--cream); font-family:'Silkscreen', monospace; letter-spacing:2px;
+  transition: opacity 0.3s ease;
+}
+.spinner{
+  width:32px; height:32px; border-radius:50%;
+  border:4px solid rgba(255,235,207,0.18); border-top-color:var(--orange);
+  animation: spin 0.8s linear infinite; margin-top:16px;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.hidden{ display:none !important; }
+
+/* tablet / desktop: il canvas cresce in proporzione allo spazio che c'è
+   davvero — larghezza dello schermo, oppure l'altezza rimasta sotto
+   all'intestazione (topbar + monete + settore + padding ≈ 190px) moltiplicata
+   per 1.5, che è il rapporto 3:2 del campo. Niente percentuali indovinate. */
+@media (min-width: 700px){
+  #app{ max-width: min(92vw, 1200px); }
+  .stage{ max-width: min(90vw, calc((100dvh - 230px) * 1.5), 1000px); }
+  .icon-btn{ width:42px; height:42px; font-size:23px; border-radius:11px; }
+  a.icon-btn{ font-size:42px; }
+  .level-display{ font-size:16px; }
+  .lives{ width:102px; height:18px; }
+  .score-block{ font-size:30px; }
+  .coin-ico{ font-size:27px; }
+  .sector-line{ font-size:12px; }
+  .title-wrap h1{ font-size:26px; }
+}
+@media (min-width: 1024px){
+  body{ display:flex; align-items:center; }
+  #app{
+    min-height:auto;
+    max-height:96vh;
+    border-radius:20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+    overflow-y:auto;
+  }
+  .icon-btn{ width:46px; height:46px; font-size:25px; }
+  a.icon-btn{ font-size:46px; }
+  .level-display{ font-size:18px; }
+  .lives{ width:114px; height:20px; }
+  .score-block{ font-size:34px; }
+  .coin-ico{ font-size:30px; }
+  .title-wrap h1{ font-size:30px; }
+}
