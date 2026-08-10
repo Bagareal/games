@@ -35,6 +35,37 @@
  * da regola del sito. Le uniche parole "da ricerca" usate sono quelle che non
  * sono di nessuno (dama, mattoncini, parole nascoste, somme incrociate) più
  * 2048, che è open source.
+ *
+ * ============================================================================
+ * QUANDO SI AGGIUNGE UN GIOCO NUOVO — questi sette punti valgono sempre.
+ * Un gioco che non li ha su Google non esiste, e condividendone il link non
+ * si vede niente. Fanno parte del "finito", come le istruzioni e la classifica.
+ *
+ *  1. Titolo e descrizione in italiano, dentro la <head> del gioco:
+ *     <title> (nome — cosa si fa | Free For Real) e <meta name="description">
+ *     di 150-160 caratteri. Copiare il blocco da una pagina che c'è già.
+ *  2. Inglese e francese qui dentro, nella tabella TEXT, con la stessa chiave
+ *     usata in data-page.
+ *  3. Nella <head>: canonical, i quattro hreflang (it, en, fr, x-default),
+ *     Open Graph, Twitter Card, i dati strutturati (@type VideoGame) e
+ *     <script src="../shared/seo.js" data-page="LACHIAVE"></script>.
+ *  4. L'immagine di condivisione: 1200x630 in icons/og/LACHIAVE.png, con la
+ *     tessera del gioco, la sua tinta e il suo carattere. Dentro non ci va
+ *     testo tradotto, così la stessa immagine vale per tutte e tre le lingue.
+ *  5. Tre righe nuove in sitemap.xml (la pagina, ?lang=en, ?lang=fr), ognuna
+ *     con i suoi quattro <xhtml:link>.
+ *  6. La scheda in home, con la descrizione nelle tre lingue (HOME_STRINGS).
+ *  7. Le parole: nessun gioco esistente nominato, mai. Si descrive il
+ *     meccanismo, o si usano termini che non sono di nessuno. Se invece il
+ *     gioco segue regole rese famose da qualcuno che le ha pubblicate
+ *     apertamente, allora quel nome si scrive: nei Credits del README E nelle
+ *     istruzioni del gioco, dicendo che il codice qui è nostro e che il grazie
+ *     è per aver creato quel gioco (vedi Addy).
+ *
+ * Il gioco nuovo va anche provato: le pagine si aprono tutte in Firefox
+ * headless con un window.onerror, prima di committare. Qui non c'è né build né
+ * linter, un errore di sintassi va online in silenzio.
+ * ============================================================================
  */
 (function () {
   const SITE = 'https://freeforreal.app';

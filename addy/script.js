@@ -31,6 +31,9 @@ const UI_STRINGS = {
     tutorialGoal: 'Arriva a 2048. Se ci riesci puoi continuare a giocare',
     tutorialUndo: 'Hai 3 annulla per partita, per rimediare a una mossa partita male',
     tutorialKeys: 'Da computer: le frecce della tastiera',
+    // il grazie a chi ha reso famose queste regole. Le regole di un gioco sono
+    // di tutti, il codice no: quello qui dentro e' nostro, scritto da zero.
+    credit: "Le regole di questo gioco le ha rese famose 2048, di Gabriele Cirulli, che l'ha pubblicato apertamente. Il codice e la grafica che vedi qui sono nostri, scritti da zero: a lui va il grazie per aver creato quel gioco e averlo regalato a tutti.",
     gotIt: 'Ho capito!',
     winTitle: "Ce l'hai fatta!",
     winSub: 'Hai costruito la tessera 2048. Da qui in poi si gioca per il record.',
@@ -62,6 +65,7 @@ const UI_STRINGS = {
     tutorialGoal: 'Reach 2048. If you make it, you can keep playing',
     tutorialUndo: 'You get 3 undos per game, for when a move goes wrong',
     tutorialKeys: 'On a computer: the arrow keys',
+    credit: 'The rules of this game were made famous by 2048, by Gabriele Cirulli, who published it openly. The code and the graphics you see here are ours, written from scratch: the thanks go to him for creating that game and giving it to everyone.',
     gotIt: 'Got it!',
     winTitle: 'You made it!',
     winSub: 'You built the 2048 tile. From here on it is all about the record.',
@@ -93,6 +97,7 @@ const UI_STRINGS = {
     tutorialGoal: 'Atteins 2048. Si tu y arrives, tu peux continuer à jouer',
     tutorialUndo: 'Tu as 3 annulations par partie, pour rattraper un coup raté',
     tutorialKeys: "Sur ordinateur : les flèches du clavier",
+    credit: "Les règles de ce jeu ont été rendues célèbres par 2048, de Gabriele Cirulli, qui l'a publié ouvertement. Le code et les graphismes que tu vois ici sont les nôtres, écrits de zéro : merci à lui d'avoir créé ce jeu et de l'avoir offert à tout le monde.",
     gotIt: 'Compris !',
     winTitle: 'Tu as réussi !',
     winSub: 'Tu as construit la tuile 2048. À partir de maintenant, on joue pour le record.',
