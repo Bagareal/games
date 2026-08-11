@@ -157,12 +157,12 @@
     },
     cosmy: {
       en: {
-        title: 'Cosmy — dodge the asteroids and take down the bosses | Free For Real',
-        desc: 'Fly your ship through asteroids and mines, collect coins and beat the ten bosses of the galaxy. 100 levels, free, no ads, straight in your browser.',
+        title: 'Cosmy — shoot down the enemies and the bosses of the galaxy | Free For Real',
+        desc: 'Fly your ship, shoot down the enemies coming at you, dodge asteroids and mines and beat the ten bosses of the galaxy. 50 levels, free, no ads, straight in your browser.',
       },
       fr: {
-        title: 'Cosmy — esquive les astéroïdes et abats les boss | Free For Real',
-        desc: "Pilote ton vaisseau entre astéroïdes et mines, ramasse les pièces et bats les dix boss de la galaxie. 100 niveaux, gratuit, sans publicité, dans le navigateur.",
+        title: 'Cosmy — abats les ennemis et les boss de la galaxie | Free For Real',
+        desc: "Pilote ton vaisseau, abats les ennemis qui descendent, esquive astéroïdes et mines et bats les dix boss de la galaxie. 50 niveaux, gratuit, sans publicité, dans le navigateur.",
       },
     },
     findy: {

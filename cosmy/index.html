@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Cosmy — schiva gli asteroidi e abbatti i boss | Free For Real</title>
-<meta name="description" content="Guida la navicella fra asteroidi e mine, raccogli monete e abbatti i dieci boss della galassia. 100 livelli, gratis, senza pubblicità, nel browser.">
+<title>Cosmy — abbatti i nemici e i boss della galassia | Free For Real</title>
+<meta name="description" content="Pilota la navicella, abbatti i nemici che scendono, schiva asteroidi e mine e batti i dieci boss della galassia. 50 livelli, gratis, senza pubblicità, nel browser.">
 <!-- SEO in tre lingue senza triplicare i file: la stessa pagina risponde a tre
      indirizzi — questo, ?lang=en e ?lang=fr — che i tag hreflang qui sotto
      legano fra loro. Qui c'è l'italiano, scritto per esteso perché è quello che
@@ -18,8 +18,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Free For Real">
 <meta property="og:url" content="https://freeforreal.app/cosmy/">
-<meta property="og:title" content="Cosmy — schiva gli asteroidi e abbatti i boss | Free For Real">
-<meta property="og:description" content="Guida la navicella fra asteroidi e mine, raccogli monete e abbatti i dieci boss della galassia. 100 livelli, gratis, senza pubblicità, nel browser.">
+<meta property="og:title" content="Cosmy — abbatti i nemici e i boss della galassia | Free For Real">
+<meta property="og:description" content="Pilota la navicella, abbatti i nemici che scendono, schiva asteroidi e mine e batti i dieci boss della galassia. 50 livelli, gratis, senza pubblicità, nel browser.">
 <meta property="og:image" content="https://freeforreal.app/icons/og/cosmy.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -28,10 +28,10 @@
 <meta property="og:locale:alternate" content="en_GB">
 <meta property="og:locale:alternate" content="fr_FR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Cosmy — schiva gli asteroidi e abbatti i boss | Free For Real">
-<meta name="twitter:description" content="Guida la navicella fra asteroidi e mine, raccogli monete e abbatti i dieci boss della galassia. 100 livelli, gratis, senza pubblicità, nel browser.">
+<meta name="twitter:title" content="Cosmy — abbatti i nemici e i boss della galassia | Free For Real">
+<meta name="twitter:description" content="Pilota la navicella, abbatti i nemici che scendono, schiva asteroidi e mine e batti i dieci boss della galassia. 50 livelli, gratis, senza pubblicità, nel browser.">
 <meta name="twitter:image" content="https://freeforreal.app/icons/og/cosmy.png">
-<script type="application/ld+json" id="ld-json">{"@context":"https://schema.org","@type":"VideoGame","name":"Cosmy","url":"https://freeforreal.app/cosmy/","image":"https://freeforreal.app/icons/og/cosmy.png","description":"Guida la navicella fra asteroidi e mine, raccogli monete e abbatti i dieci boss della galassia. 100 livelli, gratis, senza pubblicità, nel browser.","inLanguage":"it","genre":"Arcade","playMode":["SinglePlayer"],"gamePlatform":"Web browser","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"publisher":{"@type":"Organization","name":"Free For Real","url":"https://freeforreal.app/"}}</script>
+<script type="application/ld+json" id="ld-json">{"@context":"https://schema.org","@type":"VideoGame","name":"Cosmy","url":"https://freeforreal.app/cosmy/","image":"https://freeforreal.app/icons/og/cosmy.png","description":"Pilota la navicella, abbatti i nemici che scendono, schiva asteroidi e mine e batti i dieci boss della galassia. 50 livelli, gratis, senza pubblicità, nel browser.","inLanguage":"it","genre":"Arcade","playMode":["SinglePlayer"],"gamePlatform":"Web browser","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"publisher":{"@type":"Organization","name":"Free For Real","url":"https://freeforreal.app/"}}</script>
 <script src="../shared/seo.js" data-page="cosmy"></script>
 <link rel="icon" href="../favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="../icons/ship.svg">
@@ -75,13 +75,17 @@
   <div class="game-zone">
     <!-- il campo e quello che ci sta sopra stanno in un riquadro solo, grande
          quanto il canvas: se lo strato del tocco misurasse tutta la zona di
-         gioco, la scritta finirebbe sotto al campo invece che sopra -->
+         gioco, la scritta finirebbe sotto al campo invece che sopra.
+         La misura del canvas la mette script.js misurando lo spazio che resta:
+         quella qui sotto serve solo prima che la pagina sia impaginata -->
     <div class="stage">
-      <canvas id="gameCanvas" width="240" height="160"></canvas>
+      <canvas id="gameCanvas" width="190" height="260"></canvas>
       <!-- strato "tocca per continuare": copre l'area di gioco a partita ferma
            e si prende lui il tocco, così lo stesso dito non riprende E gioca -->
       <div class="tap-layer hidden" id="tapLayer"><span class="tap-hint" id="tapHint" data-i18n="tapToContinue">Tocca per continuare</span></div>
       <div class="center-toast hidden" id="centerToast"></div>
+      <!-- la striscia del cambio livello: passa e se ne va, il gioco non si ferma -->
+      <div class="level-strip" id="levelStrip"></div>
     </div>
   </div>
 
@@ -126,24 +130,36 @@
     <div class="card tutorial-card">
       <h2 data-i18n="tutorialTitle">Come si gioca</h2>
       <div class="tutorial-row">
-        <span class="tutorial-icon"><span class="ffr-ico" data-ico="arrow-up"></span><span class="ffr-ico" data-ico="arrow-down"></span></span>
-        <p data-i18n="tutorialMove">Muovi la navicella su e giù: trascina il dito dove vuoi nell'area di gioco, anche sotto al campo, o usa il mouse e le frecce</p>
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="arrow-lr"></span><span class="ffr-ico" data-ico="arrow-up"></span></span>
+        <p data-i18n="tutorialMove">Muovi la navicella dove vuoi: trascina il dito nell'area di gioco, o usa il mouse e le frecce. Va a destra e sinistra su tutta la larghezza, e avanti e indietro nella metà bassa</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico ico-double" data-ico="target"></span></span>
+        <p data-i18n="tutorialShoot">La navicella spara da sola verso l'alto: pensa a mirare e a schivare</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico ico-enemy" data-ico="robot"></span></span>
+        <p data-i18n="tutorialEnemies">I nemici vanno abbattuti tutti, o il livello non prosegue: leggeri, medi e pesanti, uno più duro dell'altro, e ognuno spara a modo suo</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico ico-enemy" data-ico="arrow-down"></span></span>
+        <p data-i18n="tutorialWaves">Le ondate non aspettano: se sei lento, la successiva arriva lo stesso e te li ritrovi tutti insieme. Ondata ripulita in tempo, 10 monete in più</p>
       </div>
       <div class="tutorial-row">
         <span class="tutorial-icon"><span class="ffr-ico ico-rock" data-ico="asteroid"></span></span>
-        <p data-i18n="tutorialDodge">Asteroidi, mine e detriti si schivano: toccarli costa una vita</p>
+        <p data-i18n="tutorialDodge">Asteroidi, mine e detriti si schivano: toccarli costa una vita. Solo i sassi piccoli si spaccano a colpi</p>
       </div>
       <div class="tutorial-row">
         <span class="tutorial-icon"><span class="ffr-ico ico-coin" data-ico="coin"></span></span>
         <p data-i18n="tutorialCoins">Le monete che raccogli sono il tuo punteggio</p>
       </div>
       <div class="tutorial-row">
-        <span class="tutorial-icon"><span class="ffr-ico ico-shield" data-ico="shield"></span><span class="ffr-ico ico-life" data-ico="heart"></span><span class="ffr-ico ico-double" data-ico="double-shot"></span></span>
-        <p data-i18n="tutorialBonus">Prendi i bonus che passano: scudo per 3 secondi, vita extra e doppio colpo</p>
+        <span class="tutorial-icon quad"><span class="ffr-ico ico-shield" data-ico="shield"></span><span class="ffr-ico ico-life" data-ico="heart"></span><span class="ffr-ico ico-double" data-ico="double-shot"></span><span class="ffr-ico ico-shock" data-ico="shockwave"></span></span>
+        <p data-i18n="tutorialBonus">Prendi i bonus che scendono: scudo a bolla per 5 secondi, vita extra, doppio colpo e — raro — l'onda d'urto, che parte dalla navicella e spazza via tutto quello che trova</p>
       </div>
       <div class="tutorial-row">
-        <span class="tutorial-icon"><span class="ffr-ico ico-boss" data-ico="robot"></span></span>
-        <p data-i18n="tutorialBoss">Ogni 10 livelli c'è un boss: lì la navicella spara da sola, tu pensa a mirare e a schivare i suoi colpi</p>
+        <span class="tutorial-icon"><span class="ffr-ico ico-boss" data-ico="crown"></span></span>
+        <p data-i18n="tutorialBoss">Ogni 5 livelli c'è un boss: lì niente nemici, solo lui e i suoi colpi</p>
       </div>
       <div class="tutorial-row">
         <span class="tutorial-icon"><span class="ffr-ico ico-life" data-ico="heart"></span></span>

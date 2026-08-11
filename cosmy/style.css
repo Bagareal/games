@@ -123,31 +123,28 @@ a.icon-btn{ background:none; border:none; font-size:34px; line-height:0; }
 }
 
 /* zona di gioco */
-/* tutta la zona è comando, non solo il campo: si trascina anche nello spazio
-   che avanza sotto, dove sta il pollice, senza coprire il gioco */
+/* Il campo scende: prende tutta la larghezza dello schermo e arriva fino in
+   fondo, perché il pericolo cammina sul lato lungo. La misura vera del canvas
+   la mette il gioco in pixel, misurando questa scatola (script.js,
+   applyGeometry): qui si dice solo quanto grande può essere la scatola. */
 .game-zone{
   position:relative;
   flex:1 1 auto;
   display:flex; align-items:center; justify-content:center;
-  padding: 6px 14px max(14px, env(safe-area-inset-bottom));
+  padding: 4px 0 env(safe-area-inset-bottom);
   min-height:0;
+  overflow:hidden;
   touch-action:none;
 }
 .stage{
   position:relative;
-  width:100%;
-  max-width:420px;
+  line-height:0;
 }
 #gameCanvas{
   display:block;
-  width:100%;
-  aspect-ratio: 3 / 2;
-  height:auto;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   background: #04070F;
-  border-radius:8px;
-  border: 3px solid rgba(255,214,160,0.14);
   touch-action:none;
 }
 /* strato che intercetta il primo tocco a partita ferma */
@@ -189,6 +186,31 @@ a.icon-btn{ background:none; border:none; font-size:34px; line-height:0; }
 .toast-ico-life{ color: var(--ember); }
 .toast-ico-shield{ color: var(--ice); }
 .toast-ico-double{ color: var(--amber); }
+.toast-ico-shock{ color: #D8B0FF; }
+
+/* la striscia del cambio livello: passa sopra al campo e se ne va, senza
+   fermare il gioco e senza far ripartire niente */
+.level-strip{
+  position:absolute; left:0; right:0; top:34%;
+  text-align:center;
+  font-family:'Silkscreen', monospace;
+  font-size:12px; letter-spacing:2px;
+  color: var(--cream);
+  background: linear-gradient(90deg, rgba(255,113,51,0) 0%, rgba(20,10,30,0.85) 18%, rgba(20,10,30,0.85) 82%, rgba(255,113,51,0) 100%);
+  border-top:1px solid rgba(255,178,63,0.5);
+  border-bottom:1px solid rgba(255,178,63,0.5);
+  padding:7px 0;
+  pointer-events:none;
+  opacity:0;
+  z-index:11;
+}
+.level-strip.run{ animation: strip 1.6s ease-out forwards; }
+@keyframes strip{
+  0%{ opacity:0; transform: translateX(-40%); }
+  18%{ opacity:1; transform: translateX(0); }
+  75%{ opacity:1; transform: translateX(0); }
+  100%{ opacity:0; transform: translateX(40%); }
+}
 
 /* contatore fotogrammi, solo con ?fps=1 in fondo all'indirizzo: così "va
    meglio?" si risponde con un numero preso dal telefono di chi gioca */
@@ -297,7 +319,9 @@ a.icon-btn{ background:none; border:none; font-size:34px; line-height:0; }
   flex:0 0 auto; width:52px; text-align:center;
   font-size:18px;
   display:flex; align-items:center; justify-content:center; gap:3px;
+  flex-wrap:wrap;   /* la riga dei bonus ne ha quattro: vanno a due a due */
 }
+.tutorial-icon.quad{ font-size:15px; gap:2px; }
 .tutorial-icon .ffr-ico{ vertical-align:middle; }
 .tutorial-row p{ margin:0; font-size:13.5px; line-height:1.45; color: var(--cream); }
 .ico-coin{ font-size:21px; }
@@ -306,6 +330,8 @@ a.icon-btn{ background:none; border:none; font-size:34px; line-height:0; }
 .ico-double{ color: var(--amber); }
 .ico-rock{ color: #9A8C7A; }
 .ico-boss{ color: var(--orange); font-size:22px; }
+.ico-enemy{ color: #9AD86A; }
+.ico-shock{ color: #D8B0FF; }
 
 /* classifica: una sola tabella per tutti, con bandiera, livello e monete */
 .lb-note{ font-size:12.5px; margin: 0 0 12px; }
@@ -398,13 +424,19 @@ a.icon-btn{ background:none; border:none; font-size:34px; line-height:0; }
 @keyframes spin{ to{ transform:rotate(360deg); } }
 .hidden{ display:none !important; }
 
-/* tablet / desktop: il canvas cresce in proporzione allo spazio che c'è
-   davvero — larghezza dello schermo, oppure l'altezza rimasta sotto
-   all'intestazione (topbar + monete + settore + padding ≈ 190px) moltiplicata
-   per 1.5, che è il rapporto 3:2 del campo. Niente percentuali indovinate. */
+/* tablet / desktop: il campo resta la stessa colonna, con un filo di cornice
+   attorno (outline e non border: il bordo entrerebbe nella misura del canvas e
+   storcerebbe i pixel). Quanto larga può essere la colonna lo decide il gioco
+   misurando lo spazio, non una percentuale indovinata. */
 @media (min-width: 700px){
   #app{ max-width: min(92vw, 1200px); }
-  .stage{ max-width: min(90vw, calc((100dvh - 230px) * 1.5), 1000px); }
+  .game-zone{ padding: 6px 14px max(10px, env(safe-area-inset-bottom)); }
+  #gameCanvas{
+    border-radius:10px;
+    outline: 3px solid rgba(255,214,160,0.14);
+    outline-offset:-3px;
+  }
+  .level-strip{ font-size:14px; }
   .icon-btn{ width:42px; height:42px; font-size:23px; border-radius:11px; }
   a.icon-btn{ font-size:42px; }
   .level-display{ font-size:16px; }
@@ -417,6 +449,12 @@ a.icon-btn{ background:none; border:none; font-size:34px; line-height:0; }
 @media (min-width: 1024px){
   body{ display:flex; align-items:center; }
   #app{
+    /* altezza DEFINITA, non solo un tetto: la zona di gioco è flex:1 e prende
+       lo spazio che avanza, ma solo se sopra c'è un'altezza vera. Con il solo
+       max-height l'altezza sarebbe venuta dal contenuto, cioè dal canvas, che
+       però la sua misura la prende proprio da qui: un cane che si morde la coda,
+       e il campo restava piccolo. */
+    height:96vh;
     min-height:auto;
     max-height:96vh;
     border-radius:20px;
