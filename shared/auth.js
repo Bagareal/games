@@ -409,6 +409,41 @@
   function readStamp(game) {
     try { return Date.parse(localStorage.getItem(stampKeyFor(game)) || '') || null; } catch (e) { return null; }
   }
+  // Accanto al salvataggio locale si tiene anche il punteggio che quel
+  // salvataggio vale. Serve a capire, al caricamento, chi dei due dispositivi
+  // è andato più avanti — vedi chooseSide().
+  function scoreKeyFor(game) { return localKeyFor(game) + '-score'; }
+  function readLocalScore(game) {
+    try {
+      const raw = localStorage.getItem(scoreKeyFor(game));
+      if (raw == null || raw === '') return null;
+      const n = Number(raw);
+      return Number.isFinite(n) ? n : null;
+    } catch (e) { return null; }
+  }
+
+  // Chi vince fra il salvataggio di questo dispositivo e quello nel cloud.
+  //
+  // La data da sola non basta, e questo ha fatto danni veri: un dispositivo che
+  // per un momento non riesce a leggere il cloud (rete ballerina, libreria
+  // bloccata da un blocco pubblicità, sessione scaduta) continua a giocare sui
+  // suoi dati vecchi e li risalva con la data di ADESSO. Al collegamento
+  // successivo quella data è la più recente e i dati vecchi si mangiano quelli
+  // buoni: il telefono rimandava il computer indietro di un settore.
+  //
+  // Il punteggio che ogni gioco salva è un "meglio di sempre" che non scende
+  // mai (livello record, vittorie totali, punteggio migliore). Quindi: vince
+  // chi è più avanti, e la data decide solo a pari punteggio — che è il caso di
+  // chi ricomincia una partita da capo, dove il record resta e conta l'ultima
+  // mossa fatta.
+  function chooseSide(hasLocal, localStamp, localScore, cloudStamp, cloudScore) {
+    if (!hasLocal) return 'cloud';
+    if (typeof localScore === 'number' && typeof cloudScore === 'number' && localScore !== cloudScore) {
+      return localScore > cloudScore ? 'local' : 'cloud';
+    }
+    if (localStamp && cloudStamp && localStamp > cloudStamp) return 'local';
+    return 'cloud';
+  }
 
   async function saveProgress(game, data, score) {
     // stessa data per il salvataggio locale e per quello nel cloud: se il
@@ -418,6 +453,8 @@
     try {
       localStorage.setItem(localKeyFor(game), JSON.stringify(data));
       localStorage.setItem(stampKeyFor(game), stamp);
+      if (score == null) localStorage.removeItem(scoreKeyFor(game));
+      else localStorage.setItem(scoreKeyFor(game), String(score));
     } catch (e) { /* storage pieno/negato: pazienza */ }
     if (!currentUser) return;
     try {
@@ -448,16 +485,18 @@
 
       const localStamp = readStamp(game);
       const cloudStamp = Date.parse(data.updated_at || '') || null;
+      const localScore = readLocalScore(game);
+      const cloudScore = (typeof data.score === 'number') ? data.score : null;
       // NB: senza data locale (salvataggi fatti prima di questo aggiornamento)
       // vince il cloud, come faceva prima — è la scelta prudente, evita di
       // spedire in cloud roba vecchia rimasta su un dispositivo poco usato
-      if (local && localStamp && cloudStamp && localStamp > cloudStamp) {
-        console.warn('[FFR] loadProgress(' + game + '): il dispositivo ha dati più recenti del cloud, li tengo e li mando su');
+      if (chooseSide(!!local, localStamp, localScore, cloudStamp, cloudScore) === 'local') {
+        console.warn('[FFR] loadProgress(' + game + '): il dispositivo è più avanti del cloud, lo tengo e lo mando su');
         try {
-          // si riscrive nel cloud tenendo il punteggio che c'era già: qui non
-          // sappiamo quale sia quello giusto e non va mai azzerato
+          // si manda su anche il punteggio di questo dispositivo, se lo
+          // conosciamo: è quello che corrisponde ai dati che stiamo spedendo
           const { error: upErr } = await client.from('game_progress').upsert(
-            { user_id: currentUser.id, game, data: local, score: data.score, updated_at: new Date(localStamp).toISOString() },
+            { user_id: currentUser.id, game, data: local, score: (localScore == null ? data.score : localScore), updated_at: new Date(localStamp || Date.now()).toISOString() },
             { onConflict: 'user_id,game' }
           );
           if (upErr) console.error('[FFR] loadProgress(' + game + '): rinvio al cloud fallito:', upErr);
@@ -468,6 +507,8 @@
       try {
         localStorage.setItem(localKeyFor(game), JSON.stringify(data.data));
         if (data.updated_at) localStorage.setItem(stampKeyFor(game), data.updated_at);
+        if (cloudScore == null) localStorage.removeItem(scoreKeyFor(game));
+        else localStorage.setItem(scoreKeyFor(game), String(cloudScore));
       } catch (e) { /* ignora */ }
       return data.data;
     } catch (e) { console.error('[FFR] loadProgress(' + game + ') fallito (rete/offline):', e); return local; }
