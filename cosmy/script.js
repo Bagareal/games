@@ -1351,6 +1351,7 @@ function spawnBoss(index) {
     maxHp: def.hp,
     entering: true,
     phase: 0,
+    wave: 0,
     fireAt: 1.2,
     burst: 0,
     burstAt: 0,
@@ -2000,8 +2001,14 @@ function updateBoss(dt, now) {
   const hurt = b.hp / b.maxHp < 0.4 ? 1.35 : 1; // ferito, si agita di più
   const halfSpan = VW / 2 - BOSS_SIZE / 2 - 4;
   const speed = (def.speed / 240) * VW;
+  // La fase dell'onda si ACCUMULA, e la fretta del boss ferito ne cambia solo
+  // la velocità. Prima era `sin(fase_totale × fretta)`: nell'istante in cui la
+  // fretta passava da 1 a 1,35 l'argomento del seno faceva un salto di parecchi
+  // radianti e il boss spariva da una parte all'altra dello schermo — lo scatto
+  // "torna a sinistra a caso" che si vedeva su AUTOPLAY.
+  b.wave += dt * (def.speed / 40) * hurt * 0.55;
   if (def.move === 'sine') {
-    b.x = VW / 2 + Math.sin(b.phase * (def.speed / 40) * hurt * 0.55) * halfSpan;
+    b.x = VW / 2 + Math.sin(b.wave) * halfSpan;
   } else if (def.move === 'patrol') {
     b.x += b.dir * speed * hurt * dt;
     if (b.x < VW / 2 - halfSpan) { b.x = VW / 2 - halfSpan; b.dir = 1; }
@@ -2182,6 +2189,14 @@ function sectorCleared() {
   els.nextSectorBtn.querySelector('[data-i18n]').textContent = t().continueBtn;
   els.sectorCompleteOverlay.classList.add('show');
   pendingVictory = false;
+  // Il boss è morto: il progresso passa al livello dopo ADESSO, non quando si
+  // preme "Continua". Chi batteva un boss e chiudeva lì la pagina si ritrovava
+  // salvato sul livello del boss, e riaprendo il gioco — anche su un altro
+  // dispositivo — se lo ritrovava davanti da rifare.
+  state.level += 1;
+  state.sectorCoins = state.coins;
+  updateHUD();
+  updateSectorLine();
   saveProgress();
 }
 
@@ -2192,6 +2207,13 @@ function shipDestroyed() {
   const sector = sectorOf(state.level);
   els.gameOverSub.textContent = t().gameOverSub(sector + 1, SECTORS[sector].name);
   els.gameOverOverlay.classList.add('show');
+  // si salva la situazione in cui si RIPRENDERÀ, non quella in cui si è morti:
+  // il settore riparte dal suo primo livello con tre vite e le monete
+  // dell'ingresso, e questo dev'essere vero anche riaprendo il gioco altrove
+  state.level = sectorFirstLevel(state.level);
+  state.lives = START_LIVES;
+  state.coins = state.sectorCoins;
+  updateHUD();
   saveProgress();
 }
 
@@ -2745,8 +2767,7 @@ async function init() {
       newGame();
       return;
     }
-    state.sectorCoins = state.coins;
-    startLevel(state.level + 1);
+    startLevel(state.level);   // il livello è già avanzato in sectorCleared
     state.paused = false;
   });
   els.retryBtn.addEventListener('click', () => {
