@@ -44,6 +44,17 @@ const UI_STRINGS = {
     close: 'Chiudi',
     tutorialTitle: 'Come si gioca',
     tutorialTap: 'Tocca lo schermo per ruotare il pezzo',
+    sideCommandsTitle: 'COMANDI',
+    cmdMoveKeys: 'Frecce ← →: sposta',
+    cmdRotateKeys: 'Freccia ↑: ruota',
+    cmdSoftKeys: 'Freccia ↓: scende veloce',
+    cmdDropKeys: 'Barra spaziatrice: caduta',
+    cmdPauseKeys: 'Tasto P o doppio clic: pausa',
+    cmdMoveTouch: 'Trascina: sposta',
+    cmdRotateTouch: 'Tocca: ruota',
+    cmdSoftTouch: 'Tieni premuto: scende veloce',
+    cmdDropTouch: 'Scorri in giù: caduta',
+    cmdPauseTouch: 'Scorri in su: pausa',
     tutorialSwipe: 'Trascina il dito a destra o a sinistra per spostarlo',
     tutorialHold: 'Tieni premuto per farlo scendere veloce',
     tutorialDrop: 'Scorri verso il basso per farlo cadere di colpo',
@@ -91,6 +102,17 @@ const UI_STRINGS = {
     close: 'Close',
     tutorialTitle: 'How to play',
     tutorialTap: 'Tap the screen to rotate the piece',
+    sideCommandsTitle: 'CONTROLS',
+    cmdMoveKeys: 'Arrows ← →: move',
+    cmdRotateKeys: 'Arrow ↑: rotate',
+    cmdSoftKeys: 'Arrow ↓: drop faster',
+    cmdDropKeys: 'Space bar: hard drop',
+    cmdPauseKeys: 'P key or double click: pause',
+    cmdMoveTouch: 'Drag: move',
+    cmdRotateTouch: 'Tap: rotate',
+    cmdSoftTouch: 'Hold: drop faster',
+    cmdDropTouch: 'Swipe down: hard drop',
+    cmdPauseTouch: 'Swipe up: pause',
     tutorialSwipe: 'Drag your finger right or left to move it',
     tutorialHold: 'Press and hold to make it drop fast',
     tutorialDrop: 'Swipe down to slam it into place',
@@ -138,6 +160,17 @@ const UI_STRINGS = {
     close: 'Fermer',
     tutorialTitle: 'Comment jouer',
     tutorialTap: 'Touche l\'écran pour faire tourner la pièce',
+    sideCommandsTitle: 'COMMANDES',
+    cmdMoveKeys: 'Flèches ← → : déplacer',
+    cmdRotateKeys: 'Flèche ↑ : tourner',
+    cmdSoftKeys: 'Flèche ↓ : descendre vite',
+    cmdDropKeys: 'Barre d\'espace : chute',
+    cmdPauseKeys: 'Touche P ou double clic : pause',
+    cmdMoveTouch: 'Glisse : déplacer',
+    cmdRotateTouch: 'Touche : tourner',
+    cmdSoftTouch: 'Maintiens : descendre vite',
+    cmdDropTouch: 'Glisse vers le bas : chute',
+    cmdPauseTouch: 'Glisse vers le haut : pause',
     tutorialSwipe: 'Glisse ton doigt à droite ou à gauche pour la déplacer',
     tutorialHold: 'Reste appuyé pour la faire descendre vite',
     tutorialDrop: 'Glisse vers le bas pour la faire tomber d\'un coup',
@@ -691,16 +724,37 @@ function redrawStack(w, h) {
   }
 }
 
+function updateSidePanels() {
+  // lo spazio buono è quello fra il bordo della pagina e la colonna del gioco,
+  // non quello dentro alla zona di gioco: qui la colonna è stretta di suo
+  const app = document.getElementById('app');
+  if (!app) return;
+  const free = (window.innerWidth - app.getBoundingClientRect().width) / 2;
+  document.body.classList.toggle('has-side', free >= 216);
+}
+
 function resizeCanvas() {
+  // Il campo si fa da parte PRIMA di misurare lo spazio. Senza questo, quando
+  // la finestra si rimpicciolisce la zona di gioco misura il campo di prima e
+  // il campo misura la zona: nessuno dei due si rimpicciolisce più e la pagina
+  // esce dallo schermo (misurato: 214 px di troppo a 1100x800 dopo aver
+  // ristretto la finestra).
+  const prevW = els.canvas.style.width, prevH = els.canvas.style.height;
+  els.canvas.style.width = '0px';
+  els.canvas.style.height = '0px';
+  const restore = () => { els.canvas.style.width = prevW; els.canvas.style.height = prevH; };
+
   const zoneStyle = getComputedStyle(els.gameZone);
   const availW = els.gameZone.clientWidth
     - parseFloat(zoneStyle.paddingLeft) - parseFloat(zoneStyle.paddingRight);
+  // quattro pixel di margine: le altezze della barra e del titolo non sono
+  // numeri interi, e l'ultimo pezzo di pixel faceva uscire la pagina di poco
   const availH = els.gameZone.clientHeight
-    - parseFloat(zoneStyle.paddingTop) - parseFloat(zoneStyle.paddingBottom);
-  if (availW <= 0 || availH <= 0) return;
+    - parseFloat(zoneStyle.paddingTop) - parseFloat(zoneStyle.paddingBottom) - 4;
+  if (availW <= 0 || availH <= 0) { restore(); return; }
   const newCell = Math.max(8, Math.floor(Math.min(availW / COLS, availH / ROWS)));
   const newScale = Math.min(window.devicePixelRatio || 1, 3);
-  if (newCell === cell && newScale === renderScale && els.canvas.width) return;
+  if (newCell === cell && newScale === renderScale && els.canvas.width) { restore(); updateSidePanels(); return; }
   cell = newCell;
   renderScale = newScale;
   spriteCache.clear();
@@ -713,6 +767,7 @@ function resizeCanvas() {
   ctx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
   markStackDirty();
   renderNext();
+  updateSidePanels();
 }
 
 function render() {
@@ -858,9 +913,15 @@ const HOLD_MS = 210;      // dito fermo premuto per tanto: parte la discesa velo
 const HOLD_STILL_MS = 120;
 const TAP_SLOP = 12;      // px di tolleranza: un dito non sta mai fermissimo
 const SWIPE_DOWN_PX = 44;
+// Scorrimento verso l'alto = pausa. È l'unico gesto rimasto libero: il tocco
+// ruota (e ruotare due volte di fila in fretta è normalissimo, quindi il doppio
+// tocco qui non si può usare), il dito fermo fa scendere, di lato sposta e in
+// giù fa cadere. In su non lo fa nessuno per sbaglio.
+const SWIPE_UP_PX = 52;
 let touch = null;
 
 function onPointerDown(e) {
+  if (e.pointerType === 'touch') document.body.classList.add('is-touch');
   if (e.pointerType === 'mouse') return; // col mouse si gioca da tastiera
   if (!isPlaying()) return;
   e.preventDefault();
@@ -884,6 +945,14 @@ function onPointerMove(e) {
   const dx = e.clientX - touch.x0;
   const dy = e.clientY - touch.y0;
   if (!touch.moved && Math.abs(dx) + Math.abs(dy) > TAP_SLOP) touch.moved = true;
+
+  // scorrimento netto verso l'alto = pausa
+  if (dy < -SWIPE_UP_PX && Math.abs(dy) > Math.abs(dx) * 1.4) {
+    touch.done = true;
+    state.softDropping = false;
+    openPause();
+    return;
+  }
 
   // scorrimento netto verso il basso = caduta immediata (solo se non si sta
   // già tenendo premuto per la discesa veloce, altrimenti si sovrappongono)
@@ -1345,12 +1414,20 @@ async function init() {
   resizeCanvas();
   renderNext();
 
+  // col mouse in Blokky non si gioca (si gioca da tastiera), quindi il doppio
+  // clic è libero e fa la pausa come negli altri due giochi
+  els.gameZone.addEventListener('dblclick', () => {
+    if (state.difficulty && !state.gameOver && !anyOverlayOpen() && !resumeHintVisible()) openPause();
+  });
   els.gameZone.addEventListener('pointerdown', onPointerDown);
   els.gameZone.addEventListener('pointermove', onPointerMove);
   els.gameZone.addEventListener('pointerup', onPointerUp);
   els.gameZone.addEventListener('pointercancel', onPointerUp);
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('keyup', onKeyUp);
+  // il riquadro dei comandi compare solo se a lato del campo lo spazio c'è
+  // davvero: si misura ogni volta che il campo si rimisura
+  window.addEventListener('resize', updateSidePanels);
   window.addEventListener('resize', resizeCanvas);
   window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 250));
 

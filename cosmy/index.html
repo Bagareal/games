@@ -87,6 +87,38 @@
       <!-- la striscia del cambio livello: passa e se ne va, il gioco non si ferma -->
       <div class="level-strip" id="levelStrip"></div>
     </div>
+
+    <!-- I due riquadri stanno nello spazio che avanza ai lati del campo su
+         schermi larghi: sono appoggiati sopra (position:absolute), quindi non
+         entrano nella misura della zona di gioco e non rubano un pixel al
+         campo. Compaiono solo quando lo spazio libero c'è davvero: è il gioco a
+         misurarlo (applyGeometry) e ad accendere la classe .has-side.
+         Non si possono toccare (pointer-events:none): sono un promemoria, non
+         dei comandi, e la zona di gioco deve restare tutta trascinabile. -->
+    <aside class="side-help side-left" id="sideCommands" aria-hidden="true">
+      <h3 data-i18n="sideCommandsTitle">COMANDI</h3>
+      <ul>
+        <li class="for-pointer"><span class="ffr-ico" data-ico="arrow-lr"></span><span data-i18n="cmdMovePointer">Mouse o frecce: muovi</span></li>
+        <li class="for-touch"><span class="ffr-ico" data-ico="arrow-lr"></span><span data-i18n="cmdMoveTouch">Trascina: muovi</span></li>
+        <li><span class="ffr-ico" data-ico="target"></span><span data-i18n="cmdFire">Il fuoco è automatico</span></li>
+        <li class="for-pointer"><span class="ffr-ico" data-ico="pause"></span><span data-i18n="cmdPausePointer">Doppio clic: pausa</span></li>
+        <li class="for-touch"><span class="ffr-ico" data-ico="pause"></span><span data-i18n="cmdPauseTouch">Doppio tocco: pausa</span></li>
+      </ul>
+    </aside>
+
+    <aside class="side-help side-right" id="sideField" aria-hidden="true">
+      <h3 data-i18n="sideFieldTitle">IN CAMPO</h3>
+      <ul>
+        <li><canvas class="side-spr" id="sprLight" width="12" height="11"></canvas><span data-i18n="foeLight">Leggero</span></li>
+        <li><canvas class="side-spr" id="sprMedium" width="16" height="15"></canvas><span data-i18n="foeMedium">Medio</span></li>
+        <li><canvas class="side-spr" id="sprHeavy" width="20" height="17"></canvas><span data-i18n="foeHeavy">Pesante</span></li>
+        <li><canvas class="side-spr" id="sprShield" width="11" height="10"></canvas><span data-i18n="nameShield">Scudo, 5 secondi</span></li>
+        <li><canvas class="side-spr" id="sprLife" width="11" height="10"></canvas><span data-i18n="nameLife">Vita extra</span></li>
+        <li><canvas class="side-spr" id="sprDouble" width="11" height="10"></canvas><span data-i18n="nameDouble">Doppio colpo</span></li>
+        <li><canvas class="side-spr" id="sprSpread" width="11" height="10"></canvas><span data-i18n="nameSpread">Colpo a ventaglio</span></li>
+        <li><canvas class="side-spr" id="sprShock" width="11" height="10"></canvas><span data-i18n="nameShock">Onda d'urto</span></li>
+      </ul>
+    </aside>
   </div>
 
   <!-- pausa: riprendi / ricomincia il settore -->
@@ -96,7 +128,19 @@
       <h2 data-i18n="paused">Pausa</h2>
       <button class="primary-btn" id="resumeBtn"><span data-i18n="resume">Riprendi</span><span class="ffr-ico ffr-ico-trail" data-ico="play"></span></button>
       <button class="secondary-btn" id="restartSectorBtn" data-i18n="restartSector">Ricomincia il settore</button>
+      <button class="secondary-btn" id="restartAllBtn" data-i18n="restartAll">Ricomincia da capo</button>
       <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <!-- conferma del "ricomincia da capo": butta via tutta la partita, quindi
+       passa dalla conferma come il ↻ della barra. Record e classifica restano. -->
+  <div class="overlay" id="restartAllOverlay">
+    <div class="card">
+      <h2 data-i18n="restartAllTitle">Ricominciare da capo?</h2>
+      <p data-i18n="restartAllBody">Si riparte dal livello 1 con tre vite e zero monete. Il tuo record e la classifica restano quelli che sono.</p>
+      <button class="primary-btn" id="confirmRestartAllBtn" data-i18n="restartAllYes">Sì, da capo</button>
+      <button class="secondary-btn" id="cancelRestartAllBtn" data-i18n="restartNo">No, continuo</button>
     </div>
   </div>
 

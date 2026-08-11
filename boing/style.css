@@ -179,6 +179,50 @@ a.icon-btn{ background:none; border:none; backdrop-filter:none; font-size:34px; 
 /* overlay/card: estetica propria di Boing (arcade scuro/neon), non quella
    "da spiaggia" di Wordio — anche i modal condivisi seguono il tema del
    gioco in cui vivono */
+/* ---- riquadro dei comandi, nello spazio che avanza a lato del campo ----
+   Appoggiato sopra alla zona di gioco (position:absolute), quindi non entra
+   nella misura del campo; nascosto finché il gioco non misura che lo spazio
+   c'è davvero (classe .has-side); non prende tocchi, è un promemoria. */
+.side-help{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  left:16px;
+  width:212px;
+  display:none;
+  pointer-events:none;
+  background: rgba(32,23,54,0.6);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-top: 2px solid rgba(244,183,64,0.4);
+  border-radius:16px;
+  padding:14px 13px 12px;
+}
+.has-side .side-help{ display:block; }
+.side-help h3{
+  font-family:'Press Start 2P', monospace;
+  font-size:8px; letter-spacing:1px;
+  color: var(--gold);
+  margin:0 0 12px;
+  text-align:center;
+}
+.side-help ul{ list-style:none; margin:0; padding:0; }
+.side-help li{
+  display:flex; align-items:center; gap:9px;
+  /* 'Press Start 2P' è largo il doppio di un carattere normale: a 12px una
+     riga di sei parole ne occupava quattro. Qui sta a 9. */
+  font-size:9px; line-height:1.7;
+  color: rgba(255,253,248,0.8);
+  margin-bottom:10px;
+}
+.side-help li:last-child{ margin-bottom:0; }
+.side-help .ffr-ico{ flex:0 0 22px; font-size:17px; color: var(--sand); text-align:center; }
+/* col dito i gesti, col mouse i tasti: una riga sola per volta. Le regole
+   nominano anche il `li`, se no `.side-help li{display:flex}` vince per
+   specificità e si vedono tutte e due le righe insieme. */
+.side-help li.for-touch{ display:none; }
+.is-touch .side-help li.for-pointer{ display:none; }
+.is-touch .side-help li.for-touch{ display:flex; }
+
 .overlay{
   position:fixed; inset:0; z-index:30;
   background: rgba(6,4,14,0.82);

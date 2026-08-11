@@ -101,6 +101,22 @@
     <canvas id="gameCanvas" width="180" height="270"></canvas>
     <div class="tap-hint hidden" id="tapHint" data-i18n="tapToLaunch">Tocca per lanciare la pallina</div>
     <div class="center-toast hidden" id="centerToast"></div>
+
+    <!-- promemoria dei comandi nello spazio che avanza a lato del campo sugli
+         schermi larghi: appoggiato sopra, non entra nella misura del campo e
+         non prende tocchi. Compare solo se lo spazio c'è davvero (lo misura
+         script.js e accende .has-side). -->
+    <aside class="side-help side-left" id="sideCommands" aria-hidden="true">
+      <h3 data-i18n="sideCommandsTitle">COMANDI</h3>
+      <ul>
+        <li class="for-pointer"><span class="ffr-ico" data-ico="arrow-lr"></span><span data-i18n="cmdMovePointer">Mouse o frecce: muovi</span></li>
+        <li class="for-touch"><span class="ffr-ico" data-ico="arrow-lr"></span><span data-i18n="cmdMoveTouch">Trascina: muovi</span></li>
+        <li class="for-pointer"><span class="ffr-ico" data-ico="arrow-up"></span><span data-i18n="cmdLaunchPointer">Clic o spazio: lancia</span></li>
+        <li class="for-touch"><span class="ffr-ico" data-ico="arrow-up"></span><span data-i18n="cmdLaunchTouch">Tocca: lancia</span></li>
+        <li class="for-pointer"><span class="ffr-ico" data-ico="pause"></span><span data-i18n="cmdPausePointer">Doppio clic: pausa</span></li>
+        <li class="for-touch"><span class="ffr-ico" data-ico="pause"></span><span data-i18n="cmdPauseTouch">Doppio tocco: pausa</span></li>
+      </ul>
+    </aside>
   </div>
 
   <div class="overlay" id="difficultyOverlay">

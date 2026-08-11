@@ -15,6 +15,13 @@ const UI_STRINGS = {
   it: {
     backToHome: 'Torna in Home',
     tapToLaunch: 'Tocca per lanciare la pallina',
+    sideCommandsTitle: 'COMANDI',
+    cmdMovePointer: 'Mouse o frecce: muovi',
+    cmdMoveTouch: 'Trascina: muovi',
+    cmdLaunchPointer: 'Clic o spazio: lancia',
+    cmdLaunchTouch: 'Tocca: lancia',
+    cmdPausePointer: 'Doppio clic: pausa',
+    cmdPauseTouch: 'Doppio tocco: pausa',
     chooseDifficulty: 'Scegli la difficoltà',
     chooseDifficultySub: 'Puoi cambiarla ogni volta che inizi una partita',
     easy: 'Facile',
@@ -58,6 +65,13 @@ const UI_STRINGS = {
   en: {
     backToHome: 'Back to Home',
     tapToLaunch: 'Tap to launch the ball',
+    sideCommandsTitle: 'CONTROLS',
+    cmdMovePointer: 'Mouse or arrows: move',
+    cmdMoveTouch: 'Drag: move',
+    cmdLaunchPointer: 'Click or space: launch',
+    cmdLaunchTouch: 'Tap: launch',
+    cmdPausePointer: 'Double click: pause',
+    cmdPauseTouch: 'Double tap: pause',
     chooseDifficulty: 'Choose difficulty',
     chooseDifficultySub: 'You can change it every time you start a game',
     easy: 'Easy',
@@ -101,6 +115,13 @@ const UI_STRINGS = {
   fr: {
     backToHome: "Retour à l'accueil",
     tapToLaunch: 'Touche pour lancer la balle',
+    sideCommandsTitle: 'COMMANDES',
+    cmdMovePointer: 'Souris ou flèches : bouger',
+    cmdMoveTouch: 'Glisse : bouger',
+    cmdLaunchPointer: 'Clic ou espace : lancer',
+    cmdLaunchTouch: 'Touche : lancer',
+    cmdPausePointer: 'Double clic : pause',
+    cmdPauseTouch: 'Double touche : pause',
     chooseDifficulty: 'Choisis la difficulté',
     chooseDifficultySub: 'Tu peux la changer à chaque nouvelle partie',
     easy: 'Facile',
@@ -371,6 +392,14 @@ function startNewGame(difficultyKey) {
   els.pauseOverlay.classList.remove('show');
   els.settingsOverlay.classList.remove('show');
   saveBoingProgress();
+}
+
+// ---------- Il riquadro dei comandi a lato ----------
+function updateSidePanels() {
+  const zone = document.querySelector('.game-zone');
+  if (!zone) return;
+  const free = (zone.clientWidth - els.canvas.getBoundingClientRect().width) / 2;
+  document.body.classList.toggle('has-side', free >= 220);
 }
 
 // ---------- Pausa (riprendi / difficoltà / reset livello) ----------
@@ -687,8 +716,24 @@ function canvasPointToVirtual(clientX) {
 let touchDragging = false;
 let touchStartClientX = 0;
 let touchStartPaddleX = 0;
+// Doppio tocco (o doppio clic) = pausa. Solo a pallina GIA' IN VOLO: se ce
+// n'è una ferma sulla racchetta, il primo tocco serve a lanciarla e mettersi ad
+// aspettare il secondo per capire se era un doppio ritarderebbe ogni lancio.
+let lastTapAt = 0, lastTapX = 0, lastTapY = 0;
+const DOUBLE_TAP_MS = 320, DOUBLE_TAP_SLOP = 30;
+function isDoubleTap(e) {
+  const now = performance.now();
+  const near = Math.abs(e.clientX - lastTapX) < DOUBLE_TAP_SLOP && Math.abs(e.clientY - lastTapY) < DOUBLE_TAP_SLOP;
+  const dbl = now - lastTapAt < DOUBLE_TAP_MS && near;
+  lastTapAt = dbl ? 0 : now;
+  lastTapX = e.clientX;
+  lastTapY = e.clientY;
+  return dbl;
+}
 function handlePointerDown(e) {
+  if (e.pointerType === 'touch') document.body.classList.add('is-touch');
   if (state.paused) return;
+  if (!anyBallStuck() && isDoubleTap(e)) { touchDragging = false; openPause(); return; }
   if (e.pointerType === 'touch') {
     touchDragging = true;
     touchStartClientX = e.clientX;
@@ -999,6 +1044,15 @@ async function init() {
   els.leaderboardOverlay.addEventListener('click', (e) => {
     if (e.target === els.leaderboardOverlay) closeLeaderboard();
   });
+
+  // il riquadro dei comandi compare solo se a lato del campo lo spazio c'è
+  // davvero: si misura, non si indovina con una soglia di larghezza finestra
+  let sideTimer = null;
+  const onResize = () => { clearTimeout(sideTimer); sideTimer = setTimeout(updateSidePanels, 120); };
+  window.addEventListener('resize', onResize);
+  window.addEventListener('orientationchange', onResize);
+  updateSidePanels();
+  setTimeout(updateSidePanels, 400);   // a caratteri arrivati la barra ha la sua altezza vera
 
   requestAnimationFrame(loop);
 

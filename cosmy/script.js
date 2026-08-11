@@ -75,6 +75,26 @@ const UI_STRINGS = {
     bonusLifeMax: 'Vite al massimo (+25 monete)',
     bonusDouble: 'Doppio colpo!',
     bonusShock: "Onda d'urto!",
+    bonusSpread: 'Colpo a ventaglio!',
+    restartAll: 'Ricomincia da capo',
+    restartAllTitle: 'Ricominciare da capo?',
+    restartAllBody: 'Si riparte dal livello 1 con tre vite e zero monete. Il tuo record e la classifica restano quelli che sono.',
+    restartAllYes: 'Sì, da capo',
+    sideCommandsTitle: 'COMANDI',
+    sideFieldTitle: 'IN CAMPO',
+    cmdMovePointer: 'Mouse o frecce: muovi',
+    cmdMoveTouch: 'Trascina: muovi',
+    cmdFire: 'Il fuoco è automatico',
+    cmdPausePointer: 'Doppio clic: pausa',
+    cmdPauseTouch: 'Doppio tocco: pausa',
+    foeLight: 'Leggero',
+    foeMedium: 'Medio',
+    foeHeavy: 'Pesante',
+    nameShield: 'Scudo, 5 secondi',
+    nameLife: 'Vita extra',
+    nameDouble: 'Doppio colpo',
+    nameSpread: 'Colpo a ventaglio',
+    nameShock: "Onda d'urto",
     waveClean: 'Ondata pulita! +10',
     tutorialTitle: 'Come si gioca',
     tutorialMove: "Muovi la navicella dove vuoi: trascina il dito nell'area di gioco, o usa il mouse e le frecce. Va a destra e sinistra su tutta la larghezza, e avanti e indietro nella metà bassa",
@@ -83,7 +103,7 @@ const UI_STRINGS = {
     tutorialWaves: "Le ondate non aspettano: se sei lento, la successiva arriva lo stesso e te li ritrovi tutti insieme. Ondata ripulita in tempo, 10 monete in più",
     tutorialDodge: 'Asteroidi, mine e detriti si schivano: toccarli costa una vita. Solo i sassi piccoli si spaccano a colpi',
     tutorialCoins: 'Le monete che raccogli sono il tuo punteggio',
-    tutorialBonus: "Prendi i bonus che scendono: scudo a bolla per 5 secondi, vita extra, doppio colpo e — raro — l'onda d'urto, che parte dalla navicella e spazza via tutto quello che trova",
+    tutorialBonus: "Prendi i bonus che scendono: scudo a bolla per 5 secondi, vita extra, doppio colpo, colpo a ventaglio (e i due colpi si sommano) e — raro — l'onda d'urto, che parte dalla navicella e spazza via tutto quello che trova",
     tutorialBoss: "Ogni 5 livelli c'è un boss: lì niente nemici, solo lui e i suoi colpi",
     tutorialLives: 'Tre vite per settore: se le finisci, il settore riparte dal suo primo livello',
     gotIt: 'Ho capito!',
@@ -156,6 +176,26 @@ const UI_STRINGS = {
     bonusLifeMax: 'Lives already full (+25 coins)',
     bonusDouble: 'Double shot!',
     bonusShock: 'Shockwave!',
+    bonusSpread: 'Spread shot!',
+    restartAll: 'Start over',
+    restartAllTitle: 'Start over from level 1?',
+    restartAllBody: 'You go back to level 1 with three lives and no coins. Your best and the leaderboard stay as they are.',
+    restartAllYes: 'Yes, start over',
+    sideCommandsTitle: 'CONTROLS',
+    sideFieldTitle: 'ON THE FIELD',
+    cmdMovePointer: 'Mouse or arrows: move',
+    cmdMoveTouch: 'Drag: move',
+    cmdFire: 'Firing is automatic',
+    cmdPausePointer: 'Double click: pause',
+    cmdPauseTouch: 'Double tap: pause',
+    foeLight: 'Light',
+    foeMedium: 'Medium',
+    foeHeavy: 'Heavy',
+    nameShield: 'Shield, 5 seconds',
+    nameLife: 'Extra life',
+    nameDouble: 'Double shot',
+    nameSpread: 'Spread shot',
+    nameShock: 'Shockwave',
     waveClean: 'Wave cleared! +10',
     tutorialTitle: 'How to play',
     tutorialMove: 'Move the ship wherever you want: drag your finger in the play area, or use the mouse and the arrow keys. Left and right across the full width, forward and back in the lower half',
@@ -164,7 +204,7 @@ const UI_STRINGS = {
     tutorialWaves: 'Waves do not wait: if you are slow the next one comes anyway and you get them all at once. Clear a wave in time and you get 10 extra coins',
     tutorialDodge: 'Asteroids, mines and debris are there to be dodged: touching one costs a life. Only the small rocks can be shot to pieces',
     tutorialCoins: 'The coins you pick up are your score',
-    tutorialBonus: 'Grab the bonuses drifting down: a shield bubble for 5 seconds, an extra life, a double shot and — rarely — the shockwave, which spreads out from the ship and sweeps away everything it meets',
+    tutorialBonus: 'Grab the bonuses drifting down: a shield bubble for 5 seconds, an extra life, a double shot, a spread shot (and the two shots stack) and — rarely — the shockwave, which spreads out from the ship and sweeps away everything it meets',
     tutorialBoss: 'Every 5 levels there is a boss: no enemies there, just the boss and what it throws at you',
     tutorialLives: 'Three lives per sector: run out and the sector starts again from its first level',
     gotIt: 'Got it!',
@@ -237,6 +277,26 @@ const UI_STRINGS = {
     bonusLifeMax: 'Vies au maximum (+25 pièces)',
     bonusDouble: 'Tir double !',
     bonusShock: 'Onde de choc !',
+    bonusSpread: 'Tir en éventail !',
+    restartAll: 'Tout recommencer',
+    restartAllTitle: 'Recommencer depuis le niveau 1 ?',
+    restartAllBody: 'On repart du niveau 1 avec trois vies et zéro pièce. Ton record et le classement ne bougent pas.',
+    restartAllYes: 'Oui, tout recommencer',
+    sideCommandsTitle: 'COMMANDES',
+    sideFieldTitle: 'SUR LE TERRAIN',
+    cmdMovePointer: 'Souris ou flèches : bouger',
+    cmdMoveTouch: 'Glisse : bouger',
+    cmdFire: 'Le tir est automatique',
+    cmdPausePointer: 'Double clic : pause',
+    cmdPauseTouch: 'Double touche : pause',
+    foeLight: 'Léger',
+    foeMedium: 'Moyen',
+    foeHeavy: 'Lourd',
+    nameShield: 'Bouclier, 5 secondes',
+    nameLife: 'Vie supplémentaire',
+    nameDouble: 'Tir double',
+    nameSpread: 'Tir en éventail',
+    nameShock: 'Onde de choc',
     waveClean: 'Vague nettoyée ! +10',
     tutorialTitle: 'Comment jouer',
     tutorialMove: "Déplace le vaisseau où tu veux : glisse ton doigt dans la zone de jeu, ou utilise la souris et les flèches. À gauche et à droite sur toute la largeur, en avant et en arrière dans la moitié basse",
@@ -245,7 +305,7 @@ const UI_STRINGS = {
     tutorialWaves: "Les vagues n'attendent pas : si tu es lent, la suivante arrive quand même et tu les as tous sur le dos. Vague nettoyée à temps, 10 pièces de plus",
     tutorialDodge: 'Astéroïdes, mines et débris sont là pour être esquivés : les toucher coûte une vie. Seuls les petits cailloux se cassent au tir',
     tutorialCoins: 'Les pièces que tu ramasses sont ton score',
-    tutorialBonus: "Attrape les bonus qui descendent : bouclier en bulle pendant 5 secondes, vie supplémentaire, tir double et — rare — l'onde de choc, qui part du vaisseau et balaie tout ce qu'elle rencontre",
+    tutorialBonus: "Attrape les bonus qui descendent : bouclier en bulle pendant 5 secondes, vie supplémentaire, tir double, tir en éventail (et les deux se cumulent) et — rare — l'onde de choc, qui part du vaisseau et balaie tout ce qu'elle rencontre",
     tutorialBoss: "Tous les 5 niveaux il y a un boss : là, pas d'ennemis, juste lui et ses tirs",
     tutorialLives: 'Trois vies par secteur : si tu les perds, le secteur repart de son premier niveau',
     gotIt: "C'est compris !",
@@ -317,17 +377,23 @@ const MAX_ENEMIES = 8;   // tetto: oltre, l'ondata in coda aspetta un posto
 // Ogni settore ha il suo cielo, le sue rocce e il suo boss. Il nome del settore
 // è il nome del boss che lo comanda: sono i dieci mestieri della pubblicità,
 // termini generici, nessun marchio di nessuno.
+//
+// `foe` sono i colori dei nemici in quel settore — leggero, medio, pesante —
+// e non sono scelti per bellezza: sono scelti LONTANI dal cielo del settore.
+// Con un colore fisso per classe capitava che nel settore verde il nemico
+// verde sparisse dentro allo sfondo. Fuori da qui restano due colori che nessun
+// nemico usa mai: l'oro delle monete e il rosso della vita.
 const SECTORS = [
-  { name: 'POP-UP',     sky: ['#0C1026', '#2A1420'], neb: ['#8A3A18', '#E0873C'], star: '#FFE6C4', rock: ['#7A6A62', '#A9998E', '#463A36'] },
-  { name: 'BANNER',     sky: ['#2A0E2E', '#480F33'], neb: ['#A02F5A', '#E0603C'], star: '#FFD9E2', rock: ['#7A5A6A', '#A98598', '#4A2E3C'] },
-  { name: 'COOKIE',     sky: ['#20130A', '#3A1F0C'], neb: ['#8A4A18', '#D08A34'], star: '#FFE9BC', rock: ['#8A6A45', '#B8946A', '#503A22'] },
-  { name: 'AUTOPLAY',   sky: ['#06180F', '#0B2A18'], neb: ['#1E6E43', '#7FBF4A'], star: '#D8FFDC', rock: ['#5C7060', '#8AA089', '#31423A'] },
-  { name: 'TRACKER',    sky: ['#210608', '#3E0C0D'], neb: ['#A62A22', '#F0763A'], star: '#FFD5C4', rock: ['#7E5A50', '#AC8276', '#48302B'] },
-  { name: 'NEWSLETTER', sky: ['#04141E', '#062634'], neb: ['#12708C', '#4FC3D9'], star: '#D6F6FF', rock: ['#55707E', '#829CA8', '#2E434E'] },
-  { name: 'PAYWALL',    sky: ['#101216', '#1E2228'], neb: ['#4A525E', '#C8752C'], star: '#EAF0F6', rock: ['#6E7480', '#9AA0AA', '#3C4048'] },
-  { name: 'SPAM',       sky: ['#1A1A08', '#2E2C0C'], neb: ['#8A7A18', '#D4C23A'], star: '#FFFBD0', rock: ['#7E7A50', '#ABA678', '#46442A'] },
-  { name: 'PREMIUM',    sky: ['#120E04', '#241B06'], neb: ['#9A7414', '#FFC94A'], star: '#FFF0C0', rock: ['#8A7A4A', '#C0AC74', '#4C4224'] },
-  { name: 'ALGO',       sky: ['#050A22', '#0A1440'], neb: ['#1E3EA0', '#3FE0F0'], star: '#DCEBFF', rock: ['#5A6A90', '#8898BC', '#323C58'] },
+  { name: 'POP-UP',     sky: ['#0C1026', '#2A1420'], neb: ['#8A3A18', '#E0873C'], star: '#FFE6C4', rock: ['#7A6A62', '#A9998E', '#463A36'], foe: ['#4FE0C8', '#2FB8A8', '#1E8878'] },
+  { name: 'BANNER',     sky: ['#2A0E2E', '#480F33'], neb: ['#A02F5A', '#E0603C'], star: '#FFD9E2', rock: ['#7A5A6A', '#A98598', '#4A2E3C'], foe: ['#9BE84A', '#63C038', '#3E8A2A'] },
+  { name: 'COOKIE',     sky: ['#20130A', '#3A1F0C'], neb: ['#8A4A18', '#D08A34'], star: '#FFE9BC', rock: ['#8A6A45', '#B8946A', '#503A22'], foe: ['#6FD8FF', '#3F9AE0', '#2A63B0'] },
+  { name: 'AUTOPLAY',   sky: ['#06180F', '#0B2A18'], neb: ['#1E6E43', '#7FBF4A'], star: '#D8FFDC', rock: ['#5C7060', '#8AA089', '#31423A'], foe: ['#FF8AD8', '#E05AA8', '#A03A78'] },
+  { name: 'TRACKER',    sky: ['#210608', '#3E0C0D'], neb: ['#A62A22', '#F0763A'], star: '#FFD5C4', rock: ['#7E5A50', '#AC8276', '#48302B'], foe: ['#7FF0E8', '#3FC0C8', '#2A8090'] },
+  { name: 'NEWSLETTER', sky: ['#04141E', '#062634'], neb: ['#12708C', '#4FC3D9'], star: '#D6F6FF', rock: ['#55707E', '#829CA8', '#2E434E'], foe: ['#FFA0B8', '#E06A88', '#A8425E'] },
+  { name: 'PAYWALL',    sky: ['#101216', '#1E2228'], neb: ['#4A525E', '#C8752C'], star: '#EAF0F6', rock: ['#6E7480', '#9AA0AA', '#3C4048'], foe: ['#8FF07A', '#55C048', '#358A30'] },
+  { name: 'SPAM',       sky: ['#1A1A08', '#2E2C0C'], neb: ['#8A7A18', '#D4C23A'], star: '#FFFBD0', rock: ['#7E7A50', '#ABA678', '#46442A'], foe: ['#A8A0FF', '#7068E0', '#4A42A8'] },
+  { name: 'PREMIUM',    sky: ['#120E04', '#241B06'], neb: ['#9A7414', '#FFC94A'], star: '#FFF0C0', rock: ['#8A7A4A', '#C0AC74', '#4C4224'], foe: ['#7FD8FF', '#4F9AE0', '#3060B0'] },
+  { name: 'ALGO',       sky: ['#050A22', '#0A1440'], neb: ['#1E3EA0', '#3FE0F0'], star: '#DCEBFF', rock: ['#5A6A90', '#8898BC', '#323C58'], foe: ['#FF8AC0', '#E05A90', '#A83A64'] },
 ];
 function sectorOf(level) { return Math.floor((level - 1) / PER_SECTOR); }
 function sectorFirstLevel(level) { return sectorOf(level) * PER_SECTOR + 1; }
@@ -364,6 +430,17 @@ function bakeFlash(pattern, scale) {
   const colors = {};
   for (const row of pattern) for (const ch of row) if (ch !== '.') colors[ch] = '#FFFFFF';
   return bakePattern(pattern, colors, scale);
+}
+// due colori mescolati: serve a tirare fuori il contorno scuro e il nucleo
+// chiaro dal colore base di un nemico, senza scriverne tre a mano per settore
+function mixColor(hex, other, t) {
+  const a = parseInt(hex.slice(1), 16), b = parseInt(other.slice(1), 16);
+  const ch = (sh) => {
+    const x = (a >> sh) & 255, y = (b >> sh) & 255;
+    return Math.round(x + (y - x) * t);
+  };
+  const v = (ch(16) << 16) | (ch(8) << 8) | ch(0);
+  return '#' + v.toString(16).padStart(6, '0');
 }
 
 // La navicella, 11x14, muso in alto: cabina davanti, ali che si allargano
@@ -409,18 +486,22 @@ const COIN_FRAMES = [
 ];
 const COIN_COLORS = { C: '#B8860B', B: '#FFC94A' };
 
+// mine: più grandi e più accese di prima, e il nucleo pulsa quasi fino al
+// bianco — spente com'erano, su un cielo scuro si vedevano tardi
 const MINE_PATTERN = [
-  '..X..X..',
-  '.XBBBBX.',
-  '.BBDDBB.',
-  'XBDDDDBX',
-  'XBDDDDBX',
-  '.BBDDBB.',
-  '.XBBBBX.',
-  '..X..X..',
+  '..X....X..',
+  '.XBBBBBBX.',
+  '.BBDDDDBB.',
+  'XBDDDDDDBX',
+  'XBDDCCDDBX',
+  'XBDDCCDDBX',
+  'XBDDDDDDBX',
+  '.BBDDDDBB.',
+  '.XBBBBBBX.',
+  '..X....X..',
 ];
-const MINE_COLORS_ON = { X: '#5A5F70', B: '#2E3242', D: '#FF4B3A' };
-const MINE_COLORS_OFF = { X: '#5A5F70', B: '#2E3242', D: '#8A2018' };
+const MINE_COLORS_ON = { X: '#C0C8E0', B: '#4A5266', D: '#FF5A3A', C: '#FFF0D8' };
+const MINE_COLORS_OFF = { X: '#8A93A8', B: '#3A4056', D: '#B83820', C: '#FF9A6A' };
 
 // bonus: una pastiglia con dentro il suo segno
 const BONUS_SHIELD = [
@@ -459,6 +540,19 @@ const BONUS_DOUBLE = [
   'PWWWWWWWWWP',
   '.PPPPPPPPP.',
 ];
+// colpo a ventaglio: tre colpi che si aprono
+const BONUS_SPREAD = [
+  '.PPPPPPPPP.',
+  'PWWWWWWWWWP',
+  'PW.G.G.G.WP',
+  'PW.G.G.G.WP',
+  'PWG.G.G.GWP',
+  'PWG.GGG.GWP',
+  'PW.GGGGG.WP',
+  'PW..GGG..WP',
+  'PWWWWWWWWWP',
+  '.PPPPPPPPP.',
+];
 // onda d'urto: tre anelli che si allargano, lo stesso segno dell'icona
 const BONUS_SHOCK = [
   '.PPPPPPPPP.',
@@ -475,57 +569,78 @@ const BONUS_SHOCK = [
 
 // ---------- I nemici: tre classi ----------
 // Non cambiano di taglia per far scena: cambiano per quanto costa buttarli giù
-// e per come sparano. Tutti hanno il contorno scuro, così si staccano da
-// qualunque cielo di qualunque settore.
-const ENEMY_LIGHT = [
-  'OO.....OO',
-  'OXO...OXO',
-  'OXXO.OXXO',
-  'OXXXOXXXO',
-  '.OXXCXXO.',
-  '..OXCXO..',
-  '...OCO...',
-  '....O....',
-];
-const ENEMY_LIGHT_COLORS = { O: '#1A1428', X: '#7FD34A', C: '#D8FF6A' };
-const ENEMY_MEDIUM = [
-  '...OOOOOO...',
-  '..OXXXXXXO..',
-  '.OXXXXXXXXO.',
-  'OXXOXXXXOXXO',
-  'OXXOXCCXOXXO',
-  'OXXXXCCXXXXO',
-  '.OXXXXXXXXO.',
-  '..OXXCCXXO..',
-  '...OXCCXO...',
-  '....OCCO....',
-  '.....OO.....',
-];
-const ENEMY_MEDIUM_COLORS = { O: '#2A0A08', X: '#E0603C', C: '#FFC94A' };
-const ENEMY_HEAVY = [
-  '..OOOO....OOOO..',
-  '.OXXXXO..OXXXXO.',
-  'OXXXXXXOOXXXXXXO',
-  'OXXCXXXXXXXXCXXO',
-  'OXXXXXXXXXXXXXXO',
-  '.OXXXXXXXXXXXXO.',
-  '..OXXXXCCXXXXO..',
-  '..OXXXCCCCXXXO..',
-  '...OXXCCCCXXO...',
-  '....OXCCCCXO....',
-  '.....OXCCXO.....',
-  '......OXXO......',
-  '.......OO.......',
-];
-const ENEMY_HEAVY_COLORS = { O: '#221A38', X: '#7A6AC0', C: '#C0B0FF' };
+// e per come sparano — ma la taglia aiuta a riconoscerli al volo, quindi la
+// differenza si vede. Il contorno è sempre la versione scurissima del loro
+// colore, così si staccano da qualunque cielo.
+const ENEMY_PATTERNS = {
+  // leggero: un dardo che punta in giù, veloce e fragile
+  light: [
+    'OO........OO',
+    'OXO......OXO',
+    'OXXO....OXXO',
+    'OXXXOOOOXXXO',
+    'OXXXXXXXXXXO',
+    'OXXXCCCCXXXO',
+    '.OXXCCCCXXO.',
+    '..OXXCCXXO..',
+    '...OXXXXO...',
+    '....OXXO....',
+    '.....OO.....',
+  ],
+  // medio: una cannoniera con due baccelli laterali e due ugelli in coda
+  medium: [
+    '....OOOOOOOO....',
+    '...OXXXXXXXXO...',
+    '..OXXXXXXXXXXO..',
+    'OOXXXXXXXXXXXXOO',
+    'OXXOXXXCCXXXOXXO',
+    'OXXOXXCCCCXXOXXO',
+    'OXXOXXCCCCXXOXXO',
+    'OXXOXXXCCXXXOXXO',
+    'OOXXXXXXXXXXXXOO',
+    '..OXXXXXXXXXXO..',
+    '..OXXXCCCCXXXO..',
+    '..OXXCCCCCCXXO..',
+    '...OOXXXXXXOO...',
+    '....OCCOOCCO....',
+    '.....OO..OO.....',
+  ],
+  // pesante: una fortezza squadrata con due torrette. Quello di prima si
+  // stringeva a punta in basso e sembrava un cuore.
+  heavy: [
+    'OOOOOO........OOOOOO',
+    'OXXXXO........OXXXXO',
+    'OXXCXO........OXXCXO',
+    'OXXXXOOOOOOOOOOXXXXO',
+    'OXXXXXXXXXXXXXXXXXXO',
+    'OXXCCXXXXXXXXXXCCXXO',
+    'OXXXXXXOOOOOOXXXXXXO',
+    'OXXXXXXOCCCCOXXXXXXO',
+    'OXXXXXXOCCCCOXXXXXXO',
+    'OXXXXXXOOOOOOXXXXXXO',
+    'OXXXXXXXXXXXXXXXXXXO',
+    'OXXCCXXXXXXXXXXCCXXO',
+    'OXXXXXXXXXXXXXXXXXXO',
+    'OOOOOOOOOOOOOOOOOOOO',
+    '.OXXXXOOOOOOOOXXXXO.',
+    '.OCCCCO......OCCCCO.',
+    '.OOOOOO......OOOOOO.',
+  ],
+};
 
-// hp: quanti danni regge (un colpo ne fa 2, il doppio colpo raddoppia le
-// occasioni di colpire). coins: quante monete lascia morendo. Le velocità sono
-// in "campi al secondo", non in pixel.
+// hp: quanti danni regge (un colpo ne fa 2, il doppio colpo e il ventaglio
+// moltiplicano le occasioni di colpire). coins: quante monete lascia morendo.
+// Le velocità sono in "campi al secondo", non in pixel. Il colore lo prende dal
+// settore (vedi bakeSectorSprites): shotColor viene riempito lì.
+// drift: quanto si spostano di lato. Misurato: a 0,30 campi al secondo un
+// leggero attraversa mezzo schermo mentre il colpo sta ancora salendo, e
+// mirarlo in anticipo diventa impossibile — un livello che non finisce mai,
+// visto che i nemici vanno abbattuti tutti. A 0,17 si prende, ma bisogna
+// puntare davanti a lui.
 const ENEMY_KINDS = {
-  light:  { hp: 3,  w: 9,  h: 8,  coins: 2, drift: 0.30, fire: 1.6, spr: 'eLight' },
-  medium: { hp: 8,  w: 12, h: 11, coins: 3, drift: 0.13, fire: 2.3, spr: 'eMedium' },
-  heavy:  { hp: 20, w: 16, h: 13, coins: 5, drift: 0.07, fire: 2.9, spr: 'eHeavy' },
+  light:  { hp: 3,  w: 12, h: 11, coins: 2, drift: 0.17, fire: 1.6, spr: 'eLight', shotColor: '#FFFFFF' },
+  medium: { hp: 8,  w: 16, h: 15, coins: 3, drift: 0.11, fire: 2.3, spr: 'eMedium', shotColor: '#FFFFFF' },
+  heavy:  { hp: 20, w: 20, h: 17, coins: 5, drift: 0.06, fire: 2.9, spr: 'eHeavy', shotColor: '#FFFFFF' },
 };
 
 // ---------- I dieci boss ----------
@@ -750,14 +865,14 @@ const SPR = {
     shield: bakePattern(BONUS_SHIELD, { P: '#0A1024', W: '#6FD3E8', G: '#DFF7FF' }, 1),
     life: bakePattern(BONUS_LIFE, { P: '#0A1024', W: '#C93A22', G: '#FF9A7A' }, 1),
     double: bakePattern(BONUS_DOUBLE, { P: '#0A1024', W: '#FFB23F', G: '#FFF0C0' }, 1),
+    spread: bakePattern(BONUS_SPREAD, { P: '#0A1024', W: '#7ADFA0', G: '#DFFFE8' }, 1),
     shock: bakePattern(BONUS_SHOCK, { P: '#0A1024', W: '#B06AE8', G: '#F0D8FF' }, 1),
   },
-  eLight: bakePattern(ENEMY_LIGHT, ENEMY_LIGHT_COLORS, 1),
-  eMedium: bakePattern(ENEMY_MEDIUM, ENEMY_MEDIUM_COLORS, 1),
-  eHeavy: bakePattern(ENEMY_HEAVY, ENEMY_HEAVY_COLORS, 1),
-  eLightFlash: bakeFlash(ENEMY_LIGHT, 1),
-  eMediumFlash: bakeFlash(ENEMY_MEDIUM, 1),
-  eHeavyFlash: bakeFlash(ENEMY_HEAVY, 1),
+  // i nemici si cuociono a ogni cambio di settore, coi colori di quel settore
+  eLight: null, eMedium: null, eHeavy: null,
+  eLightFlash: bakeFlash(ENEMY_PATTERNS.light, 1),
+  eMediumFlash: bakeFlash(ENEMY_PATTERNS.medium, 1),
+  eHeavyFlash: bakeFlash(ENEMY_PATTERNS.heavy, 1),
   bosses: BOSSES.map(b => bakePattern(b.pattern, b.colors, BOSS_SCALE)),
   rocks: [],   // riempito a ogni cambio di settore
   block: null, // idem: il mattone dei muri di detriti
@@ -806,6 +921,25 @@ let bakedSector = -1;
 function bakeSectorSprites(sector) {
   if (sector === bakedSector) return;   // dentro allo stesso settore non si ricuoce niente
   bakedSector = sector;
+
+  // i nemici prendono i colori del settore: contorno scurissimo, corpo, nucleo
+  // chiaro. E il colpo di ogni classe è del colore del suo nucleo, così si vede
+  // subito chi ha sparato — e nessun colpo è più color moneta.
+  const foe = SECTORS[sector].foe;
+  ['light', 'medium', 'heavy'].forEach((cls, i) => {
+    const body = foe[i];
+    const def = ENEMY_KINDS[cls];
+    const core = mixColor(body, '#FFFFFF', 0.55);
+    SPR[def.spr] = bakePattern(ENEMY_PATTERNS[cls], {
+      O: mixColor(body, '#08060F', 0.80),
+      X: body,
+      C: core,
+    }, 1);
+    def.shotColor = core;
+  });
+
+  drawSideField();
+
   const colors = SECTORS[sector].rock;
   SPR.rocks = [];
   for (const size of [9, 15]) {
@@ -992,6 +1126,7 @@ const state = {
   invulnUntil: 0,
   shieldUntil: 0,
   doubleUntil: 0,
+  spreadUntil: 0,
   nextShotAt: 0,
   hazRnd: null,
   nextRock: 0,
@@ -1024,6 +1159,12 @@ const els = {
   pauseOverlay: document.getElementById('pauseOverlay'),
   resumeBtn: document.getElementById('resumeBtn'),
   restartSectorBtn: document.getElementById('restartSectorBtn'),
+  restartAllBtn: document.getElementById('restartAllBtn'),
+  restartAllOverlay: document.getElementById('restartAllOverlay'),
+  confirmRestartAllBtn: document.getElementById('confirmRestartAllBtn'),
+  cancelRestartAllBtn: document.getElementById('cancelRestartAllBtn'),
+  sideCommands: document.getElementById('sideCommands'),
+  sideField: document.getElementById('sideField'),
   topRestartBtn: document.getElementById('topRestartBtn'),
   restartOverlay: document.getElementById('restartOverlay'),
   confirmRestartBtn: document.getElementById('confirmRestartBtn'),
@@ -1089,6 +1230,14 @@ function applyGeometry(force) {
   // usciva dalla sua zona
   els.canvas.style.width = Math.floor(newVW * scale) + 'px';
   els.canvas.style.height = Math.floor(newVH * scale) + 'px';
+
+  // i riquadri laterali compaiono solo se lo spazio libero a lato del campo li
+  // contiene davvero (190 di riquadro + margine): niente soglia indovinata in
+  // pixel di finestra, che su uno schermo alto e stretto darebbe la risposta
+  // sbagliata
+  const freeSide = (zone.clientWidth - newVW * scale) / 2;
+  document.body.classList.toggle('has-side', freeSide >= 214);
+
   if (!force && newVW === VW && newVH === VH) { dirty = true; return false; }
 
   const rx = VW ? newVW / VW : 1, ry = VH ? newVH / VH : 1;
@@ -1157,6 +1306,29 @@ function updateSectorLine() {
   els.sectorLine.textContent = n > 0 ? `${t().sectorLabel} ${s + 1} · ${t().enemiesLabel} ${n}` : base;
 }
 
+// Il riquadro "in campo" non è un'illustrazione a parte: ricopia gli sprite
+// veri, quelli appena cotti. Così quando i nemici cambiano colore col settore,
+// il promemoria cambia con loro e non mente mai.
+function drawSideField() {
+  const copy = (id, spr) => {
+    const c = document.getElementById(id);
+    if (!c || !spr) return;
+    if (c.width !== spr.width || c.height !== spr.height) { c.width = spr.width; c.height = spr.height; }
+    const cx = c.getContext('2d');
+    cx.imageSmoothingEnabled = false;
+    cx.clearRect(0, 0, c.width, c.height);
+    cx.drawImage(spr, 0, 0);
+  };
+  copy('sprLight', SPR.eLight);
+  copy('sprMedium', SPR.eMedium);
+  copy('sprHeavy', SPR.eHeavy);
+  copy('sprShield', SPR.bonus.shield);
+  copy('sprLife', SPR.bonus.life);
+  copy('sprDouble', SPR.bonus.double);
+  copy('sprSpread', SPR.bonus.spread);
+  copy('sprShock', SPR.bonus.shock);
+}
+
 let toastTimer = null;
 // L'icona sta FUORI dal testo tradotto: il messaggio è una stringa e basta, e
 // finisce in un nodo di testo suo. Dentro a un elemento tradotto verrebbe
@@ -1214,6 +1386,7 @@ function startLevel(level, soft) {
     state.invulnUntil = 0;
     state.shieldUntil = 0;
     state.doubleUntil = 0;
+    state.spreadUntil = 0;
     state.clock = 0;
     state.ship.x = VW / 2;
     state.ship.y = VH - 34;
@@ -1270,6 +1443,22 @@ function canvasPointToVirtual(clientX, clientY) {
 let touchDragging = false;
 let touchStartClientX = 0, touchStartClientY = 0;
 let touchStartShipX = 0, touchStartShipY = 0;
+
+// Doppio tocco (o doppio clic) = pausa. Qui si può fare senza rubare niente a
+// nessuno: un tocco da solo non fa muovere la navicella, serve solo a
+// cominciare a trascinare.
+let lastTapAt = 0, lastTapX = 0, lastTapY = 0;
+const DOUBLE_TAP_MS = 320, DOUBLE_TAP_SLOP = 30;
+function checkDoubleTap(e) {
+  const now = performance.now();
+  const near = Math.abs(e.clientX - lastTapX) < DOUBLE_TAP_SLOP && Math.abs(e.clientY - lastTapY) < DOUBLE_TAP_SLOP;
+  const isDouble = now - lastTapAt < DOUBLE_TAP_MS && near;
+  lastTapAt = isDouble ? 0 : now;   // tre tocchi di fila non fanno due pause
+  lastTapX = e.clientX;
+  lastTapY = e.clientY;
+  return isDouble;
+}
+
 function handlePointerDown(e) {
   // il dito che riprende la partita non deve anche muovere la navicella: se lo
   // strato "tocca per continuare" è alzato, quel tocco serve solo a ripartire
@@ -1279,6 +1468,7 @@ function handlePointerDown(e) {
     return;
   }
   if (state.paused || state.mode !== 'play') return;
+  if (checkDoubleTap(e)) { touchDragging = false; openPause(); return; }
   if (e.pointerType === 'touch') {
     touchDragging = true;
     touchStartClientX = e.clientX;
@@ -1309,6 +1499,10 @@ function handleWindowPointerMove(e) {
   clampShip();
 }
 function handlePointerUpOrCancel() { touchDragging = false; }
+// col dito il riquadro dei comandi deve dire i gesti, non i tasti
+function notePointerKind(e) {
+  if (e.pointerType === 'touch') document.body.classList.add('is-touch');
+}
 function handleKeyDown(e) {
   if (state.paused || state.mode !== 'play') return;
   const step = VH * 0.06;
@@ -1444,7 +1638,7 @@ function spawnRock(sector, rnd) {
 function spawnMine(rnd) {
   const x = 8 + rnd() * (VW - 16);
   state.hazards.push({
-    kind: 'mine', x: x, baseX: x, y: -10, w: 8, h: 8,
+    kind: 'mine', x: x, baseX: x, y: -12, w: 10, h: 10,
     amp: (0.03 + rnd() * 0.06) * VW, phase: 0, speedMul: 1.05, hp: 0, shockHit: -1,
   });
 }
@@ -1475,7 +1669,10 @@ function spawnCoins(rnd) {
 // un'onda d'urto a ogni giro toglierebbe il senso a tutto il resto
 function spawnBonus(rnd) {
   const roll = rnd();
-  const type = roll < 0.42 ? 'shield' : (roll < 0.72 ? 'double' : (roll < 0.85 ? 'life' : 'shock'));
+  const type = roll < 0.32 ? 'shield'
+    : (roll < 0.54 ? 'double'
+    : (roll < 0.72 ? 'spread'
+    : (roll < 0.84 ? 'life' : 'shock')));
   state.pickups.push({
     kind: 'bonus', type: type,
     x: 10 + rnd() * (VW - 20), y: -12, w: 11, h: 10, bob: 0,
@@ -1513,6 +1710,7 @@ function spawnEnemy(cls, xFrac, delay) {
     entering: true,
     dir: Math.random() < 0.5 ? -1 : 1,
     phase: Math.random() * 6.28,
+    age: 0,
     fireAt: def.fire * (0.6 + Math.random() * 0.6),
     fireEvery: def.fire * Math.max(0.55, 1 - sector * 0.03),
     burst: 0, burstAt: 0,
@@ -1532,6 +1730,12 @@ function updateEnemies(dt, now) {
       if (e.y >= e.stationY) { e.y = e.stationY; e.entering = false; }
     } else {
       e.phase += dt;
+      e.age += dt;
+      // chi sopravvive più di venti secondi si fa avanti: scende piano verso il
+      // fondo della sua fascia. Più vicino è più facile colpirlo — e più
+      // pericoloso. È il modo di non lasciare in campo un nemico eterno senza
+      // regalarlo a chi non lo prende.
+      if (e.age > 20) e.stationY = Math.min(ENEMY_FLOOR - 6, e.stationY + 0.035 * VH * dt);
       // ognuno si muove a modo suo, ma nessuno scende oltre metà campo: devono
       // restare davanti alla navicella, sempre sparabili
       if (e.cls === 'light') {
@@ -1560,7 +1764,7 @@ function updateEnemies(dt, now) {
         if (e.burstAt <= 0) {
           e.burst--;
           e.burstAt = 0.16;
-          aimedShotFrom(e.x, e.y + e.h / 2, 0.45, '#FFC94A', { w: 4, h: 5 });
+          aimedShotFrom(e.x, e.y + e.h / 2, 0.45, e.def.shotColor, { w: 4, h: 5 });
         }
       }
     }
@@ -1570,9 +1774,10 @@ function updateEnemies(dt, now) {
 }
 
 function enemyAttack(e) {
+  const col = e.def.shotColor;
   if (e.cls === 'light') {
     // leggero: un colpo secco che scende dritto, veloce
-    state.enemyShots.push({ x: e.x, y: e.y + e.h / 2, vx: 0, vy: 0.55 * VH, w: 3, h: 6, color: '#D8FF6A', life: 0 });
+    state.enemyShots.push({ x: e.x, y: e.y + e.h / 2, vx: 0, vy: 0.55 * VH, w: 3, h: 7, color: col, life: 0 });
   } else if (e.cls === 'medium') {
     // medio: raffica di tre colpi mirati dove sei
     e.burst = 3; e.burstAt = 0;
@@ -1583,7 +1788,7 @@ function enemyAttack(e) {
       state.enemyShots.push({
         x: e.x, y: e.y + e.h / 2,
         vx: Math.cos(a) * 0.34 * VH, vy: Math.sin(a) * 0.34 * VH,
-        w: 5, h: 5, color: '#C0B0FF', life: 0,
+        w: 5, h: 5, color: col, life: 0,
       });
     }
   }
@@ -1657,6 +1862,9 @@ function applyBonus(type, now) {
   } else if (type === 'double') {
     state.doubleUntil = now + 10000;
     showToast(t().bonusDouble, 'double-shot', 'toast-ico-double');
+  } else if (type === 'spread') {
+    state.spreadUntil = now + 10000;
+    showToast(t().bonusSpread, 'spread-shot', 'toast-ico-spread');
   } else if (type === 'shock') {
     state.shockId++;
     state.shock = { x: state.ship.x, y: state.ship.y, r: 0, max: VH * 1.25, id: state.shockId };
@@ -1713,8 +1921,9 @@ function updateShots(dt, now) {
   const boss = state.boss;
   for (let i = state.shots.length - 1; i >= 0; i--) {
     const s = state.shots[i];
-    s.y -= 1.35 * VH * dt;
-    if (s.y < -6) { state.shots.splice(i, 1); continue; }
+    s.x += s.vx * dt;
+    s.y += s.vy * dt;
+    if (s.y < -6 || s.x < -6 || s.x > VW + 6) { state.shots.splice(i, 1); continue; }
 
     let gone = false;
     // nemici
@@ -1777,14 +1986,21 @@ function updateShots(dt, now) {
   }
 }
 
+// Doppio colpo e ventaglio si SOMMANO: due canne per tre direzioni fanno sei
+// proiettili. Sono dieci secondi in cui i nemici non sono un problema, ed è
+// voluto — è il momento in cui si recupera un'ondata andata storta.
 function fireShip(now) {
   const y = state.ship.y - SHIP_H / 2;
-  const double = now < state.doubleUntil;
-  if (double) {
-    state.shots.push({ x: state.ship.x - 4, y: y });
-    state.shots.push({ x: state.ship.x + 2, y: y });
-  } else {
-    state.shots.push({ x: state.ship.x - 1, y: y });
+  const speed = 1.7 * VH;
+  const angles = now < state.spreadUntil ? [-0.30, 0, 0.30] : [0];
+  const lanes = now < state.doubleUntil ? [-4, 2] : [-1];
+  for (const a of angles) {
+    for (const lane of lanes) {
+      state.shots.push({
+        x: state.ship.x + lane, y: y,
+        vx: Math.sin(a) * speed, vy: -Math.cos(a) * speed,
+      });
+    }
   }
   state.nextShotAt = now + 240;
 }
@@ -1899,7 +2115,10 @@ function updateBoss(dt, now) {
   if (b.bonusAt <= 0) {
     b.bonusAt = 9 + Math.random() * 5;
     const roll = Math.random();
-    const type = roll < 0.42 ? 'double' : (roll < 0.78 ? 'shield' : (roll < 0.9 ? 'life' : 'shock'));
+    const type = roll < 0.30 ? 'double'
+      : (roll < 0.50 ? 'spread'
+      : (roll < 0.80 ? 'shield'
+      : (roll < 0.90 ? 'life' : 'shock')));
     state.pickups.push({ kind: 'bonus', type: type, x: 10 + Math.random() * (VW - 20), y: -12, w: 11, h: 10, bob: 0 });
   }
 }
@@ -2059,6 +2278,20 @@ function restartSector() {
   saveProgress();
 }
 
+// "Ricomincia da capo": si butta via la partita, non il record. `state.best` e
+// quindi la riga in classifica restano quelli che sono — il punteggio salvato
+// è sempre il meglio che si è fatto, non l'ultima partita.
+function restartFromStart() {
+  state.level = 1;
+  state.lives = START_LIVES;
+  state.coins = 0;
+  state.sectorCoins = 0;
+  startLevel(1);
+  state.paused = false;
+  updateHUD();
+  saveProgress();
+}
+
 function newGame() {
   state.level = 1;
   state.lives = START_LIVES;
@@ -2110,6 +2343,7 @@ function render() {
   ctx.fillStyle = '#FFF0C0';
   for (const s of state.shots) {
     ctx.fillRect(Math.round(s.x), Math.round(s.y), 2, 5);
+    if (s.vx) ctx.fillRect(Math.round(s.x + (s.vx > 0 ? 1 : -1)), Math.round(s.y + 2), 2, 3);
   }
   for (const s of state.enemyShots) {
     ctx.fillStyle = s.color;
@@ -2488,6 +2722,7 @@ async function init() {
   language = getSiteLanguage() || 'it';
   applyTranslations();
 
+  els.gameZone.addEventListener('pointerdown', notePointerKind);
   els.gameZone.addEventListener('pointerdown', handlePointerDown);
   els.gameZone.addEventListener('pointermove', handlePointerMove);
   window.addEventListener('pointermove', handleWindowPointerMove);
@@ -2510,6 +2745,21 @@ async function init() {
   els.restartSectorBtn.addEventListener('click', () => {
     els.pauseOverlay.classList.remove('show');
     els.restartOverlay.classList.add('show');
+  });
+  els.restartAllBtn.addEventListener('click', () => {
+    els.pauseOverlay.classList.remove('show');
+    els.restartAllOverlay.classList.add('show');
+  });
+  els.confirmRestartAllBtn.addEventListener('click', () => {
+    els.restartAllOverlay.classList.remove('show');
+    restartFromStart();
+  });
+  els.cancelRestartAllBtn.addEventListener('click', () => {
+    els.restartAllOverlay.classList.remove('show');
+    showTapLayer();
+  });
+  els.restartAllOverlay.addEventListener('click', (e) => {
+    if (e.target === els.restartAllOverlay) { els.restartAllOverlay.classList.remove('show'); showTapLayer(); }
   });
 
   // ↻ in barra: ricomincia il SETTORE, non il livello — un settore va finito
@@ -2632,7 +2882,7 @@ window.FFR_ON_MODAL_CLOSE = function (id) {
   if (id === 'tutorialOverlay') { closeTutorial(); return; }
   if (id === 'languageOverlay') { closeLanguageModal(); return; }
   if (id === 'leaderboardOverlay') { closeLeaderboard(); return; }
-  if (id === 'pauseOverlay' || id === 'settingsOverlay' || id === 'restartOverlay') {
+  if (id === 'pauseOverlay' || id === 'settingsOverlay' || id === 'restartOverlay' || id === 'restartAllOverlay') {
     if (state.mode === 'play') showTapLayer();
   }
 };
