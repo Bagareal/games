@@ -32,7 +32,6 @@ const LANGUAGES = {
   en: { label: 'English', flag: 'flag-en' },
   fr: { label: 'Français', flag: 'flag-fr' },
 };
-const LANG_ORDER = ['it', 'en', 'fr']; // l'indice finisce nel punteggio di classifica
 const SITE_LANGUAGE_KEY = 'ffr-language';
 
 const UI_STRINGS = {
@@ -2467,7 +2466,6 @@ function selectLanguage(code) {
   language = code;
   setSiteLanguage(code);
   applyTranslations();
-  saveProgress(); // la bandiera in classifica segue la lingua scelta
   closeLanguageModal();
 }
 
@@ -2490,25 +2488,26 @@ function closeTutorial() {
 }
 
 // ---------- Classifica ----------
-// Una sola tabella per tutto il mondo: il gioco non cambia con la lingua, e i
-// livelli sono gli stessi per tutti. Il punteggio salvato nel database è UN
-// numero solo, quindi ci stanno dentro tre cose in cifre diverse:
-//   livello × 10.000.000 + monete × 10 + lingua
+// Una sola tabella per tutto il mondo, e basta: Cosmy non è un gioco di parole,
+// quindi la lingua non c'entra niente con quanto si è bravi e non compare da
+// nessuna parte. Prima ogni riga mostrava la bandiera della lingua scelta da
+// chi la occupava: cambiava se cambiavi lingua in home (quindi non diceva
+// nemmeno da dove uno viene) e, soprattutto, era un dato personale in una
+// tabella pubblica che non serviva a giocare. Via.
+// Il punteggio salvato nel database è UN numero solo, con due cose dentro:
+//   livello × 10.000.000 + monete × 10
 // così l'ordinamento del database (punteggio decrescente) mette avanti chi è
-// arrivato più in là e, a parità di livello, chi ha più monete — che è la
-// regola voluta — e la riga può mostrare anche la bandiera di chi la occupa
-// senza chiedere altro al server.
+// arrivato più in là e, a parità di livello, chi ha più monete.
 const SCORE_LEVEL_UNIT = 10000000;
 const MAX_COINS_IN_SCORE = 999999;
-function encodeScore(level, coins, langCode) {
-  const li = Math.max(0, LANG_ORDER.indexOf(langCode));
-  return level * SCORE_LEVEL_UNIT + Math.min(coins, MAX_COINS_IN_SCORE) * 10 + li;
+function encodeScore(level, coins) {
+  return level * SCORE_LEVEL_UNIT + Math.min(coins, MAX_COINS_IN_SCORE) * 10;
 }
 function decodeScore(score) {
   const s = Math.max(0, score | 0);
   const level = Math.floor(s / SCORE_LEVEL_UNIT);
   const rest = s % SCORE_LEVEL_UNIT;
-  return { level: level, coins: Math.floor(rest / 10), lang: LANG_ORDER[rest % 10] || 'it' };
+  return { level: level, coins: Math.floor(rest / 10) };
 }
 
 async function openLeaderboard() {
@@ -2538,7 +2537,6 @@ function buildLeaderboardRows(rows, me, myNickname) {
     return `
     <div class="leaderboard-row${isMe ? ' is-me' : ''}">
       <span class="leaderboard-rank">N.${pos}</span>
-      <span class="ffr-ico leaderboard-flag" data-ico="${LANGUAGES[d.lang].flag}"></span>
       <span class="leaderboard-name">${escapeHtml(nickname)}</span>
       <span class="leaderboard-score"><span class="lb-lv">LV.${d.level}</span><span class="ffr-ico" data-ico="coin"></span>${d.coins}</span>
     </div>`;
@@ -2637,8 +2635,7 @@ function saveProgress() {
     sectorCoins: state.sectorCoins,
     best: state.best,
     finished: state.finished,
-    lang: language,
-  }, encodeScore(state.best.level, state.best.coins, language));
+  }, encodeScore(state.best.level, state.best.coins));
 }
 async function loadSaved() {
   if (!(window.FFR && window.FFR.auth)) return null;

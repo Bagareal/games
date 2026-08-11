@@ -350,7 +350,6 @@ a.icon-btn{ background:none; border:none; font-size:34px; line-height:0; }
 }
 .leaderboard-row.is-me .leaderboard-rank{ color: var(--orange); }
 .leaderboard-rank{ flex:0 0 auto; min-width:34px; text-align:left; color: rgba(255,235,207,0.5); }
-.leaderboard-flag{ flex:0 0 auto; font-size:14px; }
 .leaderboard-name{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
 .leaderboard-score{ flex:0 0 auto; display:flex; align-items:center; gap:4px; color: var(--amber); white-space:nowrap; }
 .leaderboard-score .lb-lv{ color: var(--cream); }
