@@ -13,15 +13,9 @@ const SITE_LANGUAGE_KEY = 'ffr-language';
 
 const UI_STRINGS = {
   it: {
+    tutorialPause: 'Per mettere in pausa: doppio tocco sullo schermo a pallina già in volo, doppio clic col mouse, o il tasto in alto',
     backToHome: 'Torna in Home',
     tapToLaunch: 'Tocca per lanciare la pallina',
-    sideCommandsTitle: 'COMANDI',
-    cmdMovePointer: 'Mouse o frecce: muovi',
-    cmdMoveTouch: 'Trascina: muovi',
-    cmdLaunchPointer: 'Clic o spazio: lancia',
-    cmdLaunchTouch: 'Tocca: lancia',
-    cmdPausePointer: 'Doppio clic: pausa',
-    cmdPauseTouch: 'Doppio tocco: pausa',
     chooseDifficulty: 'Scegli la difficoltà',
     chooseDifficultySub: 'Puoi cambiarla ogni volta che inizi una partita',
     easy: 'Facile',
@@ -63,15 +57,9 @@ const UI_STRINGS = {
     gotIt: 'Ho capito!',
   },
   en: {
+    tutorialPause: 'To pause: double tap the screen while the ball is already flying, double click with the mouse, or the button up top',
     backToHome: 'Back to Home',
     tapToLaunch: 'Tap to launch the ball',
-    sideCommandsTitle: 'CONTROLS',
-    cmdMovePointer: 'Mouse or arrows: move',
-    cmdMoveTouch: 'Drag: move',
-    cmdLaunchPointer: 'Click or space: launch',
-    cmdLaunchTouch: 'Tap: launch',
-    cmdPausePointer: 'Double click: pause',
-    cmdPauseTouch: 'Double tap: pause',
     chooseDifficulty: 'Choose difficulty',
     chooseDifficultySub: 'You can change it every time you start a game',
     easy: 'Easy',
@@ -113,15 +101,9 @@ const UI_STRINGS = {
     gotIt: 'Got it!',
   },
   fr: {
+    tutorialPause: "Pour mettre en pause : double touche sur l'écran quand la balle est déjà en vol, double clic à la souris, ou le bouton en haut",
     backToHome: "Retour à l'accueil",
     tapToLaunch: 'Touche pour lancer la balle',
-    sideCommandsTitle: 'COMMANDES',
-    cmdMovePointer: 'Souris ou flèches : bouger',
-    cmdMoveTouch: 'Glisse : bouger',
-    cmdLaunchPointer: 'Clic ou espace : lancer',
-    cmdLaunchTouch: 'Touche : lancer',
-    cmdPausePointer: 'Double clic : pause',
-    cmdPauseTouch: 'Double touche : pause',
     chooseDifficulty: 'Choisis la difficulté',
     chooseDifficultySub: 'Tu peux la changer à chaque nouvelle partie',
     easy: 'Facile',
@@ -392,14 +374,6 @@ function startNewGame(difficultyKey) {
   els.pauseOverlay.classList.remove('show');
   els.settingsOverlay.classList.remove('show');
   saveBoingProgress();
-}
-
-// ---------- Il riquadro dei comandi a lato ----------
-function updateSidePanels() {
-  const zone = document.querySelector('.game-zone');
-  if (!zone) return;
-  const free = (zone.clientWidth - els.canvas.getBoundingClientRect().width) / 2;
-  document.body.classList.toggle('has-side', free >= 220);
 }
 
 // ---------- Pausa (riprendi / difficoltà / reset livello) ----------
@@ -731,7 +705,6 @@ function isDoubleTap(e) {
   return dbl;
 }
 function handlePointerDown(e) {
-  if (e.pointerType === 'touch') document.body.classList.add('is-touch');
   if (state.paused) return;
   if (!anyBallStuck() && isDoubleTap(e)) { touchDragging = false; openPause(); return; }
   if (e.pointerType === 'touch') {
@@ -1044,15 +1017,6 @@ async function init() {
   els.leaderboardOverlay.addEventListener('click', (e) => {
     if (e.target === els.leaderboardOverlay) closeLeaderboard();
   });
-
-  // il riquadro dei comandi compare solo se a lato del campo lo spazio c'è
-  // davvero: si misura, non si indovina con una soglia di larghezza finestra
-  let sideTimer = null;
-  const onResize = () => { clearTimeout(sideTimer); sideTimer = setTimeout(updateSidePanels, 120); };
-  window.addEventListener('resize', onResize);
-  window.addEventListener('orientationchange', onResize);
-  updateSidePanels();
-  setTimeout(updateSidePanels, 400);   // a caratteri arrivati la barra ha la sua altezza vera
 
   requestAnimationFrame(loop);
 

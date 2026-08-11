@@ -87,38 +87,6 @@
       <!-- la striscia del cambio livello: passa e se ne va, il gioco non si ferma -->
       <div class="level-strip" id="levelStrip"></div>
     </div>
-
-    <!-- I due riquadri stanno nello spazio che avanza ai lati del campo su
-         schermi larghi: sono appoggiati sopra (position:absolute), quindi non
-         entrano nella misura della zona di gioco e non rubano un pixel al
-         campo. Compaiono solo quando lo spazio libero c'è davvero: è il gioco a
-         misurarlo (applyGeometry) e ad accendere la classe .has-side.
-         Non si possono toccare (pointer-events:none): sono un promemoria, non
-         dei comandi, e la zona di gioco deve restare tutta trascinabile. -->
-    <aside class="side-help side-left" id="sideCommands" aria-hidden="true">
-      <h3 data-i18n="sideCommandsTitle">COMANDI</h3>
-      <ul>
-        <li class="for-pointer"><span class="ffr-ico" data-ico="arrow-lr"></span><span data-i18n="cmdMovePointer">Mouse o frecce: muovi</span></li>
-        <li class="for-touch"><span class="ffr-ico" data-ico="arrow-lr"></span><span data-i18n="cmdMoveTouch">Trascina: muovi</span></li>
-        <li><span class="ffr-ico" data-ico="target"></span><span data-i18n="cmdFire">Il fuoco è automatico</span></li>
-        <li class="for-pointer"><span class="ffr-ico" data-ico="pause"></span><span data-i18n="cmdPausePointer">Doppio clic: pausa</span></li>
-        <li class="for-touch"><span class="ffr-ico" data-ico="pause"></span><span data-i18n="cmdPauseTouch">Doppio tocco: pausa</span></li>
-      </ul>
-    </aside>
-
-    <aside class="side-help side-right" id="sideField" aria-hidden="true">
-      <h3 data-i18n="sideFieldTitle">IN CAMPO</h3>
-      <ul>
-        <li><canvas class="side-spr" id="sprLight" width="12" height="11"></canvas><span data-i18n="foeLight">Leggero</span></li>
-        <li><canvas class="side-spr" id="sprMedium" width="16" height="15"></canvas><span data-i18n="foeMedium">Medio</span></li>
-        <li><canvas class="side-spr" id="sprHeavy" width="20" height="17"></canvas><span data-i18n="foeHeavy">Pesante</span></li>
-        <li><canvas class="side-spr" id="sprShield" width="11" height="10"></canvas><span data-i18n="nameShield">Scudo, 5 secondi</span></li>
-        <li><canvas class="side-spr" id="sprLife" width="11" height="10"></canvas><span data-i18n="nameLife">Vita extra</span></li>
-        <li><canvas class="side-spr" id="sprDouble" width="11" height="10"></canvas><span data-i18n="nameDouble">Doppio colpo</span></li>
-        <li><canvas class="side-spr" id="sprSpread" width="11" height="10"></canvas><span data-i18n="nameSpread">Colpo a ventaglio</span></li>
-        <li><canvas class="side-spr" id="sprShock" width="11" height="10"></canvas><span data-i18n="nameShock">Onda d'urto</span></li>
-      </ul>
-    </aside>
   </div>
 
   <!-- pausa: riprendi / ricomincia il settore -->
@@ -200,6 +168,10 @@
       <div class="tutorial-row">
         <span class="tutorial-icon quad"><span class="ffr-ico ico-shield" data-ico="shield"></span><span class="ffr-ico ico-life" data-ico="heart"></span><span class="ffr-ico ico-double" data-ico="double-shot"></span><span class="ffr-ico ico-shock" data-ico="shockwave"></span></span>
         <p data-i18n="tutorialBonus">Prendi i bonus che scendono: scudo a bolla per 5 secondi, vita extra, doppio colpo e — raro — l'onda d'urto, che parte dalla navicella e spazza via tutto quello che trova</p>
+      </div>
+      <div class="tutorial-row">
+        <span class="tutorial-icon"><span class="ffr-ico" data-ico="pause"></span></span>
+        <p data-i18n="tutorialPause">Per mettere in pausa: doppio tocco sullo schermo, doppio clic col mouse, o il tasto in alto</p>
       </div>
       <div class="tutorial-row">
         <span class="tutorial-icon"><span class="ffr-ico ico-boss" data-ico="crown"></span></span>

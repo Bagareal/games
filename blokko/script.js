@@ -13,6 +13,7 @@ const SITE_LANGUAGE_KEY = 'ffr-language';
 
 const UI_STRINGS = {
   it: {
+    tutorialPause: "Per mettere in pausa: scorri verso l'alto col dito, o doppio clic col mouse. Qui il tocco fa ruotare il pezzo, quindi il doppio tocco non si può usare",
     backToHome: 'Torna in Home',
     scoreLabel: 'PUNTI',
     nextLabel: 'PROSSIMI',
@@ -44,17 +45,6 @@ const UI_STRINGS = {
     close: 'Chiudi',
     tutorialTitle: 'Come si gioca',
     tutorialTap: 'Tocca lo schermo per ruotare il pezzo',
-    sideCommandsTitle: 'COMANDI',
-    cmdMoveKeys: 'Frecce ← →: sposta',
-    cmdRotateKeys: 'Freccia ↑: ruota',
-    cmdSoftKeys: 'Freccia ↓: scende veloce',
-    cmdDropKeys: 'Barra spaziatrice: caduta',
-    cmdPauseKeys: 'Tasto P o doppio clic: pausa',
-    cmdMoveTouch: 'Trascina: sposta',
-    cmdRotateTouch: 'Tocca: ruota',
-    cmdSoftTouch: 'Tieni premuto: scende veloce',
-    cmdDropTouch: 'Scorri in giù: caduta',
-    cmdPauseTouch: 'Scorri in su: pausa',
     tutorialSwipe: 'Trascina il dito a destra o a sinistra per spostarlo',
     tutorialHold: 'Tieni premuto per farlo scendere veloce',
     tutorialDrop: 'Scorri verso il basso per farlo cadere di colpo',
@@ -71,6 +61,7 @@ const UI_STRINGS = {
     comboToast: n => `COMBO ×${n}`,
   },
   en: {
+    tutorialPause: 'To pause: swipe up with your finger, or double click with the mouse. Here a tap rotates the piece, so a double tap cannot be used',
     backToHome: 'Back to Home',
     scoreLabel: 'SCORE',
     nextLabel: 'NEXT',
@@ -102,17 +93,6 @@ const UI_STRINGS = {
     close: 'Close',
     tutorialTitle: 'How to play',
     tutorialTap: 'Tap the screen to rotate the piece',
-    sideCommandsTitle: 'CONTROLS',
-    cmdMoveKeys: 'Arrows ← →: move',
-    cmdRotateKeys: 'Arrow ↑: rotate',
-    cmdSoftKeys: 'Arrow ↓: drop faster',
-    cmdDropKeys: 'Space bar: hard drop',
-    cmdPauseKeys: 'P key or double click: pause',
-    cmdMoveTouch: 'Drag: move',
-    cmdRotateTouch: 'Tap: rotate',
-    cmdSoftTouch: 'Hold: drop faster',
-    cmdDropTouch: 'Swipe down: hard drop',
-    cmdPauseTouch: 'Swipe up: pause',
     tutorialSwipe: 'Drag your finger right or left to move it',
     tutorialHold: 'Press and hold to make it drop fast',
     tutorialDrop: 'Swipe down to slam it into place',
@@ -129,6 +109,7 @@ const UI_STRINGS = {
     comboToast: n => `COMBO ×${n}`,
   },
   fr: {
+    tutorialPause: "Pour mettre en pause : glisse vers le haut avec le doigt, ou double clic à la souris. Ici la touche fait tourner la pièce, donc la double touche est impossible",
     backToHome: "Retour à l'accueil",
     scoreLabel: 'POINTS',
     nextLabel: 'SUIVANTS',
@@ -160,17 +141,6 @@ const UI_STRINGS = {
     close: 'Fermer',
     tutorialTitle: 'Comment jouer',
     tutorialTap: 'Touche l\'écran pour faire tourner la pièce',
-    sideCommandsTitle: 'COMMANDES',
-    cmdMoveKeys: 'Flèches ← → : déplacer',
-    cmdRotateKeys: 'Flèche ↑ : tourner',
-    cmdSoftKeys: 'Flèche ↓ : descendre vite',
-    cmdDropKeys: 'Barre d\'espace : chute',
-    cmdPauseKeys: 'Touche P ou double clic : pause',
-    cmdMoveTouch: 'Glisse : déplacer',
-    cmdRotateTouch: 'Touche : tourner',
-    cmdSoftTouch: 'Maintiens : descendre vite',
-    cmdDropTouch: 'Glisse vers le bas : chute',
-    cmdPauseTouch: 'Glisse vers le haut : pause',
     tutorialSwipe: 'Glisse ton doigt à droite ou à gauche pour la déplacer',
     tutorialHold: 'Reste appuyé pour la faire descendre vite',
     tutorialDrop: 'Glisse vers le bas pour la faire tomber d\'un coup',
@@ -724,15 +694,6 @@ function redrawStack(w, h) {
   }
 }
 
-function updateSidePanels() {
-  // lo spazio buono è quello fra il bordo della pagina e la colonna del gioco,
-  // non quello dentro alla zona di gioco: qui la colonna è stretta di suo
-  const app = document.getElementById('app');
-  if (!app) return;
-  const free = (window.innerWidth - app.getBoundingClientRect().width) / 2;
-  document.body.classList.toggle('has-side', free >= 216);
-}
-
 function resizeCanvas() {
   // Il campo si fa da parte PRIMA di misurare lo spazio. Senza questo, quando
   // la finestra si rimpicciolisce la zona di gioco misura il campo di prima e
@@ -754,7 +715,7 @@ function resizeCanvas() {
   if (availW <= 0 || availH <= 0) { restore(); return; }
   const newCell = Math.max(8, Math.floor(Math.min(availW / COLS, availH / ROWS)));
   const newScale = Math.min(window.devicePixelRatio || 1, 3);
-  if (newCell === cell && newScale === renderScale && els.canvas.width) { restore(); updateSidePanels(); return; }
+  if (newCell === cell && newScale === renderScale && els.canvas.width) { restore(); return; }
   cell = newCell;
   renderScale = newScale;
   spriteCache.clear();
@@ -767,7 +728,6 @@ function resizeCanvas() {
   ctx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
   markStackDirty();
   renderNext();
-  updateSidePanels();
 }
 
 function render() {
@@ -921,7 +881,6 @@ const SWIPE_UP_PX = 52;
 let touch = null;
 
 function onPointerDown(e) {
-  if (e.pointerType === 'touch') document.body.classList.add('is-touch');
   if (e.pointerType === 'mouse') return; // col mouse si gioca da tastiera
   if (!isPlaying()) return;
   e.preventDefault();
@@ -1425,9 +1384,6 @@ async function init() {
   els.gameZone.addEventListener('pointercancel', onPointerUp);
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('keyup', onKeyUp);
-  // il riquadro dei comandi compare solo se a lato del campo lo spazio c'è
-  // davvero: si misura ogni volta che il campo si rimisura
-  window.addEventListener('resize', updateSidePanels);
   window.addEventListener('resize', resizeCanvas);
   window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 250));
 

@@ -37,6 +37,7 @@ const SITE_LANGUAGE_KEY = 'ffr-language';
 
 const UI_STRINGS = {
   it: {
+    tutorialPause: 'Per mettere in pausa: doppio tocco sullo schermo, doppio clic col mouse, o il tasto in alto',
     backToHome: 'Torna in Home',
     tapToContinue: 'Tocca per continuare',
     paused: 'Pausa',
@@ -80,21 +81,6 @@ const UI_STRINGS = {
     restartAllTitle: 'Ricominciare da capo?',
     restartAllBody: 'Si riparte dal livello 1 con tre vite e zero monete. Il tuo record e la classifica restano quelli che sono.',
     restartAllYes: 'Sì, da capo',
-    sideCommandsTitle: 'COMANDI',
-    sideFieldTitle: 'IN CAMPO',
-    cmdMovePointer: 'Mouse o frecce: muovi',
-    cmdMoveTouch: 'Trascina: muovi',
-    cmdFire: 'Il fuoco è automatico',
-    cmdPausePointer: 'Doppio clic: pausa',
-    cmdPauseTouch: 'Doppio tocco: pausa',
-    foeLight: 'Leggero',
-    foeMedium: 'Medio',
-    foeHeavy: 'Pesante',
-    nameShield: 'Scudo, 5 secondi',
-    nameLife: 'Vita extra',
-    nameDouble: 'Doppio colpo',
-    nameSpread: 'Colpo a ventaglio',
-    nameShock: "Onda d'urto",
     waveClean: 'Ondata pulita! +10',
     tutorialTitle: 'Come si gioca',
     tutorialMove: "Muovi la navicella dove vuoi: trascina il dito nell'area di gioco, o usa il mouse e le frecce. Va a destra e sinistra su tutta la larghezza, e avanti e indietro nella metà bassa",
@@ -138,6 +124,7 @@ const UI_STRINGS = {
     creditsEnd: 'Grazie per aver giocato.',
   },
   en: {
+    tutorialPause: 'To pause: double tap the screen, double click with the mouse, or the button up top',
     backToHome: 'Back to Home',
     tapToContinue: 'Tap to continue',
     paused: 'Paused',
@@ -181,21 +168,6 @@ const UI_STRINGS = {
     restartAllTitle: 'Start over from level 1?',
     restartAllBody: 'You go back to level 1 with three lives and no coins. Your best and the leaderboard stay as they are.',
     restartAllYes: 'Yes, start over',
-    sideCommandsTitle: 'CONTROLS',
-    sideFieldTitle: 'ON THE FIELD',
-    cmdMovePointer: 'Mouse or arrows: move',
-    cmdMoveTouch: 'Drag: move',
-    cmdFire: 'Firing is automatic',
-    cmdPausePointer: 'Double click: pause',
-    cmdPauseTouch: 'Double tap: pause',
-    foeLight: 'Light',
-    foeMedium: 'Medium',
-    foeHeavy: 'Heavy',
-    nameShield: 'Shield, 5 seconds',
-    nameLife: 'Extra life',
-    nameDouble: 'Double shot',
-    nameSpread: 'Spread shot',
-    nameShock: 'Shockwave',
     waveClean: 'Wave cleared! +10',
     tutorialTitle: 'How to play',
     tutorialMove: 'Move the ship wherever you want: drag your finger in the play area, or use the mouse and the arrow keys. Left and right across the full width, forward and back in the lower half',
@@ -239,6 +211,7 @@ const UI_STRINGS = {
     creditsEnd: 'Thanks for playing.',
   },
   fr: {
+    tutorialPause: "Pour mettre en pause : double touche sur l'écran, double clic à la souris, ou le bouton en haut",
     backToHome: "Retour à l'accueil",
     tapToContinue: 'Touche pour continuer',
     paused: 'Pause',
@@ -282,21 +255,6 @@ const UI_STRINGS = {
     restartAllTitle: 'Recommencer depuis le niveau 1 ?',
     restartAllBody: 'On repart du niveau 1 avec trois vies et zéro pièce. Ton record et le classement ne bougent pas.',
     restartAllYes: 'Oui, tout recommencer',
-    sideCommandsTitle: 'COMMANDES',
-    sideFieldTitle: 'SUR LE TERRAIN',
-    cmdMovePointer: 'Souris ou flèches : bouger',
-    cmdMoveTouch: 'Glisse : bouger',
-    cmdFire: 'Le tir est automatique',
-    cmdPausePointer: 'Double clic : pause',
-    cmdPauseTouch: 'Double touche : pause',
-    foeLight: 'Léger',
-    foeMedium: 'Moyen',
-    foeHeavy: 'Lourd',
-    nameShield: 'Bouclier, 5 secondes',
-    nameLife: 'Vie supplémentaire',
-    nameDouble: 'Tir double',
-    nameSpread: 'Tir en éventail',
-    nameShock: 'Onde de choc',
     waveClean: 'Vague nettoyée ! +10',
     tutorialTitle: 'Comment jouer',
     tutorialMove: "Déplace le vaisseau où tu veux : glisse ton doigt dans la zone de jeu, ou utilise la souris et les flèches. À gauche et à droite sur toute la largeur, en avant et en arrière dans la moitié basse",
@@ -938,8 +896,6 @@ function bakeSectorSprites(sector) {
     def.shotColor = core;
   });
 
-  drawSideField();
-
   const colors = SECTORS[sector].rock;
   SPR.rocks = [];
   for (const size of [9, 15]) {
@@ -1163,8 +1119,6 @@ const els = {
   restartAllOverlay: document.getElementById('restartAllOverlay'),
   confirmRestartAllBtn: document.getElementById('confirmRestartAllBtn'),
   cancelRestartAllBtn: document.getElementById('cancelRestartAllBtn'),
-  sideCommands: document.getElementById('sideCommands'),
-  sideField: document.getElementById('sideField'),
   topRestartBtn: document.getElementById('topRestartBtn'),
   restartOverlay: document.getElementById('restartOverlay'),
   confirmRestartBtn: document.getElementById('confirmRestartBtn'),
@@ -1230,13 +1184,6 @@ function applyGeometry(force) {
   // usciva dalla sua zona
   els.canvas.style.width = Math.floor(newVW * scale) + 'px';
   els.canvas.style.height = Math.floor(newVH * scale) + 'px';
-
-  // i riquadri laterali compaiono solo se lo spazio libero a lato del campo li
-  // contiene davvero (190 di riquadro + margine): niente soglia indovinata in
-  // pixel di finestra, che su uno schermo alto e stretto darebbe la risposta
-  // sbagliata
-  const freeSide = (zone.clientWidth - newVW * scale) / 2;
-  document.body.classList.toggle('has-side', freeSide >= 214);
 
   if (!force && newVW === VW && newVH === VH) { dirty = true; return false; }
 
@@ -1304,29 +1251,6 @@ function updateSectorLine() {
   const base = `${t().sectorLabel} ${s + 1} · ${SECTORS[s].name}`;
   const n = state.enemies.length;
   els.sectorLine.textContent = n > 0 ? `${t().sectorLabel} ${s + 1} · ${t().enemiesLabel} ${n}` : base;
-}
-
-// Il riquadro "in campo" non è un'illustrazione a parte: ricopia gli sprite
-// veri, quelli appena cotti. Così quando i nemici cambiano colore col settore,
-// il promemoria cambia con loro e non mente mai.
-function drawSideField() {
-  const copy = (id, spr) => {
-    const c = document.getElementById(id);
-    if (!c || !spr) return;
-    if (c.width !== spr.width || c.height !== spr.height) { c.width = spr.width; c.height = spr.height; }
-    const cx = c.getContext('2d');
-    cx.imageSmoothingEnabled = false;
-    cx.clearRect(0, 0, c.width, c.height);
-    cx.drawImage(spr, 0, 0);
-  };
-  copy('sprLight', SPR.eLight);
-  copy('sprMedium', SPR.eMedium);
-  copy('sprHeavy', SPR.eHeavy);
-  copy('sprShield', SPR.bonus.shield);
-  copy('sprLife', SPR.bonus.life);
-  copy('sprDouble', SPR.bonus.double);
-  copy('sprSpread', SPR.bonus.spread);
-  copy('sprShock', SPR.bonus.shock);
 }
 
 let toastTimer = null;
@@ -1408,6 +1332,12 @@ function startLevel(level, soft) {
   if (state.plan.boss >= 0) showToast(BOSSES[state.plan.boss].name + ' ' + t().bossIncoming, 'robot', 'toast-ico-double');
   else if (!soft) showToast(t().levelLabel + ' ' + level);
   dirty = true; // a partita ferma (tutorial, riapertura) il campo va disegnato lo stesso
+  // Si salva QUI, all'inizio del livello: prima si salvava alla fine, e il
+  // livello scritto nel cloud era quello appena finito, non quello nuovo. Chi
+  // batteva un boss sul telefono e riapriva il gioco sul computer si ritrovava
+  // davanti lo stesso boss. (Non durante il caricamento: lì si è appena letto
+  // il salvataggio e riscriverlo non serve a niente.)
+  if (ready) saveProgress();
 }
 
 function spawnBoss(index) {
@@ -1499,10 +1429,6 @@ function handleWindowPointerMove(e) {
   clampShip();
 }
 function handlePointerUpOrCancel() { touchDragging = false; }
-// col dito il riquadro dei comandi deve dire i gesti, non i tasti
-function notePointerKind(e) {
-  if (e.pointerType === 'touch') document.body.classList.add('is-touch');
-}
 function handleKeyDown(e) {
   if (state.paused || state.mode !== 'play') return;
   const step = VH * 0.06;
@@ -2425,6 +2351,7 @@ function render() {
 
 // ---------- Il giro principale ----------
 let lastTime = null;
+let ready = false;              // a caricamento finito: prima non si salva niente
 let dirty = true;                       // c'è qualcosa da ridisegnare anche da fermi
 const showFps = /[?&]fps=1/.test(location.search);
 let fpsBox = null, fpsFrames = 0, fpsSince = 0;
@@ -2722,7 +2649,6 @@ async function init() {
   language = getSiteLanguage() || 'it';
   applyTranslations();
 
-  els.gameZone.addEventListener('pointerdown', notePointerKind);
   els.gameZone.addEventListener('pointerdown', handlePointerDown);
   els.gameZone.addEventListener('pointermove', handlePointerMove);
   window.addEventListener('pointermove', handleWindowPointerMove);
@@ -2831,7 +2757,11 @@ async function init() {
   // finestra nascosta (cambio scheda, telefono in tasca): si mette in pausa da
   // sola, o si torna e si è morti senza aver visto niente
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden && state.mode === 'play' && !state.paused) showTapLayer();
+    if (!document.hidden) return;
+    if (state.mode === 'play' && !state.paused) showTapLayer();
+    // su un telefono la pagina nascosta può non tornare mai più: il momento di
+    // salvare è questo, non "alla prossima cosa che succede"
+    if (ready) saveProgress();
   });
 
   // il campo si rimisura quando lo schermo cambia (rotazione, finestra tirata):
@@ -2857,6 +2787,11 @@ async function init() {
   applyGeometry(true);   // i font sono arrivati: la barra ha la sua altezza vera
   startLevel(state.level);
   state.paused = true;
+  // Da qui in poi si salva. NON prima: se il cloud non risponde, quello che si
+  // è appena letto è la copia locale, e riscriverla subito con la data di
+  // adesso significherebbe far vincere un progresso vecchio su quello buono
+  // appena il collegamento torna.
+  ready = true;
 
   if (!tutorialSeen) {
     tutorialPrimoAvvio = true;
