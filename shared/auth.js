@@ -421,6 +421,45 @@
       return Number.isFinite(n) ? n : null;
     } catch (e) { return null; }
   }
+  // Data dell'ultimo salvataggio che il cloud ha DAVVERO accettato. Serve a
+  // distinguere "non è cambiato niente e siamo pari" (non c'è niente da
+  // mandare) da "non è cambiato niente ma l'ultima volta la scrittura è
+  // fallita" (va ritentata).
+  function syncedKeyFor(game) { return localKeyFor(game) + '-synced'; }
+  function readSyncedStamp(game) {
+    try { return localStorage.getItem(syncedKeyFor(game)) || null; } catch (e) { return null; }
+  }
+  function markSynced(game, stamp) {
+    try { localStorage.setItem(syncedKeyFor(game), stamp); } catch (e) { /* ignora */ }
+  }
+
+  // ---------------- il cloud non risponde ----------------
+  // Un account che non riesce a parlare col server è invisibile: nelle pagine
+  // di gioco non c'è l'icona account, e finché gli errori restavano solo nella
+  // console si poteva giocare per giorni convinti di salvare in cloud, mentre
+  // il progresso restava su un dispositivo solo. Ora la prima chiamata fallita
+  // accende il nastro, e la prima riuscita lo spegne.
+  let cloudTrouble = false;
+  // Una sessione scaduta e una rete che non va si curano in modo diverso: la
+  // prima chiede di rientrare (e il nastro ha il pulsante per farlo), la
+  // seconda si aggiusta da sola. Postgrest risponde PGRST301/401 con "JWT
+  // expired" quando il token non vale più.
+  function looksLikeAuthError(err) {
+    if (!err) return false;
+    const s = ((err.code || '') + ' ' + (err.status || '') + ' ' + (err.message || '')).toLowerCase();
+    return s.includes('jwt') || s.includes('pgrst301') || s.includes('401') ||
+           s.includes('unauthorized') || s.includes('not authenticated');
+  }
+  function noteCloudFailure(err) {
+    if (!currentUser || cloudTrouble) return;
+    cloudTrouble = true;
+    showAuthBanner(looksLikeAuthError(err) ? 'signedOut' : 'offline');
+  }
+  function noteCloudSuccess() {
+    if (!cloudTrouble) return;
+    cloudTrouble = false;
+    hideAuthBanner();
+  }
 
   // Chi vince fra il salvataggio di questo dispositivo e quello nel cloud.
   //
@@ -446,25 +485,52 @@
   }
 
   async function saveProgress(game, data, score) {
-    // stessa data per il salvataggio locale e per quello nel cloud: se il
-    // secondo non va a buon fine, il locale risulta più recente ed è
-    // esattamente quello che vogliamo sapere al prossimo caricamento
-    const stamp = new Date().toISOString();
+    // La data si muove solo se il salvataggio cambia DAVVERO.
+    //
+    // Prima si ristampava a ogni chiamata, e i giochi ne fanno una ogni volta
+    // che la pagina si nasconde — cambio scheda, chiusura, e il refresh stesso.
+    // Così un dispositivo rimasto indietro si portava avanti la data senza aver
+    // giocato niente, e alla prima parità di punteggio (in Cosmy il punteggio è
+    // il record, che non scende: basta morire perché resti uguale) vinceva lui
+    // e il progresso buono di un altro dispositivo spariva. Ricaricare non
+    // poteva rimediare: la ricarica stessa ristampava la data. Con la data
+    // ferma, chi non gioca non guadagna terreno e la situazione si aggiusta da
+    // sola al caricamento dopo.
+    const json = JSON.stringify(data);
+    const scoreStr = (score == null ? null : String(score));
+    let stamp = null;
+    let unchanged = false;
     try {
-      localStorage.setItem(localKeyFor(game), JSON.stringify(data));
+      unchanged = localStorage.getItem(localKeyFor(game)) === json &&
+                  localStorage.getItem(scoreKeyFor(game)) === scoreStr;
+      if (unchanged) stamp = localStorage.getItem(stampKeyFor(game)) || null;
+    } catch (e) { /* ignora */ }
+    if (!stamp) { stamp = new Date().toISOString(); unchanged = false; }
+    try {
+      localStorage.setItem(localKeyFor(game), json);
       localStorage.setItem(stampKeyFor(game), stamp);
       if (score == null) localStorage.removeItem(scoreKeyFor(game));
-      else localStorage.setItem(scoreKeyFor(game), String(score));
+      else localStorage.setItem(scoreKeyFor(game), scoreStr);
     } catch (e) { /* storage pieno/negato: pazienza */ }
     if (!currentUser) return;
+    // Niente di nuovo e il cloud ha già questo identico salvataggio: non si
+    // scrive. Non è solo una richiesta risparmiata — riscrivere qui una copia
+    // vecchia (pagina aperta da ieri, nascosta adesso) cancellerebbe il
+    // progresso appena fatto su un altro dispositivo.
+    if (unchanged && readSyncedStamp(game) === stamp) return;
     try {
       const client = await getClient();
       const { error } = await client.from('game_progress').upsert(
         { user_id: currentUser.id, game, data, score: (score == null ? null : score), updated_at: stamp },
         { onConflict: 'user_id,game' }
       );
-      if (error) console.error('[FFR] saveProgress(' + game + ') fallito:', error);
-    } catch (e) { console.error('[FFR] saveProgress(' + game + ') fallito (rete/offline):', e); }
+      if (error) { console.error('[FFR] saveProgress(' + game + ') fallito:', error); noteCloudFailure(error); return; }
+      markSynced(game, stamp);
+      noteCloudSuccess();
+    } catch (e) {
+      console.error('[FFR] saveProgress(' + game + ') fallito (rete/offline):', e);
+      noteCloudFailure(e);
+    }
   }
 
   // Prima vinceva SEMPRE il cloud, senza guardare le date: chi giocava una
@@ -480,7 +546,12 @@
       const client = await getClient();
       const { data, error } = await client.from('game_progress')
         .select('data, score, updated_at').eq('user_id', currentUser.id).eq('game', game).maybeSingle();
-      if (error) { console.error('[FFR] loadProgress(' + game + ') fallito:', error); return local; }
+      if (error) {
+        console.error('[FFR] loadProgress(' + game + ') fallito:', error);
+        noteCloudFailure(error);
+        return local;
+      }
+      noteCloudSuccess();
       if (!data) return local; // nessun progresso cloud salvato ancora per questo utente/gioco: normale
 
       const localStamp = readStamp(game);
@@ -492,15 +563,23 @@
       // spedire in cloud roba vecchia rimasta su un dispositivo poco usato
       if (chooseSide(!!local, localStamp, localScore, cloudStamp, cloudScore) === 'local') {
         console.warn('[FFR] loadProgress(' + game + '): il dispositivo è più avanti del cloud, lo tengo e lo mando su');
+        // È qui che rientra il progresso fatto offline: la partita giocata
+        // senza rete non ha mai raggiunto il server, e questo è il primo
+        // momento utile per spedirla.
+        const pushStamp = new Date(localStamp || Date.now()).toISOString();
         try {
           // si manda su anche il punteggio di questo dispositivo, se lo
           // conosciamo: è quello che corrisponde ai dati che stiamo spedendo
           const { error: upErr } = await client.from('game_progress').upsert(
-            { user_id: currentUser.id, game, data: local, score: (localScore == null ? data.score : localScore), updated_at: new Date(localStamp || Date.now()).toISOString() },
+            { user_id: currentUser.id, game, data: local, score: (localScore == null ? data.score : localScore), updated_at: pushStamp },
             { onConflict: 'user_id,game' }
           );
-          if (upErr) console.error('[FFR] loadProgress(' + game + '): rinvio al cloud fallito:', upErr);
-        } catch (e) { console.error('[FFR] loadProgress(' + game + '): rinvio al cloud fallito:', e); }
+          if (upErr) { console.error('[FFR] loadProgress(' + game + '): rinvio al cloud fallito:', upErr); noteCloudFailure(upErr); }
+          else markSynced(game, pushStamp);
+        } catch (e) {
+          console.error('[FFR] loadProgress(' + game + '): rinvio al cloud fallito:', e);
+          noteCloudFailure(e);
+        }
         return local;
       }
 
@@ -509,9 +588,16 @@
         if (data.updated_at) localStorage.setItem(stampKeyFor(game), data.updated_at);
         if (cloudScore == null) localStorage.removeItem(scoreKeyFor(game));
         else localStorage.setItem(scoreKeyFor(game), String(cloudScore));
+        // dispositivo e cloud ora coincidono: da qui un salvataggio che non
+        // cambia niente non ha più bisogno di essere rispedito
+        if (data.updated_at) markSynced(game, data.updated_at);
       } catch (e) { /* ignora */ }
       return data.data;
-    } catch (e) { console.error('[FFR] loadProgress(' + game + ') fallito (rete/offline):', e); return local; }
+    } catch (e) {
+      console.error('[FFR] loadProgress(' + game + ') fallito (rete/offline):', e);
+      noteCloudFailure(e);
+      return local;
+    }
   }
 
   // Voce di classifica "pura": stessa tabella dei progressi ma su una chiave
@@ -530,8 +616,12 @@
         { user_id: currentUser.id, game, data: {}, score, updated_at: new Date().toISOString() },
         { onConflict: 'user_id,game' }
       );
-      if (error) console.error('[FFR] saveScore(' + game + ') fallito:', error);
-    } catch (e) { console.error('[FFR] saveScore(' + game + ') fallito (rete/offline):', e); }
+      if (error) { console.error('[FFR] saveScore(' + game + ') fallito:', error); noteCloudFailure(error); return; }
+      noteCloudSuccess();
+    } catch (e) {
+      console.error('[FFR] saveScore(' + game + ') fallito (rete/offline):', e);
+      noteCloudFailure(e);
+    }
   }
 
   // Posizione in classifica dell'utente loggato, anche quando è fuori dalle
