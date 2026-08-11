@@ -76,6 +76,12 @@ A top-down space shooter: your ship sits at the bottom of the screen, the galaxy
 
 **[freeforreal.app/cosmy](https://freeforreal.app/cosmy/)**
 
+### [Scopa](scopa/)
+
+Scopa is a traditional Italian card game, played for centuries, with no author and no owner — like draughts, its rules belong to everyone. Ours is the two-player game against the computer, with the base rules: 40 cards, 3 in hand each and 4 on the table, a card captures the table cards of equal value or several adding up to it, and a card of *equal* value on the table makes that capture compulsory. Clear the table and you score a scopa; the last card of the hand never does, since the table would have emptied anyway. At the end of each hand the points are cards (more than 20), coins, the seven of coins and the primiera, plus one per scopa — first to 11 wins. Two things the written rules leave open are settled here and said out loud in the instructions: coins go to whoever holds at least 6 of the ten, and the last card scores no scopa. Two optional aids sit in the settings, off by default: the *rebello* (an extra point for the ten of coins, a northern Italian custom) and a count of the cards not played yet. Three levels: one that plays at random, one that weighs what a capture is worth against what it leaves on the table, and a Master that remembers every card played and, before each move, deals the unknown cards out a hundred different ways and plays each hand to the end. It never looks at your cards. The cards are drawn from scratch here — four suit symbols of our own, and an emblem for each face card so the deck reads the same in all three languages. Its own look: cobalt-and-cream majolica tiles and a green cloth. Play it at:
+
+**[freeforreal.app/scopa](https://freeforreal.app/scopa/)**
+
 ## Credits
 
 **Wordio**'s word lists were cleaned up using [**FrequencyWords**](https://github.com/hermitdave/FrequencyWords) by [**Hermit Dave**](https://github.com/hermitdave) — word-frequency lists built from the OpenSubtitles corpus and published openly. We use them offline, once, to decide which words the game is allowed to *ask* for: a word has to be one people actually use, or it doesn't get asked. That is how `uri`, `ima` and a pile of stray English and French words stopped showing up as Italian answers. None of that data ships with the site — only our own word list, filtered. Thank you.

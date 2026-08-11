@@ -1,2 +1,5 @@
 .claude/
 .DS_Store
+# profili di Firefox lasciati dalle prove in locale: non sono roba del sito
+profB/
+ffprof*/

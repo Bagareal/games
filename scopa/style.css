@@ -1,0 +1,665 @@
+/* ============ SCOPA — identità grafica: maiolica e panno verde ============
+   Ogni gioco del sito ha la sua grafica: qui niente noce e ottone (è della
+   Dama), niente neon indaco (è di Blokky), niente foglio a quadretti (è di
+   Addy), niente carta e inchiostro (è di Sudopoku). La Scopa è un tavolo da
+   osteria: la parete di maioliche cobalto e panna dietro, il panno verde
+   davanti, e le carte stampate su cartoncino avorio con i semi in quattro
+   tinte — oro per i denari, terracotta per le coppe, cobalto per le spade,
+   oliva per i bastoni. */
+:root{
+  --night: #0B1E33;
+  --night-2: #12314F;
+  --cobalt: #1D4E89;
+  --cobalt-soft: rgba(120, 170, 225, 0.30);
+  --cobalt-faint: rgba(120, 170, 225, 0.13);
+
+  --felt: #17594C;
+  --felt-dark: #0E3B32;
+  --felt-edge: #0A2A24;
+
+  --cream: #F2E6CE;
+  --gold: #E0B44A;
+  --gold-hot: #FFD877;
+  --terra: #C2582F;
+
+  --card-face: #F7EFDD;
+  --card-line: #C8B48A;
+
+  --text: #EAE0CC;
+  --text-dim: rgba(234, 224, 204, 0.62);
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+html,body{ height:100%; }
+body{
+  margin:0; padding:0; min-height:100%;
+  font-family:'Nunito Sans', sans-serif;
+  background: var(--night);
+  color: var(--text);
+  overscroll-behavior: none;
+}
+
+/* ---------- sfondo ---------- */
+/* tutto fermo: un gioco a turni non ha niente da animare sullo sfondo, e uno
+   sfondo statico non costa un fotogramma mentre si gioca */
+#bgLayer{
+  position:fixed; inset:0; z-index:0;
+  pointer-events:none;
+  background: linear-gradient(172deg, var(--night-2) 0%, var(--night) 55%, #071522 100%);
+}
+/* le maioliche: quadrati cobalto con il rombo panna in mezzo, disegnati con i
+   gradienti invece che con un'immagine — non c'è niente da scaricare */
+.tiles{
+  position:absolute; inset:0;
+  opacity:0.22;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(160,205,245,0.30) 0 1px, rgba(0,0,0,0) 1px 44px),
+    repeating-linear-gradient(90deg, rgba(160,205,245,0.30) 0 1px, rgba(0,0,0,0) 1px 44px),
+    repeating-linear-gradient(45deg, rgba(242,230,206,0.16) 0 6px, rgba(0,0,0,0) 6px 22px),
+    repeating-linear-gradient(-45deg, rgba(242,230,206,0.16) 0 6px, rgba(0,0,0,0) 6px 22px);
+  background-size: 44px 44px, 44px 44px, 44px 44px, 44px 44px;
+}
+.vignette{
+  position:absolute; inset:0;
+  background: radial-gradient(85% 60% at 50% 42%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%);
+}
+
+#app{
+  position:relative; z-index:1;
+  width:100%;
+  min-height:100vh;
+  min-height:100dvh;
+  max-width:480px;
+  margin:0 auto;
+  display:flex; flex-direction:column;
+  overflow-x:hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ---------- caricamento ---------- */
+#loadingScreen{
+  position:fixed; inset:0; z-index:60;
+  background: var(--night);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
+  transition: opacity 0.3s ease;
+}
+#loadingScreen.hidden{ display:none; }
+.loading-title{
+  font-family:'Bitter', serif;
+  font-weight:700; font-size:30px; letter-spacing:2px;
+  color: var(--cream);
+}
+.spinner{
+  width:30px; height:30px;
+  border:2px solid rgba(224,180,74,0.22);
+  border-top-color: var(--gold);
+  border-radius:50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* ---------- topbar ---------- */
+.topbar{
+  position:relative; z-index:5;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding: max(10px, env(safe-area-inset-top)) 16px 2px;
+}
+.icon-group{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+.icon-btn{
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background: rgba(120,170,225,0.10);
+  border: 1px solid var(--cobalt-soft);
+  color: var(--text);
+  font-size:19px; line-height:1;
+  cursor:pointer;
+  text-decoration:none;
+  flex:0 0 auto;
+}
+.icon-btn:active{ transform: scale(0.94); }
+/* la freccia per tornare in home ha già il suo cerchio disegnato dentro
+   all'icona: il fondino del pulsante ci farebbe un secondo cerchio intorno */
+a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
+.turn-pill{
+  font-size:12px; font-weight:700;
+  letter-spacing:0.3px;
+  color: var(--text);
+  background: rgba(120,170,225,0.10);
+  border:1px solid var(--cobalt-soft);
+  border-radius:999px;
+  padding:6px 12px;
+  text-align:right;
+  min-width:0;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.turn-pill.hot{ color: var(--gold); border-color: var(--gold); }
+
+.title-wrap{ padding: 8px 16px 0; }
+.title-wrap h1{
+  font-family:'Bitter', serif;
+  font-weight:700; font-size:22px; letter-spacing:1px;
+  margin:0;
+  color: var(--cream);
+  text-align:center;
+}
+.title-rule{
+  position:relative;
+  height:1px; margin-top:6px;
+  background: linear-gradient(90deg, rgba(224,180,74,0) 0%, rgba(224,180,74,0.4) 20%, rgba(224,180,74,0.4) 80%, rgba(224,180,74,0) 100%);
+}
+.title-rule::before{
+  content:'◆';
+  position:absolute; left:50%; top:-9px; transform:translateX(-50%);
+  font-size:10px; color: var(--gold);
+  background: var(--night);
+  padding:0 6px;
+}
+
+/* ---------- il tavolo ---------- */
+.game-zone{
+  position:relative;
+  /* base 0: l'altezza di questa zona è "quello che avanza", e non dipende da
+     quanto sono grandi le carte che ci stanno dentro — la misura delle carte
+     la calcola il codice su questo spazio, non il contrario */
+  flex:1 1 0;
+  display:flex; align-items:stretch; justify-content:center;
+  padding: 8px 12px max(10px, env(safe-area-inset-bottom));
+  min-height:0;
+  touch-action: manipulation;
+}
+.table-stack{
+  display:flex; flex-direction:column;
+  width:100%;
+  gap:6px;
+  min-height:0;
+}
+
+.seat{ display:flex; flex-direction:column; gap:5px; flex:0 0 auto; }
+.seat-plate{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:5px 10px;
+  border:1px solid var(--cobalt-faint);
+  border-radius:8px;
+  background: rgba(0,0,0,0.26);
+}
+.seat-plate.is-turn{ border-color: var(--gold); background: rgba(224,180,74,0.12); }
+.plate-name{
+  font-family:'Bitter', serif;
+  font-weight:700; font-size:14px;
+  color: var(--cream);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.plate-stats{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+.stat{ display:flex; flex-direction:column; align-items:center; line-height:1; }
+.stat b{ font-size:13px; font-weight:700; color: var(--text); font-variant-numeric: tabular-nums; }
+.stat i{ font-size:8px; font-style:normal; letter-spacing:0.6px; text-transform:uppercase; color: var(--text-dim); margin-top:2px; }
+.stat.points b{ color: var(--gold); font-size:15px; }
+.stat.points i{ color: rgba(224,180,74,0.7); }
+
+.hand{
+  display:flex; align-items:center; justify-content:center;
+  gap: var(--hand-gap, 8px);
+  min-height: calc(var(--hand-cw, 60px) * 1.5);
+}
+
+/* il panno: è l'elemento elastico: prende tutto lo spazio che avanza fra le
+   due mani, e le carte del tavolo si misurano su quello */
+.felt{
+  position:relative;
+  flex:1 1 0;
+  min-height:0;
+  border-radius:12px;
+  border:1px solid var(--felt-edge);
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0) 60%),
+    linear-gradient(170deg, var(--felt) 0%, var(--felt-dark) 100%);
+  box-shadow: inset 0 0 26px rgba(0,0,0,0.42), 0 6px 16px rgba(0,0,0,0.35);
+  padding:8px;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden;
+}
+.table-cards{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:center;
+  gap:6px;
+  width:100%;
+}
+/* il mazzo che resta da distribuire, appoggiato in un angolo del panno */
+.deck-corner{
+  position:absolute; top:8px; left:8px;
+  display:flex; align-items:center; gap:6px;
+  z-index:2;
+}
+.deck-stack{
+  width:20px; height:29px;
+  border-radius:3px;
+  border:1px solid rgba(0,0,0,0.5);
+  background:
+    repeating-linear-gradient(45deg, rgba(242,230,206,0.5) 0 2px, rgba(0,0,0,0) 2px 5px),
+    linear-gradient(160deg, #2C6BB4, #163E6E);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.35);
+}
+.deck-stack.empty{ opacity:0.25; }
+.deck-count{
+  font-size:11px; font-weight:700;
+  color: rgba(242,230,206,0.85);
+  font-variant-numeric: tabular-nums;
+}
+/* "Scopa!" e le altre scritte di passaggio: stanno in mezzo al panno e non
+   rubano il tocco a niente */
+.flash{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  pointer-events:none;
+  font-family:'Bitter', serif;
+  font-weight:700; font-size:30px; letter-spacing:2px;
+  color: var(--gold-hot);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+  opacity:0;
+  z-index:3;
+}
+.flash.show{ animation: flashIn 1.1s ease-out; }
+@keyframes flashIn{
+  0%{ opacity:0; transform: scale(0.7); }
+  22%{ opacity:1; transform: scale(1.06); }
+  70%{ opacity:1; transform: scale(1); }
+  100%{ opacity:0; transform: scale(1); }
+}
+
+/* ---------- le carte ---------- */
+/* Disegnate qui, da zero: nessun mazzo esistente è stato copiato. La misura
+   arriva da --cw, che il codice calcola sullo spazio davvero disponibile. */
+.pcard{
+  position:relative;
+  flex:0 0 auto;
+  width: var(--cw, 60px);
+  height: calc(var(--cw, 60px) * 1.5);
+  border-radius: calc(var(--cw, 60px) * 0.09);
+  background: linear-gradient(160deg, #FBF5E8 0%, var(--card-face) 55%, #EADFC4 100%);
+  /* il colore del seme si mette qui, sulla carta: i disegni dentro sono SVG che
+     prendono `currentColor`, e senza questa riga si tingevano del colore del
+     testo del sito — quasi invisibili sul cartoncino avorio */
+  color: var(--suit);
+  border:1px solid var(--card-line);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.35);
+  overflow:hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+/* il filetto interno, come sui mazzi stampati */
+.pcard::after{
+  content:'';
+  position:absolute; inset: calc(var(--cw, 60px) * 0.055);
+  border:1px solid rgba(200,180,138,0.55);
+  border-radius: calc(var(--cw, 60px) * 0.05);
+  pointer-events:none;
+}
+.pcard .corner{
+  position:absolute;
+  font-family:'Bitter', serif;
+  font-weight:700;
+  font-size: calc(var(--cw, 60px) * 0.27);
+  line-height:1;
+  color: var(--suit);
+}
+.pcard .corner.tl{ top: calc(var(--cw, 60px) * 0.11); left: calc(var(--cw, 60px) * 0.12); }
+.pcard .corner.br{ bottom: calc(var(--cw, 60px) * 0.11); right: calc(var(--cw, 60px) * 0.12); transform: rotate(180deg); }
+.pcard .glyph{
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+}
+.pcard .glyph svg{
+  width: calc(var(--cw, 60px) * 0.56);
+  height: calc(var(--cw, 60px) * 0.56);
+  display:block;
+}
+/* otto, nove e dieci portano anche il loro emblema — scudo, ferro di cavallo,
+   corona — sopra al seme: si riconoscono a colpo d'occhio senza scrivere una
+   lettera, che in tre lingue sarebbe stata tre lettere diverse */
+.pcard .fig-mark{
+  position:absolute; top:19%; left:0; right:0;
+  display:flex; justify-content:center;
+  color: var(--suit);
+  opacity:0.8;
+}
+.pcard .fig-mark svg{
+  width: calc(var(--cw, 60px) * 0.28);
+  height: calc(var(--cw, 60px) * 0.28);
+  display:block;
+}
+.pcard.fig .glyph{ align-items:flex-end; padding-bottom: 13%; }
+.pcard.fig .glyph svg{
+  width: calc(var(--cw, 60px) * 0.44);
+  height: calc(var(--cw, 60px) * 0.44);
+}
+/* i quattro semi, ognuno con la sua tinta */
+.pcard.s-d{ --suit: #A8761A; }
+.pcard.s-c{ --suit: #B04524; }
+.pcard.s-s{ --suit: #1D4E89; }
+.pcard.s-b{ --suit: #5B7A2C; }
+
+/* il dorso: la stessa maiolica della parete, in piccolo */
+.pcard.back{
+  background:
+    repeating-linear-gradient(45deg, rgba(242,230,206,0.30) 0 2px, rgba(0,0,0,0) 2px 6px),
+    repeating-linear-gradient(-45deg, rgba(242,230,206,0.30) 0 2px, rgba(0,0,0,0) 2px 6px),
+    linear-gradient(160deg, #2C6BB4 0%, #143A66 100%);
+  border-color:#0E2A4A;
+}
+.pcard.back::after{ border-color: rgba(242,230,206,0.35); }
+
+/* stati */
+.pcard.playable{ cursor:pointer; }
+.pcard.selected{
+  transform: translateY(calc(var(--cw, 60px) * -0.16));
+  box-shadow: 0 8px 14px rgba(0,0,0,0.45), 0 0 0 2px var(--gold-hot);
+}
+/* carta del tavolo che la carta scelta può prendere */
+.pcard.take{
+  cursor:pointer;
+  box-shadow: 0 0 0 2px var(--gold-hot), 0 0 14px rgba(255,216,119,0.65);
+  animation: takePulse 1.4s ease-in-out infinite;
+}
+@keyframes takePulse{
+  0%, 100%{ box-shadow: 0 0 0 2px var(--gold-hot), 0 0 10px rgba(255,216,119,0.45); }
+  50%{ box-shadow: 0 0 0 3px var(--gold-hot), 0 0 18px rgba(255,216,119,0.85); }
+}
+/* con una carta scelta, quelle che non c'entrano si spengono un po' */
+.pcard.dim{ opacity:0.58; }
+.pcard.landing{ animation: landing 0.32s ease-out; }
+@keyframes landing{
+  0%{ transform: translateY(calc(var(--cw, 60px) * -0.9)) scale(1.06); opacity:0.2; }
+  100%{ transform: translateY(0) scale(1); opacity:1; }
+}
+.pcard.leaving{ opacity:0; transform: scale(0.72); }
+@media (prefers-reduced-motion: reduce){
+  .pcard.take{ animation:none; }
+  .pcard.landing{ animation:none; }
+}
+
+/* ---------- carte non ancora uscite (aiuto facoltativo) ---------- */
+.counter-strip{
+  display:flex; gap:3px; justify-content:center; flex-wrap:wrap;
+  padding:4px 0 0;
+}
+.counter-cell{
+  display:flex; flex-direction:column; align-items:center;
+  min-width:22px;
+  padding:2px 3px;
+  border-radius:5px;
+  border:1px solid var(--cobalt-faint);
+  background: rgba(0,0,0,0.22);
+  line-height:1;
+}
+.counter-cell b{ font-size:11px; font-weight:700; color: var(--cream); }
+.counter-cell span{ font-size:9px; color: var(--text-dim); margin-top:2px; font-variant-numeric: tabular-nums; }
+.counter-cell.gone{ opacity:0.38; }
+
+/* ---------- cosa fare con la carta scelta ---------- */
+.action-strip{
+  display:flex; gap:6px; justify-content:center; flex-wrap:wrap;
+  min-height:0;
+}
+.action-strip:empty{ display:none; }
+.action-btn{
+  display:flex; align-items:center; gap:6px;
+  font-family:'Nunito Sans', sans-serif;
+  font-weight:700; font-size:12px;
+  color: var(--night);
+  background: linear-gradient(180deg, #F0CB6A, var(--gold));
+  border:1px solid #F3D88C;
+  border-radius:8px;
+  padding:5px 10px;
+  cursor:pointer;
+}
+.action-btn:active{ transform: translateY(1px); }
+.action-btn.ghost{
+  color: var(--text);
+  background: rgba(120,170,225,0.10);
+  border-color: var(--cobalt-soft);
+}
+.action-btn .mini-row{ display:flex; gap:3px; }
+/* le carte in miniatura dentro al bottone della presa */
+.mini-card{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:19px; height:25px;
+  border-radius:3px;
+  background: var(--card-face);
+  border:1px solid var(--card-line);
+  font-family:'Bitter', serif;
+  font-weight:700; font-size:12px;
+  color: var(--suit);
+  padding:0 2px;
+}
+.mini-card.s-d{ --suit: #A8761A; }
+.mini-card.s-c{ --suit: #B04524; }
+.mini-card.s-s{ --suit: #1D4E89; }
+.mini-card.s-b{ --suit: #5B7A2C; }
+.mini-card svg{ width:9px; height:9px; margin-left:1px; }
+
+/* ---------- overlay e pannelli ---------- */
+.overlay{
+  position:fixed; inset:0; z-index:50;
+  background: rgba(5, 14, 24, 0.85);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  opacity:0; pointer-events:none; transition: opacity 0.2s ease;
+}
+.overlay.show{ opacity:1; pointer-events:auto; }
+.card{
+  position:relative;
+  width:100%; max-width:340px;
+  max-height:88vh; overflow-y:auto;
+  background: linear-gradient(170deg, var(--night-2) 0%, var(--night) 100%);
+  border:1px solid var(--cobalt-soft);
+  border-radius:10px;
+  padding:24px 20px 20px;
+  text-align:center;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.6);
+}
+.card h2{
+  font-family:'Bitter', serif;
+  font-weight:700; font-size:19px;
+  margin:0 0 8px;
+  color: var(--cream);
+}
+.card p{
+  font-size:14px; font-weight:400; line-height:1.5;
+  color: var(--text-dim);
+  margin:0 0 16px;
+}
+.section-label{
+  font-size:11px !important; font-weight:700 !important;
+  letter-spacing:2px; text-transform:uppercase;
+  color: var(--gold) !important;
+  margin:16px 0 10px !important;
+}
+.end-icon, .creator-badge{
+  font-size:30px; line-height:1;
+  color: var(--gold);
+  margin-bottom:8px;
+}
+.taunt-name{
+  font-size:11px !important; font-weight:700 !important;
+  letter-spacing:2px; text-transform:uppercase;
+  color: var(--gold) !important;
+  margin:0 0 6px !important;
+}
+.taunt-line{ font-style:italic; }
+
+.primary-btn, .secondary-btn, .menu-row, .language-option, .difficulty-option, .lb-tab{
+  font-family:'Nunito Sans', sans-serif;
+  font-weight:700;
+  cursor:pointer;
+  border-radius:8px;
+}
+.primary-btn{
+  display:block; width:100%;
+  font-size:15px;
+  padding:13px 16px;
+  margin-bottom:8px;
+  color:#132B14;
+  background: linear-gradient(180deg, #F0CB6A, var(--gold));
+  border:1px solid #F3D88C;
+}
+.primary-btn:active{ transform: translateY(1px); }
+.secondary-btn{
+  display:block; width:100%;
+  font-size:13px;
+  padding:11px 16px;
+  margin-top:6px;
+  color: var(--text);
+  background: rgba(120,170,225,0.10);
+  border:1px solid var(--cobalt-soft);
+}
+.secondary-btn:active{ transform: translateY(1px); }
+.secondary-btn[hidden]{ display:none; }
+
+.difficulty-list{ display:flex; flex-direction:column; gap:8px; }
+.difficulty-option{
+  width:100%;
+  font-size:15px;
+  padding:12px 16px;
+  color: var(--text);
+  background: rgba(120,170,225,0.10);
+  border:1px solid var(--cobalt-soft);
+}
+.difficulty-option:active{ transform: translateY(1px); }
+/* la difficoltà con cui si sta giocando resta accesa */
+.difficulty-option.active{
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: inset 0 0 0 1px rgba(224,180,74,0.35);
+}
+
+.menu-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
+.menu-row{
+  display:flex; align-items:center; gap:10px;
+  width:100%;
+  font-size:14px; font-weight:600;
+  padding:12px 14px;
+  color: var(--text);
+  background: rgba(120,170,225,0.10);
+  border:1px solid var(--cobalt-soft);
+  text-align:left;
+}
+.menu-row:active{ transform: translateY(1px); }
+.menu-value{ margin-left:auto; font-size:12px; font-weight:700; color: var(--gold); }
+.toggle-row{ align-items:center; }
+.toggle-text{ display:flex; flex-direction:column; gap:2px; min-width:0; flex:1 1 auto; }
+.toggle-title{ font-size:14px; font-weight:600; }
+.toggle-sub{ font-size:11px; font-weight:400; color: var(--text-dim); line-height:1.35; }
+.switch{
+  flex:0 0 auto;
+  width:38px; height:21px; border-radius:999px;
+  background: rgba(0,0,0,0.4);
+  border:1px solid var(--cobalt-soft);
+  position:relative;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.switch::after{
+  content:'';
+  position:absolute; top:2px; left:2px;
+  width:15px; height:15px; border-radius:50%;
+  background: var(--text-dim);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.toggle-row.on .switch{ background: rgba(224,180,74,0.28); border-color: var(--gold); }
+.toggle-row.on .switch::after{ transform: translateX(17px); background: var(--gold); }
+
+.rules-card{ max-width:370px; }
+.rule-row{
+  display:flex; align-items:flex-start; gap:12px;
+  text-align:left;
+  margin-bottom:13px;
+}
+.rule-icon{
+  font-family:'Bitter', serif;
+  font-size:16px; font-weight:700; line-height:1.4;
+  flex:0 0 24px; text-align:center; color: var(--gold);
+}
+.rule-row p{ margin:0; font-size:14px; color: var(--text); }
+
+/* conto della mano */
+.score-table{ display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+.score-head, .score-row{
+  display:grid; grid-template-columns: 1fr auto auto;
+  gap:8px; align-items:center;
+  padding:6px 10px;
+  border-radius:6px;
+  font-size:13px;
+}
+.score-head{
+  background:none; color: var(--text-dim);
+  font-size:10px; letter-spacing:1px; text-transform:uppercase;
+  padding-bottom:0;
+}
+.score-row{
+  background: rgba(0,0,0,0.24);
+  border:1px solid var(--cobalt-faint);
+}
+.score-row .label{ text-align:left; }
+.score-row .val{ min-width:52px; text-align:right; font-variant-numeric: tabular-nums; color: var(--text-dim); }
+.score-row .val.won{ color: var(--gold); font-weight:700; }
+.score-row.total{ background: rgba(224,180,74,0.14); border-color: var(--gold); }
+.score-row.total .val{ color: var(--cream); font-weight:700; }
+.match-line{ font-size:13px !important; color: var(--cream) !important; }
+
+/* lingua */
+.language-list{ display:flex; flex-direction:column; gap:8px; }
+.language-option{
+  display:flex; align-items:center; gap:12px;
+  width:100%;
+  font-size:14px; font-weight:600;
+  padding:11px 14px;
+  color: var(--text);
+  background: rgba(120,170,225,0.10);
+  border:1px solid var(--cobalt-soft);
+  text-align:left;
+}
+.language-option:active{ transform: translateY(1px); }
+.language-option.active{ border-color: var(--gold); background: rgba(224,180,74,0.16); }
+.language-flag{ font-size:19px; }
+
+/* classifica */
+.lb-note{ font-size:12px !important; margin-bottom:12px !important; }
+.lb-tabs{ display:flex; gap:6px; margin-bottom:12px; }
+.lb-tab{
+  flex:1 1 0;
+  font-size:12px;
+  padding:8px 4px;
+  color: var(--text-dim);
+  background: rgba(120,170,225,0.07);
+  border:1px solid var(--cobalt-faint);
+}
+.lb-tab.active{ color: var(--night); background: var(--gold); border-color: var(--gold); }
+.leaderboard-list{
+  display:flex; flex-direction:column; gap:6px;
+  max-height:246px; overflow-y:auto;
+  margin-bottom:6px;
+}
+.leaderboard-row{
+  display:flex; align-items:center; gap:10px;
+  padding:8px 10px;
+  border-radius:6px;
+  background: rgba(0,0,0,0.24);
+  border:1px solid var(--cobalt-faint);
+  font-size:13px;
+}
+.leaderboard-row.is-me{ border-color: var(--gold); background: rgba(224,180,74,0.14); }
+.leaderboard-rank{ flex:0 0 auto; font-weight:700; color: var(--gold); min-width:34px; text-align:left; }
+.leaderboard-name{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
+.leaderboard-score{ flex:0 0 auto; font-weight:700; font-variant-numeric: tabular-nums; }
+.leaderboard-empty{ font-size:13px; color: var(--text-dim); padding:16px 6px; }
+
+/* schermi bassi: le carte valgono più del titolo */
+@media (max-height: 700px){
+  .title-wrap{ display:none; }
+  .seat-plate{ padding:4px 8px; }
+}
+@media (min-width: 700px){
+  #app{ max-width: 560px; }
+  .title-wrap h1{ font-size:26px; }
+  .plate-name{ font-size:16px; }
+}
+@media (min-width: 1024px){
+  #app{ max-width: 620px; }
+}

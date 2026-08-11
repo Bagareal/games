@@ -30,7 +30,7 @@
   // NB: 'blokko' è la chiave storica di Blokky — il gioco è stato pubblicato con
   // quel nome e la chiave NON si rinomina, o si azzererebbero progressi e record
   // di chi ci ha già giocato.
-  const KNOWN_GAMES = ['wordio', 'boing', 'blokko', 'addy', 'dama', 'sudopoku', 'kakumal', 'findy', 'cosmy'];
+  const KNOWN_GAMES = ['wordio', 'boing', 'blokko', 'addy', 'dama', 'sudopoku', 'kakumal', 'findy', 'cosmy', 'scopa'];
 
   // ---------------- testi (it/en/fr) ----------------
   const STR = {

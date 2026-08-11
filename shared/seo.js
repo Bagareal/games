@@ -77,12 +77,12 @@
   const TEXT = {
     home: {
       en: {
-        title: 'Free For Real — nine free online games, no ads',
-        desc: 'Nine free games to play in your browser, on phone or computer: words, numbers, logic and reflexes. No ads, no payments, and they work offline too.',
+        title: 'Free For Real — ten free online games, no ads',
+        desc: 'Ten free games to play in your browser, on phone or computer: words, numbers, logic and reflexes. No ads, no payments, and they work offline too.',
       },
       fr: {
-        title: 'Free For Real — neuf jeux gratuits en ligne, sans publicité',
-        desc: "Neuf jeux gratuits à ouvrir dans le navigateur, sur téléphone ou ordinateur : mots, nombres, logique et réflexes. Sans publicité, sans paiement, et jouables hors ligne.",
+        title: 'Free For Real — dix jeux gratuits en ligne, sans publicité',
+        desc: "Dix jeux gratuits à ouvrir dans le navigateur, sur téléphone ou ordinateur : mots, nombres, logique et réflexes. Sans publicité, sans paiement, et jouables hors ligne.",
       },
     },
     wordio: {
@@ -163,6 +163,16 @@
       fr: {
         title: 'Cosmy — abats les ennemis et les boss de la galaxie | Free For Real',
         desc: "Pilote ton vaisseau, abats les ennemis qui descendent, esquive astéroïdes et mines et bats les dix boss de la galaxie. 50 niveaux, gratuit, sans publicité, dans le navigateur.",
+      },
+    },
+    scopa: {
+      en: {
+        title: 'Scopa — the Italian card game, free online | Free For Real',
+        desc: 'Capture the cards on the table, clear it for a scopa and race to 11 points. Against the computer at three levels. Free, no ads, straight in your browser.',
+      },
+      fr: {
+        title: 'Scopa — le jeu de cartes italien, gratuit en ligne | Free For Real',
+        desc: "Prends les cartes de la table, fais scopa et cours jusqu'à 11 points. Contre l'ordinateur à trois niveaux. Gratuit, sans publicité, dans le navigateur.",
       },
     },
     findy: {

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Scopa online gratis, contro il computer a tre livelli | Free For Real</title>
+<meta name="description" content="Il gioco di carte italiano: prendi le carte del tavolo, fai scopa e arriva a 11 punti. Contro il computer a tre livelli. Gratis e senza pubblicità.">
+<!-- SEO in tre lingue senza triplicare i file: la stessa pagina risponde a tre
+     indirizzi — questo, ?lang=en e ?lang=fr — che i tag hreflang qui sotto
+     legano fra loro. Qui c'è l'italiano, scritto per esteso perché è quello che
+     legge chi non esegue il JavaScript (le anteprime dei link di WhatsApp,
+     Telegram, Facebook, X). Inglese e francese li mette shared/seo.js. -->
+<link rel="canonical" href="https://freeforreal.app/scopa/">
+<link rel="alternate" hreflang="it" href="https://freeforreal.app/scopa/">
+<link rel="alternate" hreflang="en" href="https://freeforreal.app/scopa/?lang=en">
+<link rel="alternate" hreflang="fr" href="https://freeforreal.app/scopa/?lang=fr">
+<link rel="alternate" hreflang="x-default" href="https://freeforreal.app/scopa/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Free For Real">
+<meta property="og:url" content="https://freeforreal.app/scopa/">
+<meta property="og:title" content="Scopa online gratis, contro il computer a tre livelli | Free For Real">
+<meta property="og:description" content="Il gioco di carte italiano: prendi le carte del tavolo, fai scopa e arriva a 11 punti. Contro il computer a tre livelli. Gratis e senza pubblicità.">
+<meta property="og:image" content="https://freeforreal.app/icons/og/scopa.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Scopa — freeforreal.app">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Scopa online gratis, contro il computer a tre livelli | Free For Real">
+<meta name="twitter:description" content="Il gioco di carte italiano: prendi le carte del tavolo, fai scopa e arriva a 11 punti. Contro il computer a tre livelli. Gratis e senza pubblicità.">
+<meta name="twitter:image" content="https://freeforreal.app/icons/og/scopa.png">
+<script type="application/ld+json" id="ld-json">{"@context":"https://schema.org","@type":"VideoGame","name":"Scopa","url":"https://freeforreal.app/scopa/","image":"https://freeforreal.app/icons/og/scopa.png","description":"Il gioco di carte italiano: prendi le carte del tavolo, fai scopa e arriva a 11 punti. Contro il computer a tre livelli. Gratis e senza pubblicità.","inLanguage":"it","genre":"Gioco di carte","playMode":"SinglePlayer","gamePlatform":"Web browser","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"publisher":{"@type":"Organization","name":"Free For Real","url":"https://freeforreal.app/"}}</script>
+<script src="../shared/seo.js" data-page="scopa"></script>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../icons/joystick.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<meta name="theme-color" content="#0E2740">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- sfondo: una parete di maioliche cobalto e panna, e in mezzo il panno verde
+     del tavolo da gioco. Niente in comune con gli altri giochi del sito: il
+     legno di noce è della Dama, il neon di Blokky, la carta di Sudopoku. -->
+<div id="bgLayer">
+  <div class="tiles"></div>
+  <div class="vignette"></div>
+</div>
+
+<div id="app">
+
+  <div id="loadingScreen">
+    <div class="loading-title">Scopa</div>
+    <div class="spinner"></div>
+  </div>
+
+  <div class="topbar">
+    <div class="icon-group">
+      <a class="icon-btn" href="../" aria-label="Home"><span class="ffr-ico" data-ico="back"></span></a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni"><span class="ffr-ico" data-ico="gear"></span></button>
+      <button class="icon-btn" id="restartBtn" aria-label="Ricomincia"><span class="ffr-ico" data-ico="refresh"></span></button>
+    </div>
+    <div class="turn-pill" id="turnPill">—</div>
+  </div>
+
+  <div class="title-wrap">
+    <h1>Scopa</h1>
+    <div class="title-rule"></div>
+  </div>
+
+  <!-- il tavolo: l'avversario in alto con le sue carte coperte, il panno in
+       mezzo con le carte scoperte e il mazzo, la tua mano in basso. Le due
+       targhe dicono, per ognuno, quante carte ha preso, quante scope ha fatto
+       in questa mano e a quanti punti sta nella partita. -->
+  <div class="game-zone" id="gameZone">
+    <div class="table-stack">
+
+      <div class="seat top" id="seatTop">
+        <div class="seat-plate" id="plateTop">
+          <span class="plate-name" id="plateTopName">—</span>
+          <span class="plate-stats">
+            <span class="stat"><b id="topCards">0</b><i data-i18n="statCards">carte</i></span>
+            <span class="stat"><b id="topScope">0</b><i data-i18n="statScope">scope</i></span>
+            <span class="stat points"><b id="topPoints">0</b><i data-i18n="statPoints">punti</i></span>
+          </span>
+        </div>
+        <div class="hand hand-top" id="handTop"></div>
+      </div>
+
+      <div class="felt" id="felt">
+        <div class="deck-corner">
+          <div class="deck-stack" id="deckStack"></div>
+          <span class="deck-count" id="deckCount">0</span>
+        </div>
+        <div class="table-cards" id="tableCards"></div>
+        <div class="flash" id="flash"></div>
+      </div>
+
+      <!-- carte già uscite: aiuto facoltativo, si accende dalle impostazioni -->
+      <div class="counter-strip" id="counterStrip" hidden></div>
+
+      <!-- cosa fare con la carta scelta: "butta" quando non prende niente,
+           oppure una riga per ogni presa possibile quando ce n'è più d'una -->
+      <div class="action-strip" id="actionStrip"></div>
+
+      <div class="seat bottom" id="seatBottom">
+        <div class="hand hand-bottom" id="handBottom"></div>
+        <div class="seat-plate" id="plateBottom">
+          <span class="plate-name" id="plateBottomName">—</span>
+          <span class="plate-stats">
+            <span class="stat"><b id="botCards">0</b><i data-i18n="statCards">carte</i></span>
+            <span class="stat"><b id="botScope">0</b><i data-i18n="statScope">scope</i></span>
+            <span class="stat points"><b id="botPoints">0</b><i data-i18n="statPoints">punti</i></span>
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---------------- regole: si aprono a ogni avvio ---------------- -->
+  <div class="overlay x-off" id="rulesOverlay">
+    <div class="card rules-card">
+      <h2 data-i18n="rulesTitle">Come si gioca</h2>
+      <div class="rule-row">
+        <span class="rule-icon">1</span>
+        <p data-i18n="rule1">Si gioca in due con 40 carte. Tu e il computer avete 3 carte in mano e sul tavolo ce ne sono 4 scoperte. Finite le carte, se ne ricevono altre 3 a testa.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">2</span>
+        <p data-i18n="rule2">A turno si gioca una carta. Prende le carte del tavolo di valore uguale alla sua, oppure più carte che sommate fanno il suo valore. Se non prende niente, resta sul tavolo.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">3</span>
+        <p data-i18n="rule3">Se sul tavolo c'è una carta dello stesso valore, quella è obbligatoria: non si può prendere la somma di più carte.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">4</span>
+        <p data-i18n="rule4">Chi con la sua presa svuota il tavolo fa scopa: un punto. L'ultima carta della mano non fa scopa, perché il tavolo si sarebbe svuotato comunque.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">5</span>
+        <p data-i18n="rule5">Finite tutte le carte, quelle rimaste sul tavolo vanno all'ultimo che ha preso.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">6</span>
+        <p data-i18n="rule6">A fine mano si contano i punti: un punto a chi ha più di 20 carte, uno a chi ha più denari, uno a chi ha il sette di denari, uno a chi ha la primiera, più un punto per ogni scopa.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">7</span>
+        <p data-i18n="rule7">La primiera si conta con la carta migliore di ogni seme: il 7 vale 21, il 6 vale 18, l'asso 16, il 5 vale 15, il 4 vale 14, il 3 vale 13, il 2 vale 12 e le figure 10.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">8</span>
+        <p data-i18n="rule8">Vince chi arriva per primo a 11 punti. Se ci arrivate tutti e due nella stessa mano vince chi ne ha di più, e se siete pari si gioca un'altra mano.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">9</span>
+        <p data-i18n="rule9">Tocca una carta della tua mano: le carte che può prendere si illuminano. Se le prese possibili sono più d'una, scegli quella che vuoi fra quelle proposte sopra la mano.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">10</span>
+        <p data-i18n="rule10">Nelle impostazioni si possono accendere due aiuti: il rebello, cioè un punto in più a chi ha il dieci di denari, e il conto delle carte non ancora uscite.</p>
+      </div>
+      <button class="primary-btn" id="closeRulesBtn" data-i18n="gotIt">Ho capito!</button>
+    </div>
+  </div>
+
+  <!-- ---------------- difficoltà: subito dopo le istruzioni ---------------- -->
+  <div class="overlay" id="difficultyOverlay" data-no-x>
+    <div class="card">
+      <div class="creator-badge"><span class="ffr-ico" data-ico="robot"></span></div>
+      <h2 data-i18n="creatorTitle">Giocherai contro TheCreator</h2>
+      <p data-i18n="creatorSub">il genio dietro questa bellissima app.</p>
+      <p class="section-label" data-i18n="chooseDifficulty">Scegli la difficoltà</p>
+      <div class="difficulty-list">
+        <button class="difficulty-option" data-difficulty="stupido" data-i18n="diffStupido">Stupido</button>
+        <button class="difficulty-option" data-difficulty="normale" data-i18n="diffNormale">Normale</button>
+        <button class="difficulty-option" data-difficulty="master" data-i18n="diffMaster">Master</button>
+      </div>
+      <button class="secondary-btn" id="difficultyBackBtn" data-i18n="back" hidden>Indietro</button>
+    </div>
+  </div>
+
+  <!-- ---------------- sfottò della difficoltà scelta ---------------- -->
+  <div class="overlay" id="tauntOverlay">
+    <div class="card">
+      <div class="creator-badge"><span class="ffr-ico" data-ico="robot"></span></div>
+      <p class="taunt-name">TheCreator</p>
+      <h2 class="taunt-line" id="tauntLine">—</h2>
+      <button class="primary-btn" id="tauntPlayBtn" data-i18n="play">Gioca</button>
+      <button class="secondary-btn" id="tauntBackBtn" data-i18n="back">Indietro</button>
+    </div>
+  </div>
+
+  <!-- ---------------- conferma (ricomincia, cambio difficoltà, opzioni) ------ -->
+  <div class="overlay" id="confirmOverlay">
+    <div class="card">
+      <h2 id="confirmTitle">—</h2>
+      <p id="confirmBody"></p>
+      <button class="primary-btn" id="confirmYesBtn" data-i18n="confirmYes">Sì, ricomincia</button>
+      <button class="secondary-btn" id="confirmNoBtn" data-i18n="confirmNo">No, continuo</button>
+    </div>
+  </div>
+
+  <!-- ---------------- conto della mano ---------------- -->
+  <div class="overlay" id="handEndOverlay" data-no-x>
+    <div class="card">
+      <h2 data-i18n="handEndTitle">Conto della mano</h2>
+      <div class="score-table" id="scoreTable"></div>
+      <p class="match-line" id="matchLine"></p>
+      <button class="primary-btn" id="nextHandBtn" data-i18n="nextHand">Mano successiva</button>
+    </div>
+  </div>
+
+  <!-- ---------------- fine partita ---------------- -->
+  <div class="overlay" id="endOverlay" data-no-x>
+    <div class="card">
+      <div class="end-icon" id="endIcon"></div>
+      <h2 id="endTitle">—</h2>
+      <p id="endSub"></p>
+      <button class="primary-btn" id="playAgainBtn" data-i18n="playAgain">Rigioca</button>
+      <button class="secondary-btn" id="changeDifficultyBtn" data-i18n="changeDifficulty">Cambia difficoltà</button>
+    </div>
+  </div>
+
+  <!-- ---------------- impostazioni ---------------- -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="gear"></span><span data-i18n="settingsTitle">Impostazioni</span></h2>
+      <div class="menu-list">
+        <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openRulesBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+      </div>
+      <p class="section-label" data-i18n="gameOptions">Partita</p>
+      <div class="menu-list">
+        <button class="menu-row" id="openDifficultyBtn">
+          <span class="ffr-ico ffr-ico-lead" data-ico="robot"></span>
+          <span data-i18n="difficultyMenuLabel">Difficoltà</span>
+          <span class="menu-value" id="difficultyValue">—</span>
+        </button>
+        <button class="menu-row toggle-row" id="rebelloToggle">
+          <span class="toggle-text">
+            <span class="toggle-title" data-i18n="rebelloTitle">Rebello</span>
+            <span class="toggle-sub" data-i18n="rebelloSub">Un punto in più a chi prende il dieci di denari</span>
+          </span>
+          <span class="switch"></span>
+        </button>
+        <button class="menu-row toggle-row" id="counterToggle">
+          <span class="toggle-text">
+            <span class="toggle-title" data-i18n="counterTitle">Carte non uscite</span>
+            <span class="toggle-sub" data-i18n="counterSub">Mostra quante carte di ogni valore mancano ancora</span>
+          </span>
+          <span class="switch"></span>
+        </button>
+      </div>
+      <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageTitle">Lingua</span></h2>
+      <p data-i18n="languageSub">Scegli la lingua dell'interfaccia</p>
+      <div class="language-list" id="languageList"></div>
+      <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="leaderboardOverlay">
+    <div class="card">
+      <div class="end-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
+      <h2 data-i18n="leaderboardTitle">Classifica</h2>
+      <p class="lb-note" data-i18n="leaderboardNote">Contano le partite vinte contro il computer.</p>
+      <div class="lb-tabs" id="leaderboardTabs">
+        <button class="lb-tab" data-difficulty="stupido" data-i18n="diffStupido">Stupido</button>
+        <button class="lb-tab" data-difficulty="normale" data-i18n="diffNormale">Normale</button>
+        <button class="lb-tab" data-difficulty="master" data-i18n="diffMaster">Master</button>
+      </div>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+      <button class="secondary-btn" id="closeLeaderboardBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="../shared/icons.js"></script>
+<script>window.FFR_AUTH_HEADLESS = true;</script>
+<script src="../shared/auth.js"></script>
+<script src="script.js"></script>
+<script src="../shared/modal-x.js"></script>
+</body>
+</html>
