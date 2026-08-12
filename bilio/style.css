@@ -235,7 +235,10 @@ a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
   border:1px solid var(--teal-soft);
   color: var(--chalk);
   font-size:13px; font-weight:700; letter-spacing:0.3px;
-  white-space:nowrap;
+  /* niente nowrap: certi messaggi in francese sono lunghi e su uno schermo da
+     320px uscivano dal panno */
+  max-width:86%;
+  text-align:center;
   pointer-events:none;
   opacity:0;
   transition: opacity 0.18s ease, transform 0.18s ease;

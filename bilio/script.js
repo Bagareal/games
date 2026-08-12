@@ -41,9 +41,8 @@ const UI_STRINGS = {
     rule6: 'La nera va per ultima: si imbuca solo quando le tue sette sono finite. Mandarla in buca prima fa perdere la partita — tranne sul primo tiro, quando torna sul tavolo e si continua.',
     rule7: "Niente falli: puoi colpire quello che vuoi. L'unica cosa che costa è mandare in buca la bianca — l'avversario la rimette dove vuole lui.",
     rule8: 'La linea di mira ti mostra dove va la bianca, comprese le sponde, e dove partirà la palla che colpisci. Se la vuoi togliere, c\'è l\'interruttore in Impostazioni.',
-    hintAim: 'TOCCA PER CARICARE',
-    hintCharge: 'TIRA INDIETRO',
-    hintPlace: 'METTI LA BIANCA DOVE VUOI',
+    hintAim: 'Tocca per caricare',
+    hintCharge: 'Tira indietro da dove vuoi',
 
     modeTitle: 'Come vuoi giocare?',
     modeFriend: 'Con un amico',
@@ -135,9 +134,8 @@ const UI_STRINGS = {
     rule6: 'The black goes last: you may only pot it once your seven are gone. Potting it earlier loses the game — except on the very first shot, when it goes back on the table and play continues.',
     rule7: 'No fouls: hit whatever you like. The only thing that costs you is potting the cue ball — your opponent then puts it wherever they want.',
     rule8: 'The aiming line shows where the cue ball goes, cushions included, and which way the ball you hit will set off. You can switch it off in Settings.',
-    hintAim: 'TAP TO CHARGE',
-    hintCharge: 'PULL BACK',
-    hintPlace: 'PUT THE CUE BALL WHERE YOU LIKE',
+    hintAim: 'Tap to charge',
+    hintCharge: 'Pull back from anywhere',
 
     modeTitle: 'How do you want to play?',
     modeFriend: 'With a friend',
@@ -229,9 +227,8 @@ const UI_STRINGS = {
     rule6: "La noire passe en dernier : on ne la rentre qu'une fois tes sept billes finies. La rentrer avant fait perdre la partie — sauf au tout premier coup, où elle revient sur le tapis et le jeu continue.",
     rule7: "Aucune faute : tu peux frapper ce que tu veux. La seule chose qui coûte, c'est de rentrer la blanche — l'adversaire la repose alors où il veut.",
     rule8: "La ligne de visée montre où va la blanche, bandes comprises, et de quel côté partira la bille touchée. Tu peux l'éteindre dans les Réglages.",
-    hintAim: 'TAPE POUR CHARGER',
-    hintCharge: 'TIRE EN ARRIÈRE',
-    hintPlace: 'POSE LA BLANCHE OÙ TU VEUX',
+    hintAim: 'Tape pour charger',
+    hintCharge: "Tire en arrière d'où tu veux",
 
     modeTitle: 'Comment veux-tu jouer ?',
     modeFriend: 'Avec un ami',
@@ -718,39 +715,6 @@ function render() {
   }
 
   if (ui.started && !ui.over && showsCue()) drawCue();
-  drawHint();
-}
-
-/* Una riga sola sotto al tavolo che dice in che stato siamo. Serve: la
-   differenza fra "sto mirando" e "sto per caricare" è tutta nel gesto, e senza
-   una parola scritta il tocco secco che innesca non lo indovina nessuno. */
-function drawHint() {
-  if (!game || !ui.started || ui.over) return;
-  if (ui.phase !== 'idle' || isPcTurn()) return;
-  const txt = game.ballInHand ? t().hintPlace : (ui.armed ? t().hintCharge : t().hintAim);
-  const size = Math.max(9, SCALE * 3.6);
-  /* La scritta sta dalla parte OPPOSTA a dove sporge la stecca: mirando dritto
-     in su il manico finiva esattamente qui sotto e la targhetta se lo mangiava,
-     proprio la cosa che si voleva far vedere. */
-  const cueGoesDown = Math.sin(ui.aim) < 0;
-  const cx = px(B.W / 2);
-  const cy = cueGoesDown && !game.ballInHand
-    ? px(-RAIL - MARGIN * 0.5)
-    : px(B.H + RAIL + MARGIN * 0.5);
-  ctx.save();
-  ctx.font = '700 ' + size.toFixed(1) + 'px Manrope, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  // sotto ci va un fondino: mirando in su la stecca punta proprio qui, e senza
-  // il fondino il legno passava in mezzo alle lettere
-  const wTxt = ctx.measureText(txt).width;
-  const hTxt = size * 1.9;
-  roundRect(ctx, cx - wTxt / 2 - size * 0.7, cy - hTxt / 2, wTxt + size * 1.4, hTxt, hTxt / 2);
-  ctx.fillStyle = 'rgba(12, 9, 20, 0.72)';
-  ctx.fill();
-  ctx.fillStyle = ui.armed ? 'rgba(127,227,216,0.95)' : 'rgba(232,227,245,0.6)';
-  ctx.fillText(txt, cx, cy);
-  ctx.restore();
 }
 
 function showsCue() {
@@ -988,8 +952,9 @@ function finishShot() {
   ui.dirty = true;
 
   if (game.ballInHand && isPcTurn()) { setTimeout(pcPlaceCue, 620); return; }
-  if (game.ballInHand && !isPcTurn()) showToast(t().toastPlaceCue, 2200);
-  if (isPcTurn()) setTimeout(pcPlay, 700);
+  if (isPcTurn()) { setTimeout(pcPlay, 700); return; }
+  // tocca a chi gioca: il promemoria esce dopo il messaggio del tiro, se c'era
+  showStateHint(res.assigned || res.respot || res.cueIn ? 1750 : 350);
 }
 
 function justClearedGroup(who) {
@@ -1175,6 +1140,7 @@ function onPointerUp() {
       game.ballInHand = false;
       saveGame();
       updateHUD();
+      showStateHint(250);
     }
     ui.dirty = true;
     return;
@@ -1185,6 +1151,7 @@ function onPointerUp() {
     ui.armed = !ui.armed;
     ui.pull = 0; ui.power = 0;
     ui.dirty = true;
+    showStateHint();
     return;
   }
   if (d.mode === 'charge' && d.along >= MIN_DRAG) {
@@ -1205,6 +1172,22 @@ function showToast(text, ms) {
   els.toast.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => els.toast.classList.remove('show'), ms || 1600);
+}
+
+/* Il promemoria di cosa fare adesso esce IN MEZZO AL TAVOLO, dove esce anche
+   "Adesso la nera": in fondo al panno, piccolo e di lato, non lo vedeva
+   nessuno — ed è il messaggio che più serve, perché il tocco secco che innesca
+   la stecca non lo si indovina. Si fa vedere quando lo stato cambia e poi se
+   ne va, come tutti gli altri messaggi del gioco. */
+let hintTimer = null;
+function showStateHint(delay) {
+  clearTimeout(hintTimer);
+  hintTimer = setTimeout(() => {
+    if (!game || !ui.started || ui.over) return;
+    if (ui.phase !== 'idle' || isPcTurn()) return;
+    if (game.ballInHand) showToast(t().toastPlaceCue, 2000);
+    else showToast(ui.armed ? t().hintCharge : t().hintAim, 1800);
+  }, delay || 0);
 }
 
 function nameOf(side) {
@@ -1541,6 +1524,7 @@ function startNewGame() {
   updateHUD();
   saveGame();
   ui.dirty = true;
+  showStateHint(600);
 }
 function goToMode() {
   ui.started = false;
@@ -1725,8 +1709,8 @@ async function init() {
   if (resumed && isPcTurn()) {
     if (game.ballInHand) setTimeout(pcPlaceCue, 900);
     else setTimeout(pcPlay, 900);
-  } else if (resumed && game.ballInHand) {
-    setTimeout(() => showToast(t().toastPlaceCue, 2200), 700);
+  } else if (resumed) {
+    showStateHint(900);
   }
 
   setTimeout(() => {
