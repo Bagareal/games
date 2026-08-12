@@ -965,7 +965,7 @@ function finishShot() {
   if (game.ballInHand && isPcTurn()) { setTimeout(pcPlaceCue, 620); return; }
   if (isPcTurn()) { setTimeout(pcPlay, 700); return; }
   // tocca a chi gioca: il promemoria esce dopo il messaggio del tiro, se c'era
-  showStateHint(res.assigned || res.respot || res.cueIn ? 1750 : 350);
+  showStateHint();
 }
 
 function justClearedGroup(who) {
@@ -1158,7 +1158,7 @@ function onPointerUp() {
       game.ballInHand = false;
       saveGame();
       updateHUD();
-      showStateHint(250);
+      showStateHint();
     }
     ui.dirty = true;
     return;
@@ -1184,12 +1184,50 @@ function onPointerUp() {
 // ================================================================
 //  INTERFACCIA
 // ================================================================
+/* I messaggi in mezzo al tavolo si mettono IN FILA, non si sovrascrivono.
+   Il riquadro è uno solo: chi arrivava dopo cancellava quello di prima anche
+   se era appena comparso, e si finiva col non leggere né l'uno né l'altro —
+   "Adesso la nera" durava 1,6 s ma dopo 0,35 gli finiva sopra "Tocca per
+   caricare". Adesso ognuno si prende il suo tempo e poi tocca al successivo.
+
+   In coda si mette una funzione, non una frase: quando arriva il suo turno la
+   frase viene chiesta in quel momento, così un promemoria che nel frattempo
+   non serve più (la stecca è già innescata, il tiro è già partito) sparisce
+   invece di uscire fuori tempo. */
+const toastQueue = [];
+let toastBusy = false;
+let toastCurrentHint = false;
 let toastTimer = null;
-function showToast(text, ms) {
+
+function showToast(text, ms) { queueToast(() => text, ms); }
+
+function queueToast(fn, ms, hint) {
+  toastQueue.push({ fn, ms: ms || 1600, hint: !!hint });
+  if (!toastBusy) nextToast();
+}
+function nextToast() {
+  const item = toastQueue.shift();
+  if (!item) { toastBusy = false; toastCurrentHint = false; return; }
+  const text = item.fn();
+  if (!text) { nextToast(); return; }
+  toastBusy = true;
+  toastCurrentHint = item.hint;
   els.toast.textContent = text;
   els.toast.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => els.toast.classList.remove('show'), ms || 1600);
+  toastTimer = setTimeout(() => {
+    els.toast.classList.remove('show');
+    // il tempo che svanisca, se no il successivo compare mentre questo è ancora lì
+    toastTimer = setTimeout(nextToast, 240);
+  }, item.ms);
+}
+// cambio di situazione: quello che non è ancora uscito non serve più
+function clearToasts() {
+  toastQueue.length = 0;
+  toastBusy = false;
+  toastCurrentHint = false;
+  clearTimeout(toastTimer);
+  els.toast.classList.remove('show');
 }
 
 /* Il promemoria di cosa fare adesso esce IN MEZZO AL TAVOLO, dove esce anche
@@ -1197,15 +1235,28 @@ function showToast(text, ms) {
    nessuno — ed è il messaggio che più serve, perché il tocco secco che innesca
    la stecca non lo si indovina. Si fa vedere quando lo stato cambia e poi se
    ne va, come tutti gli altri messaggi del gioco. */
-let hintTimer = null;
-function showStateHint(delay) {
-  clearTimeout(hintTimer);
-  hintTimer = setTimeout(() => {
-    if (!game || !ui.started || ui.over) return;
-    if (ui.phase !== 'idle' || isPcTurn()) return;
-    if (game.ballInHand) showToast(t().toastPlaceCue, 2000);
-    else showToast(ui.armed ? t().hintCharge : t().hintAim, 1800);
-  }, delay || 0);
+function showStateHint() {
+  // di promemoria ne basta uno: se lo stato cambia di nuovo, quello vecchio non
+  // serve più — né quello in coda, né quello GIÀ A VIDEO, che direbbe una cosa
+  // che non è più vera (si innesca e si disinnesca, e restava scritto "tira
+  // verso di te" con la stecca ormai a riposo)
+  for (let i = toastQueue.length - 1; i >= 0; i--) {
+    if (toastQueue[i].hint) toastQueue.splice(i, 1);
+  }
+  if (toastCurrentHint) {
+    clearTimeout(toastTimer);
+    els.toast.classList.remove('show');
+    toastCurrentHint = false;
+    toastBusy = true;                     // la coda riparte da sola fra un attimo
+    toastTimer = setTimeout(nextToast, 200);
+  }
+  queueToast(() => {
+    if (!game || !ui.started || ui.over) return null;
+    if (ui.phase !== 'idle' || isPcTurn()) return null;
+    if (ui.drag) return null;                    // sta già facendo qualcosa: non si insiste
+    if (game.ballInHand) return t().toastPlaceCue;
+    return ui.armed ? t().hintCharge : t().hintAim;
+  }, 1900, true);
 }
 
 function nameOf(side) {
@@ -1260,6 +1311,7 @@ function setEndIcon(name) {
 }
 
 function endGame() {
+  clearToasts();
   ui.over = true;
   ui.phase = 'idle';
   const winner = game.winner;
@@ -1526,6 +1578,7 @@ function openSettings() {
 }
 
 function startNewGame() {
+  clearToasts();
   game = B.newGame(ui.mode, ui.difficulty);
   ui.started = true;
   ui.over = false;
@@ -1543,9 +1596,10 @@ function startNewGame() {
   updateHUD();
   saveGame();
   ui.dirty = true;
-  showStateHint(600);
+  showStateHint();
 }
 function goToMode() {
+  clearToasts();
   ui.started = false;
   ui.over = false;
   ui.mode = null;
@@ -1729,7 +1783,7 @@ async function init() {
     if (game.ballInHand) setTimeout(pcPlaceCue, 900);
     else setTimeout(pcPlay, 900);
   } else if (resumed) {
-    showStateHint(900);
+    showStateHint();
   }
 
   setTimeout(() => {
