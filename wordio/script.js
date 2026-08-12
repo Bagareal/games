@@ -54,6 +54,7 @@ const UI_STRINGS = {
     noExtraWords: 'Nessuna parola extra trovata in questo livello. Prova a scrivere altre parole valide con le lettere disponibili!',
     hintsMaxedOut: 'Hai già il massimo di aiuti (10)',
     settingsTitle: 'Impostazioni',
+    darkMode: 'Modalità scura',
     languageMenuLabel: 'Lingua',
     commands: 'Istruzioni',
     leaderboardMenuLabel: 'Classifica',
@@ -107,6 +108,7 @@ const UI_STRINGS = {
     noExtraWords: "No extra words found in this level yet. Try spelling other valid words with the available letters!",
     hintsMaxedOut: 'You already have the max hints (10)',
     settingsTitle: 'Settings',
+    darkMode: 'Dark mode',
     languageMenuLabel: 'Language',
     commands: 'Instructions',
     leaderboardMenuLabel: 'Leaderboard',
@@ -160,6 +162,7 @@ const UI_STRINGS = {
     noExtraWords: "Aucun mot bonus trouvé dans ce niveau pour l'instant. Essaie d'écrire d'autres mots valides avec les lettres disponibles !",
     hintsMaxedOut: "Tu as déjà le maximum d'indices (10)",
     settingsTitle: 'Paramètres',
+    darkMode: 'Mode sombre',
     languageMenuLabel: 'Langue',
     commands: 'Instructions',
     leaderboardMenuLabel: 'Classement',
@@ -1022,8 +1025,8 @@ function showWinOverlay() {
   els.winExtra.textContent = '+' + state.foundExtras.size;
   els.winOverlay.classList.add('show');
   saveProgress();
-  if (window.confetti) {
-    confetti({ particleCount: 90, spread: 75, origin: { y: 0.5 }, colors: ['#F2622E', '#F4B740', '#14A085', '#FFFDF8'] });
+  if (window.FFR && window.FFR.confetti) {
+    window.FFR.confetti({ count: 90, spread: 75, origin: { y: 0.5 }, colors: ['#F2622E', '#F4B740', '#14A085', '#FFFDF8'] });
   }
 }
 
@@ -1072,7 +1075,7 @@ function useHint() {
 }
 
 // ---------- Sfondo dinamico per livello ----------
-const BG_THEMES = ['beach', 'mountain', 'desert', 'forest', 'night'];
+const BG_THEMES = ['lagoon', 'violet', 'sunset', 'mint', 'night'];
 function applyLevelBackground(level) {
   const theme = BG_THEMES[(level - 1) % BG_THEMES.length];
   els.bgThemeEls.forEach(el => {
