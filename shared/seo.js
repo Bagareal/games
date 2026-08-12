@@ -1,6 +1,6 @@
 /* La parte SEO del sito, in tre lingue, con un file solo per pagina.
  *
- * Il problema da risolvere: le pagine sono undici e la lingua non sta
+ * Il problema da risolvere: le pagine sono dodici e la lingua non sta
  * nell'indirizzo, sta in localStorage. Per un motore di ricerca esiste quindi
  * un solo indirizzo per gioco, e di quell'indirizzo può indicizzare una lingua
  * sola — l'italiano. Ricerche in inglese e in francese: niente.
@@ -77,12 +77,12 @@
   const TEXT = {
     home: {
       en: {
-        title: 'Free For Real — eleven free online games, no ads',
-        desc: 'Eleven free games to play in your browser, on phone or computer: words, numbers, logic and reflexes. No ads, no payments, and they work offline too.',
+        title: 'Free For Real — twelve free online games, no ads',
+        desc: 'Twelve free games to play in your browser, on phone or computer: words, numbers, logic and reflexes. No ads, no payments, and they work offline too.',
       },
       fr: {
-        title: 'Free For Real — onze jeux gratuits en ligne, sans publicité',
-        desc: "Onze jeux gratuits à ouvrir dans le navigateur, sur téléphone ou ordinateur : mots, nombres, logique et réflexes. Sans publicité, sans paiement, et jouables hors ligne.",
+        title: 'Free For Real — douze jeux gratuits en ligne, sans publicité',
+        desc: "Douze jeux gratuits à ouvrir dans le navigateur, sur téléphone ou ordinateur : mots, nombres, logique et réflexes. Sans publicité, sans paiement, et jouables hors ligne.",
       },
     },
     wordio: {
@@ -183,6 +183,16 @@
       fr: {
         title: "Bilio — billard en ligne gratuit, contre l'ordinateur ou à deux | Free For Real",
         desc: "Tire la queue en arrière, rentre tes pleines ou tes rayées et finis sur la noire. Contre l'ordinateur à trois niveaux ou à deux sur le même appareil. Gratuit, sans publicité.",
+      },
+    },
+    tris: {
+      en: {
+        title: 'Tris — noughts and crosses, free online | Free For Real',
+        desc: 'Three marks in a row to win: across, down or diagonally. Against the computer at three levels, or two players on one device. Free, no ads.',
+      },
+      fr: {
+        title: 'Tris — morpion en ligne, gratuit | Free For Real',
+        desc: "Trois signes alignés pour gagner : en ligne, en colonne ou en diagonale. Contre l'ordinateur à trois niveaux, ou à deux sur le même appareil. Gratuit, sans publicité.",
       },
     },
     findy: {

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Tris online gratis, contro il computer o in due | Free For Real</title>
+<meta name="description" content="Tre segni in fila per vincere: in orizzontale, in verticale o in diagonale. Contro il computer a tre livelli, o in due sullo stesso dispositivo. Gratis e senza pubblicità.">
+<!-- SEO in tre lingue senza triplicare i file: la stessa pagina risponde a tre
+     indirizzi — questo, ?lang=en e ?lang=fr — che i tag hreflang qui sotto
+     legano fra loro. Qui c'è l'italiano, scritto per esteso perché è quello che
+     legge chi non esegue il JavaScript (le anteprime dei link di WhatsApp,
+     Telegram, Facebook, X). Inglese e francese li mette shared/seo.js. -->
+<link rel="canonical" href="https://freeforreal.app/tris/">
+<link rel="alternate" hreflang="it" href="https://freeforreal.app/tris/">
+<link rel="alternate" hreflang="en" href="https://freeforreal.app/tris/?lang=en">
+<link rel="alternate" hreflang="fr" href="https://freeforreal.app/tris/?lang=fr">
+<link rel="alternate" hreflang="x-default" href="https://freeforreal.app/tris/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Free For Real">
+<meta property="og:url" content="https://freeforreal.app/tris/">
+<meta property="og:title" content="Tris online gratis, contro il computer o in due | Free For Real">
+<meta property="og:description" content="Tre segni in fila per vincere: in orizzontale, in verticale o in diagonale. Contro il computer a tre livelli, o in due sullo stesso dispositivo. Gratis e senza pubblicità.">
+<meta property="og:image" content="https://freeforreal.app/icons/og/tris.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Tris — freeforreal.app">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tris online gratis, contro il computer o in due | Free For Real">
+<meta name="twitter:description" content="Tre segni in fila per vincere: in orizzontale, in verticale o in diagonale. Contro il computer a tre livelli, o in due sullo stesso dispositivo. Gratis e senza pubblicità.">
+<meta name="twitter:image" content="https://freeforreal.app/icons/og/tris.png">
+<script type="application/ld+json" id="ld-json">{"@context":"https://schema.org","@type":"VideoGame","name":"Tris","url":"https://freeforreal.app/tris/","image":"https://freeforreal.app/icons/og/tris.png","description":"Tre segni in fila per vincere: in orizzontale, in verticale o in diagonale. Contro il computer a tre livelli, o in due sullo stesso dispositivo. Gratis e senza pubblicità.","inLanguage":"it","genre":"Gioco da tavolo","playMode":["SinglePlayer","MultiPlayer"],"gamePlatform":"Web browser","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"publisher":{"@type":"Organization","name":"Free For Real","url":"https://freeforreal.app/"}}</script>
+<script src="../shared/seo.js" data-page="tris"></script>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../icons/joystick.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<meta name="theme-color" content="#5E1C16">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Mulish:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- sfondo: una parete di intonaco rosso pompeiano, con la polvere della calce e
+     la luce che scende da sopra. Niente in comune con gli altri giochi del sito:
+     il noce è della Dama, l'ardesia di Kakumal, il cobalto della Scopa. -->
+<div id="bgLayer">
+  <div class="plaster"></div>
+  <div class="wall-shade"></div>
+</div>
+
+<div id="app">
+
+  <div id="loadingScreen">
+    <div class="loading-title">Tris</div>
+    <div class="spinner"></div>
+  </div>
+
+  <div class="topbar">
+    <div class="icon-group">
+      <a class="icon-btn" href="../" aria-label="Home"><span class="ffr-ico" data-ico="back"></span></a>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni"><span class="ffr-ico" data-ico="gear"></span></button>
+      <button class="icon-btn" id="restartBtn" aria-label="Ricomincia"><span class="ffr-ico" data-ico="refresh"></span></button>
+    </div>
+    <div class="turn-pill" id="turnPill">—</div>
+  </div>
+
+  <div class="title-wrap">
+    <h1>Tris</h1>
+    <div class="title-rule"></div>
+  </div>
+
+  <!-- il pannello di mosaico: le due targhe stanno attaccate alla griglia, sopra
+       e sotto, come i due giocatori seduti ai lati del tavolo. Quella in alto è
+       girata di 180° quando si gioca in due: chi sta di fronte legge sottosopra. -->
+  <div class="game-zone" id="gameZone">
+    <div class="table-stack" id="tableStack">
+      <div class="player-plate top" id="plateTop">
+        <span class="plate-mark" id="plateTopMark"></span>
+        <span class="plate-name" id="plateTopName">—</span>
+        <span class="plate-count" id="plateTopCount">0</span>
+      </div>
+
+      <div class="board-frame" id="boardFrame">
+        <div class="board-cells" id="boardCells"></div>
+        <svg class="board-line" id="boardLine" viewBox="0 0 300 300" aria-hidden="true"></svg>
+      </div>
+
+      <div class="player-plate bottom" id="plateBottom">
+        <span class="plate-mark" id="plateBottomMark"></span>
+        <span class="plate-name" id="plateBottomName">—</span>
+        <span class="plate-count" id="plateBottomCount">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ---------------- regole: si aprono a ogni avvio ---------------- -->
+  <div class="overlay x-off" id="rulesOverlay">
+    <div class="card rules-card">
+      <h2 data-i18n="rulesTitle">Come si gioca</h2>
+      <div class="rule-row">
+        <span class="rule-icon">1</span>
+        <p data-i18n="rule1">La griglia ha nove caselle. Un giocatore ha la croce, l'altro il cerchio, e si gioca a turni.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">2</span>
+        <p data-i18n="rule2">Tocca una casella libera: il tuo segno viene posato lì e tocca all'avversario.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">3</span>
+        <p data-i18n="rule3">Vince chi per primo mette tre segni suoi in fila: in orizzontale, in verticale o in diagonale.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">4</span>
+        <p data-i18n="rule4">Se si riempiono tutte e nove le caselle senza tre in fila, la partita è pari.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">5</span>
+        <p data-i18n="rule5">Chi comincia si alterna a ogni partita: la prima mossa è un vantaggio, così ce l'avete a turno.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">6</span>
+        <p data-i18n="rule6">In due si gioca sullo stesso dispositivo, appoggiato in mezzo a voi: la griglia non gira mai, ognuno gioca dal suo lato.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">7</span>
+        <p data-i18n="rule7">Contro il computer: Stupido gioca quasi a caso, Normale prende la vittoria e para la minaccia, Master gioca perfetto e non perde mai — contro di lui il pari è il massimo.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">8</span>
+        <p data-i18n="rule8">In classifica una vittoria vale 3 punti e un pareggio 1. Contano solo le partite contro il computer.</p>
+      </div>
+      <button class="primary-btn" id="closeRulesBtn" data-i18n="gotIt">Ho capito!</button>
+    </div>
+  </div>
+
+  <!-- ---------------- scelta modalità ---------------- -->
+  <div class="overlay" id="modeOverlay" data-no-x>
+    <div class="card">
+      <h2 data-i18n="modeTitle">Come vuoi giocare?</h2>
+      <button class="choice-btn" id="modeFriendBtn">
+        <span class="choice-icon"><span class="ffr-ico" data-ico="friend"></span></span>
+        <span class="choice-text">
+          <span class="choice-title" data-i18n="modeFriend">Con un amico</span>
+          <span class="choice-sub" data-i18n="modeFriendSub">Sullo stesso dispositivo, a turni</span>
+        </span>
+      </button>
+      <button class="choice-btn" id="modeComputerBtn">
+        <span class="choice-icon"><span class="ffr-ico" data-ico="robot"></span></span>
+        <span class="choice-text">
+          <span class="choice-title" data-i18n="modeComputer">Contro il computer</span>
+          <span class="choice-sub" data-i18n="modeComputerSub">Tre livelli di difficoltà</span>
+        </span>
+      </button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <!-- ---------------- difficoltà ---------------- -->
+  <div class="overlay" id="difficultyOverlay" data-no-x>
+    <div class="card">
+      <div class="creator-badge"><span class="ffr-ico" data-ico="robot"></span></div>
+      <h2 data-i18n="creatorTitle">Giocherai contro TheCreator</h2>
+      <p data-i18n="creatorSub">il genio dietro questa bellissima app.</p>
+      <p class="section-label" data-i18n="chooseDifficulty">Scegli la difficoltà</p>
+      <div class="difficulty-list">
+        <button class="difficulty-option" data-difficulty="stupido" data-i18n="diffStupido">Stupido</button>
+        <button class="difficulty-option" data-difficulty="normale" data-i18n="diffNormale">Normale</button>
+        <button class="difficulty-option" data-difficulty="master" data-i18n="diffMaster">Master</button>
+      </div>
+      <button class="secondary-btn" id="backToModeBtn" data-i18n="back">Indietro</button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <!-- ---------------- sfottò della difficoltà scelta ---------------- -->
+  <div class="overlay" id="tauntOverlay">
+    <div class="card">
+      <div class="creator-badge"><span class="ffr-ico" data-ico="robot"></span></div>
+      <p class="taunt-name">TheCreator</p>
+      <h2 class="taunt-line" id="tauntLine">—</h2>
+      <button class="primary-btn" id="tauntPlayBtn" data-i18n="play">Gioca</button>
+      <button class="secondary-btn" id="tauntBackBtn" data-i18n="back">Indietro</button>
+    </div>
+  </div>
+
+  <!-- ---------------- consiglio per giocare in due ---------------- -->
+  <div class="overlay" id="friendTipOverlay">
+    <div class="card">
+      <h2 data-i18n="friendTipTitle">Uno di fronte all'altro</h2>
+      <!-- il tavolo visto dall'alto: il dispositivo appoggiato in mezzo e i due
+           giocatori seduti ai lati opposti -->
+      <svg class="table-figure" viewBox="0 0 200 140" role="img" aria-hidden="true">
+        <ellipse cx="100" cy="70" rx="92" ry="60" fill="rgba(232,220,194,0.07)" stroke="rgba(232,220,194,0.32)" stroke-width="1.5"/>
+        <rect x="72" y="40" width="56" height="60" rx="7" fill="#5E1C16" stroke="#E8DCC2" stroke-width="2"/>
+        <g fill="none" stroke="rgba(232,220,194,0.55)" stroke-width="1.4">
+          <line x1="72" y1="60" x2="128" y2="60"/><line x1="72" y1="80" x2="128" y2="80"/>
+          <line x1="90" y1="40" x2="90" y2="100"/><line x1="110" y1="40" x2="110" y2="100"/>
+        </g>
+        <g stroke="#2A5D8F" stroke-width="2.4" stroke-linecap="round">
+          <line x1="76" y1="44" x2="86" y2="56"/><line x1="86" y1="44" x2="76" y2="56"/>
+        </g>
+        <circle cx="119" cy="90" r="5.5" fill="none" stroke="#C8892C" stroke-width="2.4"/>
+        <g fill="#E8DCC2">
+          <circle cx="100" cy="16" r="9"/><path d="M84 32c0-9 7-13 16-13s16 4 16 13z"/>
+        </g>
+        <g fill="#C8892C">
+          <circle cx="100" cy="124" r="9"/><path d="M84 140c0-9 7-13 16-13s16 4 16 13z"/>
+        </g>
+      </svg>
+      <p data-i18n="friendTipBody">Appoggia il dispositivo su un tavolo, in mezzo a voi due. La griglia non gira mai: ognuno gioca dal suo lato, come su un foglio appoggiato fra i due.</p>
+      <button class="primary-btn" id="friendPlayBtn" data-i18n="play">Gioca</button>
+      <button class="secondary-btn" id="friendBackBtn" data-i18n="back">Indietro</button>
+    </div>
+  </div>
+
+  <!-- ---------------- conferma (ricomincia, cambio difficoltà, cambio modalità) ---------------- -->
+  <div class="overlay" id="confirmOverlay">
+    <div class="card">
+      <h2 id="confirmTitle">—</h2>
+      <p id="confirmBody"></p>
+      <button class="primary-btn" id="confirmYesBtn" data-i18n="restartYes">Sì, ricomincia</button>
+      <button class="secondary-btn" id="confirmNoBtn" data-i18n="restartNo">No, continuo</button>
+    </div>
+  </div>
+
+  <!-- ---------------- fine partita ---------------- -->
+  <div class="overlay" id="endOverlay" data-no-x>
+    <div class="card">
+      <div class="end-icon" id="endIcon"></div>
+      <h2 id="endTitle">—</h2>
+      <p id="endSub"></p>
+      <button class="primary-btn" id="playAgainBtn" data-i18n="playAgain">Rigioca</button>
+      <button class="secondary-btn" id="changeModeBtn" data-i18n="changeMode">Cambia modalità</button>
+    </div>
+  </div>
+
+  <!-- ---------------- impostazioni ---------------- -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="gear"></span><span data-i18n="settingsTitle">Impostazioni</span></h2>
+      <div class="menu-list">
+        <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openRulesBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="commands">Istruzioni</span></button>
+        <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+      </div>
+      <p class="section-label" data-i18n="gameOptions">Partita</p>
+      <div class="menu-list">
+        <button class="menu-row" id="openModeBtn">
+          <span class="ffr-ico ffr-ico-lead" data-ico="friend"></span>
+          <span data-i18n="modeMenuLabel">Modalità</span>
+          <span class="menu-value" id="modeValue">—</span>
+        </button>
+        <button class="menu-row" id="openDifficultyBtn">
+          <span class="ffr-ico ffr-ico-lead" data-ico="robot"></span>
+          <span data-i18n="difficultyMenuLabel">Difficoltà</span>
+          <span class="menu-value" id="difficultyValue">—</span>
+        </button>
+      </div>
+      <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageTitle">Lingua</span></h2>
+      <p data-i18n="languageSub">Scegli la lingua dell'interfaccia</p>
+      <div class="language-list" id="languageList"></div>
+      <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="leaderboardOverlay">
+    <div class="card">
+      <div class="end-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
+      <h2 data-i18n="leaderboardTitle">Classifica</h2>
+      <p class="lb-note" data-i18n="leaderboardNote">Contano solo le partite contro il computer: 3 punti per una vittoria, 1 per un pareggio.</p>
+      <div class="lb-tabs" id="leaderboardTabs">
+        <button class="lb-tab" data-difficulty="stupido" data-i18n="diffStupido">Stupido</button>
+        <button class="lb-tab" data-difficulty="normale" data-i18n="diffNormale">Normale</button>
+        <button class="lb-tab" data-difficulty="master" data-i18n="diffMaster">Master</button>
+      </div>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+      <button class="secondary-btn" id="closeLeaderboardBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="../shared/icons.js"></script>
+<script>window.FFR_AUTH_HEADLESS = true;</script>
+<script src="../shared/auth.js"></script>
+<script src="script.js"></script>
+<script src="../shared/modal-x.js"></script>
+</body>
+</html>

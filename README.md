@@ -88,6 +88,12 @@ Pool, the game with stripes and solids and the black last. Like draughts and sco
 
 **[freeforreal.app/bilio](https://freeforreal.app/bilio/)**
 
+### [Tris](tris/)
+
+Three marks in a row on nine squares — a game played for centuries on the back of any piece of paper, with no author and no owner, so the rules here are simply the rules. Two ways to play: two of you on one device lying flat on the table (the grid never turns, each plays from their own side) or against the computer at three levels. The three levels are honestly different, not one engine pretending: *Dumb* plays almost at random and spots a winning square only one time in four, *Normal* takes the win and blocks the threat but never looks a move further — set up two threats at once and you beat it — and *Master* runs the full minimax over every position, which at this size costs a fraction of a millisecond and means it **plays perfectly and can never be beaten**. That is not hidden in the code, it is written in the instructions: against Master a draw is the best result there is. Which is why the leaderboard counts points rather than wins, **3 for a win and 1 for a draw** — at Master a draw is a real achievement, and it takes perfect play to get one. Who moves first alternates every game, since the first move is a genuine advantage. Its own look: a mosaic panel on a Pompeian-red plaster wall, travertine squares with dark grouting, and the two marks laid one tessera at a time — the cross in blue glass paste, the circle in gold — with a gilded thread of tesserae running along the winning line. Play it at:
+
+**[freeforreal.app/tris](https://freeforreal.app/tris/)**
+
 ## Credits
 
 **Wordio**'s word lists were cleaned up using [**FrequencyWords**](https://github.com/hermitdave/FrequencyWords) by [**Hermit Dave**](https://github.com/hermitdave) — word-frequency lists built from the OpenSubtitles corpus and published openly. We use them offline, once, to decide which words the game is allowed to *ask* for: a word has to be one people actually use, or it doesn't get asked. That is how `uri`, `ima` and a pile of stray English and French words stopped showing up as Italian answers. None of that data ships with the site — only our own word list, filtered. Thank you.

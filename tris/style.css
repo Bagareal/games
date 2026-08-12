@@ -1,0 +1,496 @@
+/* ============ TRIS — identità grafica: mosaico su intonaco rosso ============
+   Ogni gioco del sito ha una grafica propria: qui niente ardesia e gesso (è di
+   Kakumal), niente noce e ottone (è della Dama), niente cobalto e panno verde
+   (è della Scopa), niente carta di quaderno (è di Sudopoku), niente neon (è di
+   Blokky). Il Tris è un pannello di mosaico appeso a una parete di intonaco
+   rosso: pietra chiara di travertino, fughe scure, e i due segni posati una
+   tessera alla volta — la croce in pasta di vetro blu, il cerchio in tessere
+   dorate. Il rosso è di questo gioco e di nessun altro sul sito. */
+:root{
+  --wall-deep: #3F0F0C;
+  --wall: #5E1C16;
+  --wall-2: #7E2B22;
+
+  --stone: #E8DCC2;        /* il travertino delle caselle */
+  --stone-2: #D6C6A4;
+  --stone-edge: #B9A57E;
+  --grout: #2E1A14;        /* la fuga fra le tessere */
+
+  --blue: #2A5D8F;         /* la croce: pasta di vetro blu */
+  --blue-deep: #1B3F63;
+  --gold: #C8892C;         /* il cerchio: tessere dorate */
+  --gold-deep: #8F5D17;
+  --gold-hot: #F0B44E;     /* SOLO per quello che risponde al tocco e per la vittoria */
+
+  --text: #F5E7D2;
+  --text-dim: rgba(245, 231, 210, 0.64);
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+html,body{ height:100%; }
+body{
+  margin:0; padding:0; min-height:100%;
+  font-family:'Mulish', sans-serif;
+  background: var(--wall);
+  color: var(--text);
+  overscroll-behavior: none;
+}
+
+/* ---------- sfondo: la parete ---------- */
+/* tutto fermo: non c'è niente da animare qui, e uno sfondo statico non costa
+   nemmeno un fotogramma mentre si gioca */
+#bgLayer{
+  position:fixed; inset:0; z-index:0;
+  pointer-events:none;
+  background: linear-gradient(178deg, var(--wall-2) 0%, var(--wall) 42%, var(--wall-deep) 100%);
+}
+/* la grana della calce: macchie larghe e chiarissime, come un intonaco vero */
+.plaster{
+  position:absolute; inset:0;
+  opacity:0.55;
+  background-image:
+    radial-gradient(38% 22% at 18% 22%, rgba(255,225,200,0.10) 0%, rgba(0,0,0,0) 100%),
+    radial-gradient(30% 18% at 78% 40%, rgba(255,225,200,0.07) 0%, rgba(0,0,0,0) 100%),
+    radial-gradient(42% 26% at 40% 78%, rgba(0,0,0,0.16) 0%, rgba(0,0,0,0) 100%),
+    repeating-linear-gradient(112deg, rgba(0,0,0,0.05) 0 2px, rgba(0,0,0,0) 2px 11px);
+}
+.wall-shade{
+  position:absolute; inset:0;
+  background: radial-gradient(110% 80% at 50% 8%, rgba(255, 226, 180, 0.14) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.32) 100%);
+}
+
+#app{
+  position:relative; z-index:1;
+  width:100%;
+  min-height:100vh;
+  min-height:100dvh;
+  max-width:480px;
+  margin:0 auto;
+  display:flex; flex-direction:column;
+  overflow-x:hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ---------- caricamento ---------- */
+#loadingScreen{
+  position:fixed; inset:0; z-index:60;
+  background: var(--wall);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px;
+  transition: opacity 0.3s ease;
+}
+#loadingScreen.hidden{ display:none; }
+.loading-title{
+  font-family:'Cinzel', serif;
+  font-weight:700; font-size:32px; letter-spacing:5px;
+  color: var(--stone);
+}
+.spinner{
+  width:30px; height:30px;
+  border:2px solid rgba(232,220,194,0.22);
+  border-top-color: var(--gold-hot);
+  border-radius:50%;
+  animation: spin 0.9s linear infinite;
+}
+@keyframes spin{ to{ transform: rotate(360deg); } }
+
+/* ---------- topbar ---------- */
+.topbar{
+  position:relative; z-index:5;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding: max(10px, env(safe-area-inset-top)) 16px 2px;
+}
+.icon-group{ display:flex; align-items:center; gap:8px; flex:0 0 auto; }
+.icon-btn{
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  background: rgba(232,220,194,0.10);
+  border: 1px solid rgba(232,220,194,0.28);
+  color: var(--text);
+  font-size:19px; line-height:1;
+  cursor:pointer;
+  text-decoration:none;
+  flex:0 0 auto;
+}
+.icon-btn:active{ transform: scale(0.94); }
+/* la freccia per tornare in home ha già il suo cerchio disegnato dentro
+   all'icona: il fondino del pulsante ci faceva un secondo cerchio intorno */
+a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
+/* di chi è il turno: la riga più importante dell'interfaccia, sempre in alto */
+.turn-pill{
+  font-size:12px; font-weight:700;
+  letter-spacing:0.4px;
+  color: var(--text);
+  background: rgba(232,220,194,0.10);
+  border:1px solid rgba(232,220,194,0.28);
+  border-radius:999px;
+  padding:6px 12px;
+  text-align:right;
+  min-width:0;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.turn-pill.thinking{ color: var(--gold-hot); border-color: var(--gold-hot); }
+
+.title-wrap{ padding: 10px 16px 0; }
+.title-wrap h1{
+  font-family:'Cinzel', serif;
+  font-weight:700; font-size:24px; letter-spacing:6px;
+  margin:0;
+  color: var(--stone);
+  text-align:center;
+}
+/* il filetto sotto al titolo è una greca romana in miniatura, disegnata con due
+   sfumature ripetute: dice "mosaico" senza costare un'immagine */
+.title-rule{
+  height:6px; margin-top:8px;
+  background:
+    repeating-linear-gradient(90deg, rgba(232,220,194,0.42) 0 6px, rgba(0,0,0,0) 6px 12px);
+  mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, #000 22%, #000 78%, rgba(0,0,0,0) 100%);
+  -webkit-mask-image: linear-gradient(90deg, rgba(0,0,0,0) 0%, #000 22%, #000 78%, rgba(0,0,0,0) 100%);
+}
+
+/* ---------- targhe dei due giocatori ---------- */
+/* stanno attaccate al pannello, sopra e sotto, larghe quanto lui: sono i due
+   posti a tavola, non due barre appiccicate ai bordi dello schermo */
+.player-plate{
+  display:flex; align-items:center; gap:10px;
+  width:100%; max-width: var(--board, 300px);
+  padding:7px 12px;
+  border:1px solid rgba(232,220,194,0.16);
+  border-radius:8px;
+  background: rgba(0,0,0,0.20);
+}
+/* chi gioca dall'altro lato del tavolo legge sottosopra: la sua targa è girata */
+.player-plate.flipped{ transform: rotate(180deg); }
+.player-plate.is-turn{ border-color: var(--gold-hot); background: rgba(240,180,78,0.14); }
+.plate-mark{ flex:0 0 auto; width:20px; height:20px; line-height:0; }
+/* nella targa il segno è lo stesso disegno delle caselle, in piccolo: qui però
+   sta nel flusso, non incollato sopra a una casella (.mark è position:absolute) */
+.plate-mark svg{ position:static; display:block; width:100%; height:100%; }
+.plate-name{
+  font-family:'Cinzel', serif;
+  font-weight:600; font-size:14px;
+  flex:1 1 auto; min-width:0;
+  color: var(--stone);
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+/* partite vinte da qui, in questa sessione */
+.plate-count{
+  flex:0 0 auto;
+  font-size:12px; font-weight:800;
+  color: var(--gold-hot);
+  border:1px solid rgba(240,180,78,0.4);
+  border-radius:999px;
+  padding:1px 9px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- il pannello di mosaico ---------- */
+.game-zone{
+  position:relative;
+  /* base 0, non auto: l'altezza di questa zona è "quello che avanza" e basta, e
+     NON dipende da quanto è grande la griglia che ci sta dentro. Con base auto
+     la misura è circolare — la griglia decide l'altezza della zona e la zona
+     decide la misura della griglia — e dopo un cambio di orientamento resta
+     tarata su quella di prima, sforando in fondo alla pagina. */
+  flex:1 1 0;
+  display:flex; align-items:center; justify-content:center;
+  padding: 10px 16px max(12px, env(safe-area-inset-bottom));
+  min-height:0;
+  touch-action: manipulation;
+}
+.table-stack{
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  width:100%;
+}
+.board-frame{
+  position:relative;
+  width: var(--board, 300px);
+  height: var(--board, 300px);
+  background: var(--grout);
+  border-radius:4px;
+  /* la cornice: un filo di pietra chiara e l'ombra del pannello sulla parete */
+  padding:0;
+  box-shadow:
+    0 0 0 calc(var(--cell, 100px) * 0.055) #C9B893,
+    0 0 0 calc(var(--cell, 100px) * 0.075) var(--grout),
+    0 16px 30px rgba(0,0,0,0.45);
+  cursor:pointer;
+}
+.board-cells, .board-line{ position:absolute; inset:0; }
+.board-line{ width:100%; height:100%; pointer-events:none; z-index:2; }
+
+.cell{
+  position:absolute;
+  width: var(--cell); height: var(--cell);
+}
+/* la pietra: ogni casella è una lastra di travertino, con la fuga scura intorno
+   disegnata dal fondo del pannello che si vede fra una lastra e l'altra */
+.stone{
+  position:absolute;
+  inset: calc(var(--cell) * 0.035);
+  border-radius:2px;
+  background:
+    radial-gradient(70% 60% at 32% 28%, #F2E9D6 0%, rgba(0,0,0,0) 70%),
+    linear-gradient(160deg, var(--stone) 0%, var(--stone-2) 100%);
+  box-shadow: inset 0 0 0 1px var(--stone-edge);
+}
+/* le venature del travertino: righe chiarissime, appena accennate */
+.stone::after{
+  content:''; position:absolute; inset:0; border-radius:2px;
+  background: repeating-linear-gradient(103deg, rgba(120,95,60,0.07) 0 1px, rgba(0,0,0,0) 1px 7px);
+}
+/* casella libera: al passaggio del mouse si schiarisce appena. Sul telefono non
+   succede niente, ed è giusto così: lì il dito è già il segnale */
+.cell.free:hover .stone{ background: linear-gradient(160deg, #F6EEDD 0%, #E4D6B6 100%); }
+/* le tre caselle vincenti si accendono appena: sopra ci passa il filo d'oro, e
+   se anche la pietra fosse dorata non si distinguerebbe più niente */
+.cell.win .stone{
+  background: linear-gradient(160deg, #FBF2DE 0%, #F3E4BE 100%);
+  box-shadow: inset 0 0 0 1px var(--gold-hot), 0 0 14px rgba(240,180,78,0.4);
+}
+.mark{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  pointer-events:none;
+}
+/* le tessere si posano una alla volta, come le posa un mosaicista: ogni tessera
+   ha il suo ritardo, scritto dal codice. Si animano solo opacity e transform,
+   che non costano un ridisegno. */
+.tes{
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  opacity:0;
+  animation: layTes 0.16s ease-out forwards;
+}
+@keyframes layTes{
+  from{ opacity:0; transform: scale(0.45); }
+  to{ opacity:1; transform: scale(1); }
+}
+/* al ridisegno (cambio di misura, riapertura) le tessere ci sono già: niente
+   animazione, o il mosaico si rifarebbe da capo a ogni rotazione dello schermo */
+.mark.settled .tes{ opacity:1; animation:none; }
+@media (prefers-reduced-motion: reduce){
+  .tes{ opacity:1; animation:none; }
+}
+
+/* ---------- overlay e pannelli ---------- */
+.overlay{
+  position:fixed; inset:0; z-index:50;
+  background: rgba(30, 8, 6, 0.84);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  opacity:0; pointer-events:none; transition: opacity 0.2s ease;
+}
+.overlay.show{ opacity:1; pointer-events:auto; }
+.card{
+  position:relative;
+  width:100%; max-width:340px;
+  max-height:88vh; overflow-y:auto;
+  background: linear-gradient(168deg, var(--wall-2) 0%, var(--wall) 100%);
+  border:1px solid rgba(232,220,194,0.24);
+  border-radius:10px;
+  padding:24px 20px 20px;
+  text-align:center;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+}
+.card h2{
+  font-family:'Cinzel', serif;
+  font-weight:700; font-size:19px; letter-spacing:0.5px;
+  margin:0 0 8px;
+  color: var(--stone);
+}
+.card p{
+  font-size:14px; font-weight:400; line-height:1.5;
+  color: var(--text-dim);
+  margin:0 0 16px;
+}
+.section-label{
+  font-size:11px !important; font-weight:800 !important;
+  letter-spacing:2px; text-transform:uppercase;
+  color: var(--gold-hot) !important;
+  margin:16px 0 10px !important;
+}
+.end-icon, .creator-badge{
+  font-size:30px; line-height:1;
+  color: var(--gold-hot);
+  margin-bottom:8px;
+}
+.taunt-name{
+  font-size:11px !important; font-weight:800 !important;
+  letter-spacing:2px; text-transform:uppercase;
+  color: var(--gold-hot) !important;
+  margin:0 0 6px !important;
+}
+.taunt-line{ font-style:italic; }
+.table-figure{ width:100%; max-width:210px; height:auto; margin:0 auto 14px; display:block; }
+
+.primary-btn, .secondary-btn, .menu-row, .language-option, .difficulty-option, .choice-btn, .lb-tab{
+  font-family:'Mulish', sans-serif;
+  font-weight:700;
+  cursor:pointer;
+  border-radius:8px;
+}
+.primary-btn{
+  display:block; width:100%;
+  font-size:15px;
+  padding:13px 16px;
+  margin-bottom:8px;
+  color:#3F0F0C;
+  background: linear-gradient(180deg, #F0B44E, #C8892C);
+  border:1px solid #F5CA7C;
+}
+.primary-btn:active{ transform: translateY(1px); }
+.secondary-btn{
+  display:block; width:100%;
+  font-size:13px;
+  padding:11px 16px;
+  margin-top:6px;
+  color: var(--text);
+  background: rgba(232,220,194,0.10);
+  border:1px solid rgba(232,220,194,0.26);
+}
+.secondary-btn:active{ transform: translateY(1px); }
+
+/* il link per tornare in home, in fondo ai pannelli da cui non si torna
+   indietro: piccolo, sotto ai pulsanti, senza fondino */
+.home-link{
+  display:block;
+  margin-top:14px;
+  font-size:12px; font-weight:600;
+  color: var(--text-dim);
+  text-decoration:underline;
+  opacity:0.85;
+}
+.home-link:active{ opacity:1; }
+
+/* scelta modalità: due bottoni grandi, leggibili anche da lontano */
+.choice-btn{
+  display:flex; align-items:center; gap:14px;
+  width:100%;
+  padding:14px 16px;
+  margin-bottom:10px;
+  text-align:left;
+  color: var(--text);
+  background: rgba(232,220,194,0.10);
+  border:1px solid rgba(232,220,194,0.26);
+}
+.choice-btn:active{ transform: translateY(1px); }
+.choice-icon{ font-size:26px; flex:0 0 auto; color: var(--gold-hot); }
+.choice-text{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+.choice-title{ font-family:'Cinzel', serif; font-weight:700; font-size:15px; color: var(--stone); }
+.choice-sub{ font-size:12px; font-weight:400; color: var(--text-dim); }
+
+.difficulty-list{ display:flex; flex-direction:column; gap:8px; }
+.difficulty-option{
+  width:100%;
+  font-size:15px;
+  padding:12px 16px;
+  color: var(--text);
+  background: rgba(232,220,194,0.10);
+  border:1px solid rgba(232,220,194,0.26);
+}
+.difficulty-option:active{ transform: translateY(1px); }
+/* la difficoltà con cui si sta giocando (o l'ultima usata) resta accesa */
+.difficulty-option.active{
+  border-color: var(--gold-hot);
+  color: var(--gold-hot);
+  box-shadow: inset 0 0 0 1px rgba(240,180,78,0.35);
+}
+
+.menu-list{ display:flex; flex-direction:column; gap:8px; margin-bottom:6px; }
+.menu-row{
+  display:flex; align-items:center; gap:10px;
+  width:100%;
+  font-size:14px; font-weight:600;
+  padding:12px 14px;
+  color: var(--text);
+  background: rgba(232,220,194,0.10);
+  border:1px solid rgba(232,220,194,0.26);
+  text-align:left;
+}
+.menu-row:active{ transform: translateY(1px); }
+.menu-value{ margin-left:auto; font-size:12px; font-weight:800; color: var(--gold-hot); }
+
+.rules-card{ max-width:370px; }
+.rule-row{
+  display:flex; align-items:flex-start; gap:12px;
+  text-align:left;
+  margin-bottom:13px;
+}
+/* numero della regola, in graziato romano: incolonnati si leggono come un elenco */
+.rule-icon{
+  font-family:'Cinzel', serif;
+  font-size:16px; font-weight:700; line-height:1.4;
+  flex:0 0 24px; text-align:center; color: var(--gold-hot);
+}
+.rule-row p{ margin:0; font-size:14px; color: var(--text); }
+
+/* lingua */
+.language-list{ display:flex; flex-direction:column; gap:8px; }
+.language-option{
+  display:flex; align-items:center; gap:12px;
+  width:100%;
+  font-size:14px; font-weight:600;
+  padding:11px 14px;
+  color: var(--text);
+  background: rgba(232,220,194,0.10);
+  border:1px solid rgba(232,220,194,0.26);
+  text-align:left;
+}
+.language-option:active{ transform: translateY(1px); }
+.language-option.active{ border-color: var(--gold-hot); background: rgba(240,180,78,0.16); }
+.language-flag{ font-size:19px; }
+
+/* classifica */
+.lb-note{ font-size:12px !important; margin-bottom:12px !important; }
+.lb-tabs{ display:flex; gap:6px; margin-bottom:12px; }
+.lb-tab{
+  flex:1 1 0;
+  font-size:12px;
+  padding:8px 4px;
+  color: var(--text-dim);
+  background: rgba(232,220,194,0.07);
+  border:1px solid rgba(232,220,194,0.16);
+}
+.lb-tab.active{ color: var(--wall-deep); background: var(--gold-hot); border-color: var(--gold-hot); }
+.leaderboard-list{
+  display:flex; flex-direction:column; gap:6px;
+  max-height:246px; overflow-y:auto;
+  margin-bottom:6px;
+}
+.leaderboard-row{
+  display:flex; align-items:center; gap:10px;
+  flex:0 0 auto;
+  padding:8px 10px;
+  border-radius:6px;
+  background: rgba(0,0,0,0.24);
+  border:1px solid rgba(232,220,194,0.16);
+  font-size:13px;
+}
+.leaderboard-row.is-me{ border-color: var(--gold-hot); background: rgba(240,180,78,0.14); }
+.leaderboard-rank{ flex:0 0 auto; font-weight:800; color: var(--gold-hot); min-width:34px; text-align:left; }
+.leaderboard-name{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:left; }
+.leaderboard-score{ flex:0 0 auto; font-weight:800; font-variant-numeric: tabular-nums; }
+.leaderboard-empty{ font-size:13px; color: var(--text-dim); padding:16px 6px; }
+
+/* schermi bassi: il pannello vale più del titolo */
+@media (max-height: 680px){
+  .title-wrap{ display:none; }
+  .player-plate{ padding:5px 10px; }
+}
+/* tablet e desktop: la griglia è quadrata, quindi in verticale è la LARGHEZZA a
+   decidere quanto può crescere; i limiti si alzano per gradi, e la misura vera
+   la calcola comunque il codice sullo spazio rimasto */
+@media (min-width: 700px){
+  #app{ max-width: 640px; }
+  .title-wrap h1{ font-size:28px; }
+  .plate-name{ font-size:17px; }
+  .plate-mark{ width:24px; height:24px; }
+}
+@media (min-width: 900px){
+  #app{ max-width: 720px; }
+}
+@media (min-width: 1200px){
+  #app{ max-width: 780px; }
+  .title-wrap h1{ font-size:31px; }
+}
