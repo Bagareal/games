@@ -33,13 +33,17 @@ const UI_STRINGS = {
     backToHome: 'Torna in Home',
 
     rulesTitle: 'Come si gioca',
-    rule1: 'Appoggia il dito dietro la bianca e tiralo indietro: la stecca arretra insieme al dito. Più la tiri indietro, più il tiro è forte — te lo dice la barra, che da verde diventa rossa. Stacca il dito e la stecca colpisce.',
-    rule2: 'Muovendo il dito intorno alla bianca cambi la direzione. Se molli senza aver tirato indietro non succede niente: puoi mirare con calma.',
-    rule3: "All'inizio le palle sono di tutti e due. La prima che mandi in buca decide: se era piena (dall'1 al 7) le piene sono tue, se era mezza (dal 9 al 15) sono tue le mezze.",
-    rule4: 'Finché imbuchi una delle tue, continui a tirare. Se non imbuchi niente, tocca all\'altro.',
-    rule5: 'La nera va per ultima: si imbuca solo quando le tue sette sono finite. Mandarla in buca prima fa perdere la partita — tranne sul primo tiro, quando torna sul tavolo e si continua.',
-    rule6: "Niente falli: puoi colpire quello che vuoi. L'unica cosa che costa è mandare in buca la bianca — l'avversario la rimette dove vuole lui.",
-    rule7: 'La linea di mira ti mostra dove va la bianca, comprese le sponde, e dove partirà la palla che colpisci. Se la vuoi togliere, c\'è l\'interruttore in Impostazioni.',
+    rule1: "Trascina il dito sul panno: la stecca gira intorno alla bianca. Puoi staccare e riprendere quando vuoi, la mira resta dov'è. Più tieni il dito lontano dalla palla, più la mira viene fine.",
+    rule2: 'Quando la mira ti piace, dai un tocco secco, senza trascinare: la stecca si accende ed è pronta a caricare. Da quel momento la mira è bloccata e non si sposta più.',
+    rule3: 'Adesso trascina indietro, partendo da dove ti è comodo: la stecca arretra e la barra passa dal verde al rosso. Stacca il dito e il tiro parte. Con un altro tocco secco torni a mirare.',
+    rule4: "All'inizio le palle sono di tutti e due. La prima che mandi in buca decide: se era piena (dall'1 al 7) le piene sono tue, se era mezza (dal 9 al 15) sono tue le mezze.",
+    rule5: 'Finché imbuchi una delle tue, continui a tirare. Se non imbuchi niente, tocca all\'altro.',
+    rule6: 'La nera va per ultima: si imbuca solo quando le tue sette sono finite. Mandarla in buca prima fa perdere la partita — tranne sul primo tiro, quando torna sul tavolo e si continua.',
+    rule7: "Niente falli: puoi colpire quello che vuoi. L'unica cosa che costa è mandare in buca la bianca — l'avversario la rimette dove vuole lui.",
+    rule8: 'La linea di mira ti mostra dove va la bianca, comprese le sponde, e dove partirà la palla che colpisci. Se la vuoi togliere, c\'è l\'interruttore in Impostazioni.',
+    hintAim: 'TOCCA PER CARICARE',
+    hintCharge: 'TIRA INDIETRO',
+    hintPlace: 'METTI LA BIANCA DOVE VUOI',
 
     modeTitle: 'Come vuoi giocare?',
     modeFriend: 'Con un amico',
@@ -123,13 +127,17 @@ const UI_STRINGS = {
     backToHome: 'Back to Home',
 
     rulesTitle: 'How to play',
-    rule1: 'Put your finger behind the cue ball and drag it back: the cue pulls back with your finger. The further back, the harder the shot — the bar tells you, turning from green to red. Lift your finger and the cue strikes.',
-    rule2: 'Move your finger around the cue ball to change direction. Letting go without pulling back does nothing, so you can take your time aiming.',
-    rule3: 'At the start every ball belongs to both of you. The first one you pot decides: pot a solid (1 to 7) and solids are yours, pot a stripe (9 to 15) and the stripes are.',
-    rule4: 'Pot one of yours and you carry on shooting. Pot nothing and it is the other player’s turn.',
-    rule5: 'The black goes last: you may only pot it once your seven are gone. Potting it earlier loses the game — except on the very first shot, when it goes back on the table and play continues.',
-    rule6: 'No fouls: hit whatever you like. The only thing that costs you is potting the cue ball — your opponent then puts it wherever they want.',
-    rule7: 'The aiming line shows where the cue ball goes, cushions included, and which way the ball you hit will set off. You can switch it off in Settings.',
+    rule1: 'Drag your finger across the cloth: the cue swings around the cue ball. You can lift your finger and start again whenever you like, the aim stays where you left it. The further your finger is from the ball, the finer the aim.',
+    rule2: 'Once you like the aim, give the cloth a short tap without dragging: the cue lights up, ready to charge. From that moment the aim is locked and cannot move.',
+    rule3: 'Now drag backwards, starting wherever suits you: the cue pulls back and the bar goes from green to red. Lift your finger and the shot goes. Another short tap and you are back to aiming.',
+    rule4: 'At the start every ball belongs to both of you. The first one you pot decides: pot a solid (1 to 7) and solids are yours, pot a stripe (9 to 15) and the stripes are.',
+    rule5: 'Pot one of yours and you carry on shooting. Pot nothing and it is the other player’s turn.',
+    rule6: 'The black goes last: you may only pot it once your seven are gone. Potting it earlier loses the game — except on the very first shot, when it goes back on the table and play continues.',
+    rule7: 'No fouls: hit whatever you like. The only thing that costs you is potting the cue ball — your opponent then puts it wherever they want.',
+    rule8: 'The aiming line shows where the cue ball goes, cushions included, and which way the ball you hit will set off. You can switch it off in Settings.',
+    hintAim: 'TAP TO CHARGE',
+    hintCharge: 'PULL BACK',
+    hintPlace: 'PUT THE CUE BALL WHERE YOU LIKE',
 
     modeTitle: 'How do you want to play?',
     modeFriend: 'With a friend',
@@ -213,13 +221,17 @@ const UI_STRINGS = {
     backToHome: "Retour à l'accueil",
 
     rulesTitle: 'Comment jouer',
-    rule1: "Pose le doigt derrière la blanche et tire-le vers l'arrière : la queue recule avec le doigt. Plus tu tires, plus le coup est fort — la barre te le dit, elle passe du vert au rouge. Lâche le doigt et la queue frappe.",
-    rule2: 'En déplaçant le doigt autour de la blanche tu changes la direction. Si tu lâches sans avoir tiré vers l’arrière, il ne se passe rien : tu peux viser tranquillement.',
-    rule3: "Au début les billes sont à tous les deux. La première que tu rentres décide : une pleine (de 1 à 7) et les pleines sont à toi, une rayée (de 9 à 15) et ce sont les rayées.",
-    rule4: "Tant que tu rentres une des tiennes, tu continues. Si tu ne rentres rien, c'est à l'autre.",
-    rule5: "La noire passe en dernier : on ne la rentre qu'une fois tes sept billes finies. La rentrer avant fait perdre la partie — sauf au tout premier coup, où elle revient sur le tapis et le jeu continue.",
-    rule6: "Aucune faute : tu peux frapper ce que tu veux. La seule chose qui coûte, c'est de rentrer la blanche — l'adversaire la repose alors où il veut.",
-    rule7: "La ligne de visée montre où va la blanche, bandes comprises, et de quel côté partira la bille touchée. Tu peux l'éteindre dans les Réglages.",
+    rule1: "Fais glisser le doigt sur le tapis : la queue tourne autour de la blanche. Tu peux lâcher et reprendre quand tu veux, la visée reste où tu l'as laissée. Plus le doigt est loin de la bille, plus la visée est fine.",
+    rule2: 'Quand la visée te convient, donne une petite tape sèche, sans glisser : la queue s’allume, prête à charger. À partir de là la visée est bloquée et ne bouge plus.',
+    rule3: 'Maintenant tire vers l’arrière, en partant d’où tu veux : la queue recule et la barre passe du vert au rouge. Lâche le doigt et le coup part. Une autre tape sèche et tu reviens à la visée.',
+    rule4: "Au début les billes sont à tous les deux. La première que tu rentres décide : une pleine (de 1 à 7) et les pleines sont à toi, une rayée (de 9 à 15) et ce sont les rayées.",
+    rule5: "Tant que tu rentres une des tiennes, tu continues. Si tu ne rentres rien, c'est à l'autre.",
+    rule6: "La noire passe en dernier : on ne la rentre qu'une fois tes sept billes finies. La rentrer avant fait perdre la partie — sauf au tout premier coup, où elle revient sur le tapis et le jeu continue.",
+    rule7: "Aucune faute : tu peux frapper ce que tu veux. La seule chose qui coûte, c'est de rentrer la blanche — l'adversaire la repose alors où il veut.",
+    rule8: "La ligne de visée montre où va la blanche, bandes comprises, et de quel côté partira la bille touchée. Tu peux l'éteindre dans les Réglages.",
+    hintAim: 'TAPE POUR CHARGER',
+    hintCharge: 'TIRE EN ARRIÈRE',
+    hintPlace: 'POSE LA BLANCHE OÙ TU VEUX',
 
     modeTitle: 'Comment veux-tu jouer ?',
     modeFriend: 'Avec un ami',
@@ -378,17 +390,37 @@ const CUE_WHITE = '#F4F1E8';
 
 // ---------- misure del disegno ----------
 const RAIL = 7;                       // la sponda, in unità di tavolo
-const TOTAL_W = B.W + RAIL * 2;
-const TOTAL_H = B.H + RAIL * 2;
+const MARGIN = 8;                     // aria attorno al tavolo: è lì che ci sta la stecca
+const EDGE = RAIL + MARGIN;
+const TOTAL_W = B.W + EDGE * 2;
+const TOTAL_H = B.H + EDGE * 2;
 let SCALE = 3;                        // pixel veri per unità di tavolo
 let staticCanvas = null;              // panno e sponde: si ridisegnano solo quando cambia la misura
 const sprites = {};                   // una tela per palla, disegnata una volta sola
 
-// ---------- comandi ----------
-const MAX_PULL = 40;                  // quanto si può tirare indietro la stecca
-const MIN_PULL = 4;                   // sotto questo non è un tiro, è solo mira
+/* ---------- comandi ----------
+   Il gioco sta in uno di due stati e si passa dall'uno all'altro con un tocco
+   secco (appoggia e stacca senza trascinare):
+
+     MIRA    trascini dove vuoi sul panno → la stecca gira. La mira resta dove
+             la lasci, si può staccare il dito e riprendere.
+     CARICA  trascini dove vuoi → la stecca arretra. Della mano conta SOLO lo
+             spostamento lungo l'asse della stecca, quello di lato viene
+             buttato via: la mira è congelata e non si può più sbagliare
+             mentre si carica. Molli e parte il tiro.
+
+   Prima erano una cosa sola (l'angolo lo dava la posizione del dito rispetto
+   alla bianca) e caricare voleva dire per forza smuovere la mira: col dito a
+   due centimetri dalla palla, tre millimetri di traballamento erano undici
+   gradi di tiro sbagliato. */
+const PULL_DRAG_MAX = 55;             // quanto dito serve per la forza piena
+const PULL_VIS_MAX = 14;              // quanto arretra la stecca sullo schermo
+const MIN_DRAG = 5;                   // sotto questo non è un tiro
+const TAP_PX = 10;                    // sotto questo spostamento è un tocco secco
+const TAP_MS = 500;
 const CUE_GAP = 1.6;                  // spazio fra la punta e la bianca a riposo
-const CUE_LEN = 88;
+const CUE_LEN = 70;                   // lunghezza piena della stecca
+const CUE_LEN_MIN = 30;               // sotto questa non si accorcia mai
 
 // ---------- stato ----------
 // Le tre difficoltà stanno qui in cima e non più giù con la classifica: `stats`
@@ -403,11 +435,12 @@ const ui = {
   mode: null,               // 'pc' | 'friend'
   difficulty: null,
   humanSide: 'p1',
-  phase: 'idle',            // idle | aim | rolling | pcthink | pcaim | place
+  phase: 'idle',            // idle | rolling | pcthink | pcaim
   aim: -Math.PI / 2,        // dove punta la stecca (radianti)
-  pull: 0,                  // quanto è tirata indietro
-  aiming: false,
-  pointerStartDist: 0,
+  armed: false,             // false = si mira, true = si carica
+  pull: 0,                  // di quanto è arretrata la stecca sullo schermo
+  power: 0,                 // 0..1, la forza vera del tiro
+  drag: null,               // il gesto che si sta facendo adesso
   placing: false,
   placePos: null,
   pcAnim: null,
@@ -451,13 +484,16 @@ function applyGeometry() {
   els.canvas.height = Math.max(1, Math.round(h * dpr));
   SCALE = els.canvas.width / TOTAL_W;
 
-  document.documentElement.style.setProperty('--table-w', w + 'px');
+  // le targhe dei giocatori sono larghe quanto il TAVOLO, non quanto la tela:
+  // la tela ha attorno l'aria che serve alla stecca
+  document.documentElement.style.setProperty('--table-w',
+    Math.round(w * (B.W + RAIL * 2) / TOTAL_W) + 'px');
   buildStatic();
   buildSprites();
   ui.dirty = true;
 }
 
-function px(x) { return (x + RAIL) * SCALE; }   // da unità di tavolo a pixel
+function px(x) { return (x + EDGE) * SCALE; }   // da unità di tavolo a pixel
 
 /* Panno, sponde e buche stanno fermi per tutta la partita: si disegnano una
    volta su una tela di scorta e a ogni fotogramma si ricopiano e basta. Con
@@ -470,14 +506,29 @@ function buildStatic() {
   const c = staticCanvas.getContext('2d');
   c.clearRect(0, 0, cw, ch);
 
+  // Il tavolo non riempie più tutta la tela: attorno c'è l'aria in cui ci sta
+  // la stecca, che prima veniva tagliata dal bordo.
+  const tx = px(-RAIL), ty = px(-RAIL);
+  const tw = (B.W + RAIL * 2) * SCALE, th = (B.H + RAIL * 2) * SCALE;
   const r = 10 * (SCALE / 3);
 
+  // l'ombra del tavolo sul pavimento: sta qui dentro e non nel foglio di stile
+  // perché il riquadro della pagina adesso è più grande del tavolo
+  c.save();
+  c.shadowColor = 'rgba(0,0,0,0.6)';
+  c.shadowBlur = 18 * (SCALE / 3);
+  c.shadowOffsetY = 9 * (SCALE / 3);
+  roundRect(c, tx, ty, tw, th, r);
+  c.fillStyle = '#000';
+  c.fill();
+  c.restore();
+
   // sponde: grafite con il filetto d'alluminio
-  const railGrad = c.createLinearGradient(0, 0, 0, ch);
+  const railGrad = c.createLinearGradient(0, ty, 0, ty + th);
   railGrad.addColorStop(0, '#312D3E');
   railGrad.addColorStop(0.5, '#23202E');
   railGrad.addColorStop(1, '#1A1824');
-  roundRect(c, 0, 0, cw, ch, r);
+  roundRect(c, tx, ty, tw, th, r);
   c.fillStyle = railGrad;
   c.fill();
 
@@ -667,10 +718,43 @@ function render() {
   }
 
   if (ui.started && !ui.over && showsCue()) drawCue();
+  drawHint();
+}
+
+/* Una riga sola sotto al tavolo che dice in che stato siamo. Serve: la
+   differenza fra "sto mirando" e "sto per caricare" è tutta nel gesto, e senza
+   una parola scritta il tocco secco che innesca non lo indovina nessuno. */
+function drawHint() {
+  if (!game || !ui.started || ui.over) return;
+  if (ui.phase !== 'idle' || isPcTurn()) return;
+  const txt = game.ballInHand ? t().hintPlace : (ui.armed ? t().hintCharge : t().hintAim);
+  const size = Math.max(9, SCALE * 3.6);
+  /* La scritta sta dalla parte OPPOSTA a dove sporge la stecca: mirando dritto
+     in su il manico finiva esattamente qui sotto e la targhetta se lo mangiava,
+     proprio la cosa che si voleva far vedere. */
+  const cueGoesDown = Math.sin(ui.aim) < 0;
+  const cx = px(B.W / 2);
+  const cy = cueGoesDown && !game.ballInHand
+    ? px(-RAIL - MARGIN * 0.5)
+    : px(B.H + RAIL + MARGIN * 0.5);
+  ctx.save();
+  ctx.font = '700 ' + size.toFixed(1) + 'px Manrope, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // sotto ci va un fondino: mirando in su la stecca punta proprio qui, e senza
+  // il fondino il legno passava in mezzo alle lettere
+  const wTxt = ctx.measureText(txt).width;
+  const hTxt = size * 1.9;
+  roundRect(ctx, cx - wTxt / 2 - size * 0.7, cy - hTxt / 2, wTxt + size * 1.4, hTxt, hTxt / 2);
+  ctx.fillStyle = 'rgba(12, 9, 20, 0.72)';
+  ctx.fill();
+  ctx.fillStyle = ui.armed ? 'rgba(127,227,216,0.95)' : 'rgba(232,227,245,0.6)';
+  ctx.fillText(txt, cx, cy);
+  ctx.restore();
 }
 
 function showsCue() {
-  return (ui.phase === 'idle' || ui.phase === 'aim' || ui.phase === 'pcaim') && !game.ballInHand;
+  return (ui.phase === 'idle' || ui.phase === 'pcaim') && !game.ballInHand;
 }
 function showsAim() {
   return ui.aimAid && showsCue() && ui.phase !== 'pcaim';
@@ -684,8 +768,10 @@ function drawAim() {
 
   ctx.save();
   ctx.lineCap = 'round';
-  ctx.setLineDash([SCALE * 2.2, SCALE * 2.2]);
-  ctx.lineWidth = Math.max(1, SCALE * 0.32);
+  // tratteggiata mentre si mira, PIENA quando la stecca è innescata: la linea
+  // piena vuol dire "questa mira adesso è bloccata"
+  if (!ui.armed) ctx.setLineDash([SCALE * 2.2, SCALE * 2.2]);
+  ctx.lineWidth = Math.max(1, SCALE * (ui.armed ? 0.4 : 0.32));
   for (let i = 0; i < tr.segs.length; i++) {
     const s = tr.segs[i];
     // il primo pezzo pieno, i rimbalzi via via più smorti: si legge l'ordine
@@ -718,41 +804,103 @@ function drawAim() {
   ctx.restore();
 }
 
-/* La stecca e la barra della forza. La barra È la stecca arretrata: la linea
-   che si allunga fra la punta e la bianca passa dal verde al rosso mentre si
-   tira indietro, che è esattamente il gesto che si sta facendo. */
+/* Quanto spazio c'è dietro alla punta prima di uscire dalla tela. Serve ad
+   accorciare la stecca quanto basta perché si veda tutta, manico compreso:
+   con una lunghezza fissa, la bianca vicino a una sponda la mandava mezza
+   fuori dallo schermo. */
+function cueRoom(from, back) {
+  // 4 unità di respiro: il manico è tondo e ci vuole il posto per il suo tappo
+  // più un filo d'aria, se no finisce a filo del bordo e sembra tagliato uguale
+  const minX = -EDGE + 4, maxX = B.W + EDGE - 4;
+  const minY = -EDGE + 4, maxY = B.H + EDGE - 4;
+  let t = Infinity;
+  if (back.x > 1e-6) t = Math.min(t, (maxX - from.x) / back.x);
+  else if (back.x < -1e-6) t = Math.min(t, (minX - from.x) / back.x);
+  if (back.y > 1e-6) t = Math.min(t, (maxY - from.y) / back.y);
+  else if (back.y < -1e-6) t = Math.min(t, (minY - from.y) / back.y);
+  return Math.max(0, t);
+}
+
+/* La stecca e la barra della forza. La stecca è rastremata davvero: sottile in
+   punta, che si ingrossa fino al manico, e il manico è tondo. La barra È il
+   vuoto fra la punta e la bianca — la strada che la stecca farà — e mentre si
+   carica cresce passando dal verde al rosso. */
 function drawCue() {
   const cue = game.balls[0];
   if (cue.in) return;
+  const armed = ui.armed || ui.phase === 'pcaim';
   const back = { x: -Math.cos(ui.aim), y: -Math.sin(ui.aim) };   // dietro alla bianca
   const tipDist = B.R + CUE_GAP + ui.pull;
   const tip = { x: cue.x + back.x * tipDist, y: cue.y + back.y * tipDist };
-  const butt = { x: tip.x + back.x * CUE_LEN, y: tip.y + back.y * CUE_LEN };
+  const len = Math.max(CUE_LEN_MIN, Math.min(CUE_LEN, cueRoom(tip, back)));
+  const butt = { x: tip.x + back.x * len, y: tip.y + back.y * len };
 
   ctx.save();
-  ctx.lineCap = 'round';
+  ctx.globalAlpha = armed ? 1 : 0.82;
 
-  // il legno
+  // il corpo: un trapezio che si allarga verso il fondo, più il tappo tondo
+  /* Le misure sono quelle di una stecca vera riportate sul tavolo: 13 mm in
+     punta e 30 mm al manico su un tavolo largo 1270 mm, cioè mezza unità e una
+     e due. I minimi in pixel servono agli schermi piccoli, se no sul telefono
+     la punta sparisce. */
+  const nx = -back.y, ny = back.x;                 // perpendicolare all'asse
+  const wTip = Math.max(0.9, SCALE * 0.52) / SCALE;
+  const wButt = Math.max(2.1, SCALE * 1.2) / SCALE;
   ctx.beginPath();
-  ctx.moveTo(px(tip.x), px(tip.y));
-  ctx.lineTo(px(butt.x), px(butt.y));
+  ctx.moveTo(px(tip.x + nx * wTip), px(tip.y + ny * wTip));
+  ctx.lineTo(px(butt.x + nx * wButt), px(butt.y + ny * wButt));
+  ctx.lineTo(px(butt.x - nx * wButt), px(butt.y - ny * wButt));
+  ctx.lineTo(px(tip.x - nx * wTip), px(tip.y - ny * wTip));
+  ctx.closePath();
   // legno scuro e poco acceso di proposito: con un manico color miele la barra
   // della forza a metà corsa (che lì è ambra) ci si confondeva dentro
   const grad = ctx.createLinearGradient(px(tip.x), px(tip.y), px(butt.x), px(butt.y));
   grad.addColorStop(0, '#D9D2C0');
-  grad.addColorStop(0.18, '#6E5B45');
-  grad.addColorStop(0.7, '#3B2F23');
-  grad.addColorStop(1, '#1C1610');
-  ctx.strokeStyle = grad;
-  ctx.lineWidth = Math.max(1.4, SCALE * 0.95);
+  grad.addColorStop(0.16, '#7A6650');
+  grad.addColorStop(0.62, '#413426');
+  grad.addColorStop(1, '#241C14');
+  ctx.fillStyle = grad;
+  ctx.fill();
+  /* Il contorno chiaro non è un vezzo: il legno del manico è quasi nero e lo
+     sfondo della sala pure, così la stecca sembrava svanire nel buio e non si
+     capiva dove finisse — cioè sembrava tagliata anche quando ci stava tutta. */
+  ctx.strokeStyle = 'rgba(214,204,184,0.16)';
+  ctx.lineWidth = Math.max(0.6, SCALE * 0.16);
   ctx.stroke();
+  // il fondo tondo, col suo cerchietto di gomma chiara
+  ctx.beginPath();
+  ctx.arc(px(butt.x), px(butt.y), wButt * SCALE, 0, TAU);
+  ctx.fillStyle = '#3A2E22';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(214,204,184,0.34)';
+  ctx.lineWidth = Math.max(0.6, SCALE * 0.18);
+  ctx.stroke();
+  // un filo di luce lungo il legno, dalla parte della lampada
+  ctx.beginPath();
+  ctx.moveTo(px(tip.x + nx * wTip * 0.45), px(tip.y + ny * wTip * 0.45));
+  ctx.lineTo(px(butt.x + nx * wButt * 0.5), px(butt.y + ny * wButt * 0.5));
+  ctx.strokeStyle = 'rgba(255,246,225,0.18)';
+  ctx.lineWidth = Math.max(0.6, SCALE * 0.22);
+  ctx.stroke();
+  // quando è innescata la stecca si accende: è il segno che adesso si carica
+  if (armed) {
+    ctx.beginPath();
+    ctx.moveTo(px(tip.x + nx * wTip), px(tip.y + ny * wTip));
+    ctx.lineTo(px(butt.x + nx * wButt), px(butt.y + ny * wButt));
+    ctx.moveTo(px(tip.x - nx * wTip), px(tip.y - ny * wTip));
+    ctx.lineTo(px(butt.x - nx * wButt), px(butt.y - ny * wButt));
+    ctx.strokeStyle = 'rgba(95,208,197,0.55)';
+    ctx.lineWidth = Math.max(0.7, SCALE * 0.22);
+    ctx.stroke();
+  }
 
   // la ghiera e il cuoio in punta
+  ctx.lineCap = 'round';
   ctx.beginPath();
   ctx.moveTo(px(tip.x), px(tip.y));
-  ctx.lineTo(px(tip.x + back.x * 1.6), px(tip.y + back.y * 1.6));
-  ctx.strokeStyle = '#5FD0C5';
-  ctx.lineWidth = Math.max(1.6, SCALE * 1.2);
+  ctx.lineTo(px(tip.x + back.x * 1.7), px(tip.y + back.y * 1.7));
+  ctx.strokeStyle = armed ? '#7FE3D8' : '#5FD0C5';
+  ctx.lineWidth = Math.max(1.4, SCALE * 0.78);
   ctx.stroke();
 
   /* La barra della forza. È il vuoto fra la punta e la bianca — cioè proprio la
@@ -760,8 +908,8 @@ function drawCue() {
      verde al rosso. Sotto ci va una linea scura più larga: senza, sul legno
      della stecca l'arancione di metà corsa si confondeva col manico e la barra
      spariva proprio quando serve. */
-  if (ui.pull > 0.6) {
-    const p = Math.min(1, ui.pull / MAX_PULL);
+  if (ui.pull > 0.4) {
+    const p = Math.min(1, ui.power);
     const from = { x: cue.x + back.x * (B.R + CUE_GAP * 0.3), y: cue.y + back.y * (B.R + CUE_GAP * 0.3) };
     const w = Math.max(2.4, SCALE * 1.9);
     ctx.beginPath();
@@ -810,7 +958,9 @@ function startShot(angle, power) {
   ui.shotEvents = B.newEvents();
   ui.phase = 'rolling';
   ui.pull = 0;
-  ui.aiming = false;
+  ui.power = 0;
+  ui.armed = false;                  // dopo il tiro si torna a mirare
+  ui.drag = null;
   updateHUD();
   ui.dirty = true;
 }
@@ -820,6 +970,8 @@ function finishShot() {
   const res = B.resolveShot(game, potted);
   ui.phase = 'idle';
   ui.pull = 0;
+  ui.power = 0;
+  ui.armed = false;
 
   // il messaggio: una cosa sola, la più importante di quel tiro
   if (res.win || res.lose) {
@@ -887,7 +1039,8 @@ function pcPlay() {
     const shot = B.aiShoot(game);
     ui.aim = shot.angle;
     ui.pull = 0;
-    ui.pcAnim = { stage: 'pull', tt: 0, power: shot.power, target: MAX_PULL * Math.min(1, shot.power) };
+    ui.power = shot.power;
+    ui.pcAnim = { stage: 'pull', tt: 0, power: shot.power, target: PULL_VIS_MAX * Math.min(1, shot.power) };
     ui.phase = 'pcaim';
     updateHUD();
     ui.dirty = true;
@@ -936,26 +1089,25 @@ function placementValid(p) {
 function onPointerDown(e) {
   if (!game || !humanCanShoot()) return;
   const p = canvasPoint(e);
-
-  if (game.ballInHand) {
+  ui.drag = {
+    mode: game.ballInHand ? 'place' : (ui.armed ? 'charge' : 'aim'),
+    sx: e.clientX, sy: e.clientY, t0: Date.now(),
+    moved: 0, from: p, along: 0, aimGrab: null,
+  };
+  if (ui.drag.mode === 'place') {
     ui.placing = true;
     ui.placePos = { x: p.x, y: p.y };
-    ui.dirty = true;
-    grabPointer(e);
-    return;
   }
-
-  const cue = game.balls[0];
-  const dx = cue.x - p.x, dy = cue.y - p.y;
-  const d = Math.hypot(dx, dy);
-  if (d < 0.6) return;                       // proprio sopra alla bianca: non si capisce dove mira
-  ui.aiming = true;
-  ui.phase = 'aim';
-  ui.aim = Math.atan2(dy, dx);
-  ui.pointerStartDist = d;
-  ui.pull = 0;
   ui.dirty = true;
   grabPointer(e);
+}
+
+// differenza fra due angoli, riportata fra -π e π
+function angleDiff(a, b) {
+  let d = (a - b) % TAU;
+  if (d > Math.PI) d -= TAU;
+  if (d < -Math.PI) d += TAU;
+  return d;
 }
 
 /* Il dito viene "preso" dalla tela, così continua a comandare anche se esce dal
@@ -971,28 +1123,48 @@ function grabPointer(e) {
 }
 
 function onPointerMove(e) {
-  if (!game) return;
-  if (ui.placing) {
-    const p = canvasPoint(e);
+  if (!game || !ui.drag) return;
+  const d = ui.drag;
+  d.moved = Math.max(d.moved, Math.hypot(e.clientX - d.sx, e.clientY - d.sy));
+  const p = canvasPoint(e);
+
+  if (d.mode === 'place') {
     ui.placePos = { x: p.x, y: p.y };
     ui.dirty = true;
     return;
   }
-  if (!ui.aiming) return;
-  const p = canvasPoint(e);
+  // finché il dito non si è spostato abbastanza il gesto è ancora indeciso:
+  // potrebbe essere un tocco secco, e quello non deve muovere niente
+  if (d.moved < TAP_PX) return;
+
   const cue = game.balls[0];
-  const dx = cue.x - p.x, dy = cue.y - p.y;
-  const d = Math.hypot(dx, dy);
-  if (d > 0.6) ui.aim = Math.atan2(dy, dx);
-  // quanto si è tirato indietro rispetto a DOVE SI È APPOGGIATO il dito: così
-  // si può mirare da vicino o da lontano e la forza vuol dire la stessa cosa
-  ui.pull = Math.max(0, Math.min(MAX_PULL, d - ui.pointerStartDist));
+  if (d.mode === 'aim') {
+    /* La stecca gira DI QUANTO gira il dito attorno alla bianca, non si mette
+       dove sta il dito: così appoggiandolo la mira non salta, e si può
+       correggere in più riprese. Più il dito è lontano dalla palla, meno gradi
+       vale lo stesso spostamento: la rifinitura si fa da lontano. */
+    const ang = Math.atan2(cue.y - p.y, cue.x - p.x);
+    if (!d.aimGrab) { d.aimGrab = { ang, base: ui.aim }; return; }
+    ui.aim = d.aimGrab.base + angleDiff(ang, d.aimGrab.ang);
+  } else {
+    // Della mano conta SOLO lo spostamento lungo l'asse della stecca: quello di
+    // lato viene buttato via, ed è per questo che caricando la mira non si
+    // sposta più di un grado.
+    const bx = -Math.cos(ui.aim), by = -Math.sin(ui.aim);
+    const along = (p.x - d.from.x) * bx + (p.y - d.from.y) * by;
+    d.along = Math.max(0, Math.min(PULL_DRAG_MAX, along));
+    ui.power = d.along / PULL_DRAG_MAX;
+    ui.pull = PULL_VIS_MAX * ui.power;
+  }
   ui.dirty = true;
 }
 
 function onPointerUp() {
-  if (!game) return;
-  if (ui.placing) {
+  if (!game || !ui.drag) return;
+  const d = ui.drag;
+  ui.drag = null;
+
+  if (d.mode === 'place') {
     const p = ui.placePos;
     ui.placing = false;
     ui.placePos = null;
@@ -1007,16 +1179,21 @@ function onPointerUp() {
     ui.dirty = true;
     return;
   }
-  if (!ui.aiming) return;
-  ui.aiming = false;
-  if (ui.pull >= MIN_PULL) {
-    startShot(ui.aim, ui.pull / MAX_PULL);
-  } else {
-    // troppo poco per essere un tiro: resta solo la mira, come si voleva
-    ui.pull = 0;
-    ui.phase = 'idle';
+
+  // il tocco secco è l'interruttore fra mirare e caricare
+  if (d.moved < TAP_PX && Date.now() - d.t0 < TAP_MS) {
+    ui.armed = !ui.armed;
+    ui.pull = 0; ui.power = 0;
     ui.dirty = true;
+    return;
   }
+  if (d.mode === 'charge' && d.along >= MIN_DRAG) {
+    startShot(ui.aim, ui.power);
+    return;
+  }
+  // trascinamento troppo corto per essere un tiro: non parte niente
+  ui.pull = 0; ui.power = 0;
+  ui.dirty = true;
 }
 
 // ================================================================
@@ -1214,6 +1391,9 @@ function restoreGame(saved) {
   ui.phase = 'idle';
   ui.aim = -Math.PI / 2;
   ui.pull = 0;
+  ui.power = 0;
+  ui.armed = false;
+  ui.drag = null;
   return true;
 }
 
@@ -1350,6 +1530,9 @@ function startNewGame() {
   ui.phase = 'idle';
   ui.aim = -Math.PI / 2;
   ui.pull = 0;
+  ui.power = 0;
+  ui.armed = false;
+  ui.drag = null;
   ui.placing = false;
   ui.placePos = null;
   ui.pcAnim = null;

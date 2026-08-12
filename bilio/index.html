@@ -102,54 +102,79 @@
     <div class="card rules-card">
       <h2 data-i18n="rulesTitle">Come si gioca</h2>
 
-      <!-- il gesto del tiro, disegnato: la stecca dietro la bianca e il dito
-           che la tira indietro -->
-      <svg class="shot-figure" viewBox="0 0 220 96" role="img" aria-hidden="true">
-        <rect x="0" y="0" width="220" height="96" rx="10" fill="rgba(95,208,197,0.05)"/>
-        <circle cx="168" cy="48" r="11" fill="#F4F1E8"/>
-        <circle cx="164" cy="44" r="4" fill="#FFFFFF" opacity="0.8"/>
-        <line x1="24" y1="48" x2="150" y2="48" stroke="#C08B4A" stroke-width="7" stroke-linecap="round"/>
-        <line x1="146" y1="48" x2="152" y2="48" stroke="#F0E6D2" stroke-width="7" stroke-linecap="round"/>
-        <line x1="182" y1="48" x2="214" y2="48" stroke="#5FD0C5" stroke-width="2" stroke-dasharray="5 5" stroke-linecap="round"/>
-        <g stroke="#8FA0C8" stroke-width="2" fill="none" stroke-linecap="round">
-          <path d="M62 30 L40 30"/><path d="M46 24 L40 30 L46 36"/>
-        </g>
-        <text x="70" y="35" fill="#8FA0C8" font-family="Manrope,sans-serif" font-size="13">più indietro = più forte</text>
-        <rect x="24" y="66" width="126" height="7" rx="3.5" fill="url(#powerGrad)"/>
+      <!-- i tre tempi del tiro: si gira la stecca, si dà un tocco secco per
+           innescarla, si tira indietro e si molla -->
+      <svg class="shot-figure" viewBox="0 0 228 104" role="img" aria-hidden="true">
+        <rect x="0" y="0" width="228" height="104" rx="10" fill="rgba(95,208,197,0.05)"/>
         <defs>
           <linearGradient id="powerGrad" x1="1" y1="0" x2="0" y2="0">
             <stop offset="0" stop-color="#4BD37B"/><stop offset="0.5" stop-color="#F2C230"/><stop offset="1" stop-color="#E0402F"/>
           </linearGradient>
+          <linearGradient id="woodGrad" x1="1" y1="0" x2="0" y2="0">
+            <stop offset="0" stop-color="#D9D2C0"/><stop offset="0.25" stop-color="#7A6650"/><stop offset="1" stop-color="#241C14"/>
+          </linearGradient>
         </defs>
+
+        <!-- 1: si gira -->
+        <text x="12" y="20" fill="#5FD0C5" font-family="Oswald,sans-serif" font-size="15">1</text>
+        <circle cx="56" cy="60" r="10" fill="#F4F1E8"/>
+        <circle cx="52" cy="56" r="3.4" fill="#FFFFFF" opacity="0.85"/>
+        <path d="M44 68 L14 86" stroke="url(#woodGrad)" stroke-width="5" stroke-linecap="round"/>
+        <path d="M30 30 A 30 30 0 0 1 78 38" fill="none" stroke="#8FA0C8" stroke-width="2" stroke-linecap="round"/>
+        <path d="M74 30 L79 39 L69 41" fill="none" stroke="#8FA0C8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- 2: tocco secco, la stecca si accende -->
+        <text x="88" y="20" fill="#5FD0C5" font-family="Oswald,sans-serif" font-size="15">2</text>
+        <circle cx="146" cy="60" r="10" fill="#F4F1E8"/>
+        <circle cx="142" cy="56" r="3.4" fill="#FFFFFF" opacity="0.85"/>
+        <path d="M132 60 L96 60" stroke="url(#woodGrad)" stroke-width="5" stroke-linecap="round"/>
+        <path d="M132 60 L127 60" stroke="#7FE3D8" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="112" cy="82" r="5" fill="#7FE3D8"/>
+        <circle cx="112" cy="82" r="10" fill="none" stroke="#7FE3D8" stroke-width="1.5" opacity="0.55"/>
+
+        <!-- 3: si tira indietro e si molla -->
+        <text x="164" y="20" fill="#5FD0C5" font-family="Oswald,sans-serif" font-size="15">3</text>
+        <circle cx="216" cy="60" r="10" fill="#F4F1E8"/>
+        <circle cx="212" cy="56" r="3.4" fill="#FFFFFF" opacity="0.85"/>
+        <rect x="178" y="57" width="26" height="6" rx="3" fill="url(#powerGrad)"/>
+        <path d="M176 60 L150 60" stroke="url(#woodGrad)" stroke-width="5" stroke-linecap="round"/>
+        <path d="M176 60 L171 60" stroke="#7FE3D8" stroke-width="5" stroke-linecap="round"/>
+        <g stroke="#8FA0C8" stroke-width="2" fill="none" stroke-linecap="round">
+          <path d="M186 84 L160 84"/><path d="M166 78 L160 84 L166 90"/>
+        </g>
       </svg>
 
       <div class="rule-row">
         <span class="rule-icon">1</span>
-        <p data-i18n="rule1">Appoggia il dito dietro la bianca e tiralo indietro: la stecca arretra insieme al dito. Più la tiri indietro, più il tiro è forte — te lo dice la barra, che da verde diventa rossa. Stacca il dito e la stecca colpisce.</p>
+        <p data-i18n="rule1">Trascina il dito sul panno: la stecca gira intorno alla bianca. Puoi staccare e riprendere quando vuoi, la mira resta dov'è. Più tieni il dito lontano dalla palla, più la mira viene fine.</p>
       </div>
       <div class="rule-row">
         <span class="rule-icon">2</span>
-        <p data-i18n="rule2">Muovendo il dito intorno alla bianca cambi la direzione. Se molli senza aver tirato indietro non succede niente: puoi mirare con calma.</p>
+        <p data-i18n="rule2">Quando la mira ti piace, dai un tocco secco, senza trascinare: la stecca si accende ed è pronta a caricare. Da quel momento la mira è bloccata e non si sposta più.</p>
       </div>
       <div class="rule-row">
         <span class="rule-icon">3</span>
-        <p data-i18n="rule3">All'inizio le palle sono di tutti e due. La prima che mandi in buca decide: se era piena (dall'1 al 7) le piene sono tue, se era mezza (dal 9 al 15) sono tue le mezze.</p>
+        <p data-i18n="rule3">Adesso trascina indietro, partendo da dove ti è comodo: la stecca arretra e la barra passa dal verde al rosso. Stacca il dito e il tiro parte. Con un altro tocco secco torni a mirare.</p>
       </div>
       <div class="rule-row">
         <span class="rule-icon">4</span>
-        <p data-i18n="rule4">Finché imbuchi una delle tue, continui a tirare. Se non imbuchi niente, tocca all'altro.</p>
+        <p data-i18n="rule4">All'inizio le palle sono di tutti e due. La prima che mandi in buca decide: se era piena (dall'1 al 7) le piene sono tue, se era mezza (dal 9 al 15) sono tue le mezze.</p>
       </div>
       <div class="rule-row">
         <span class="rule-icon">5</span>
-        <p data-i18n="rule5">La nera va per ultima: si imbuca solo quando le tue sette sono finite. Mandarla in buca prima fa perdere la partita — tranne sul primo tiro, quando torna sul tavolo e si continua.</p>
+        <p data-i18n="rule5">Finché imbuchi una delle tue, continui a tirare. Se non imbuchi niente, tocca all'altro.</p>
       </div>
       <div class="rule-row">
         <span class="rule-icon">6</span>
-        <p data-i18n="rule6">Niente falli: puoi colpire quello che vuoi. L'unica cosa che costa è mandare in buca la bianca — l'avversario la rimette dove vuole lui.</p>
+        <p data-i18n="rule6">La nera va per ultima: si imbuca solo quando le tue sette sono finite. Mandarla in buca prima fa perdere la partita — tranne sul primo tiro, quando torna sul tavolo e si continua.</p>
+      </div>
+      <div class="rule-row">
+        <span class="rule-icon">7</span>
+        <p data-i18n="rule7">Niente falli: puoi colpire quello che vuoi. L'unica cosa che costa è mandare in buca la bianca — l'avversario la rimette dove vuole lui.</p>
       </div>
       <div class="rule-row">
         <span class="rule-icon"><span class="ffr-ico" data-ico="target"></span></span>
-        <p data-i18n="rule7">La linea di mira ti mostra dove va la bianca, comprese le sponde, e dove partirà la palla che colpisci. Se la vuoi togliere, c'è l'interruttore in Impostazioni.</p>
+        <p data-i18n="rule8">La linea di mira ti mostra dove va la bianca, comprese le sponde, e dove partirà la palla che colpisci. Se la vuoi togliere, c'è l'interruttore in Impostazioni.</p>
       </div>
       <button class="primary-btn" id="closeRulesBtn" data-i18n="gotIt">Ho capito!</button>
     </div>

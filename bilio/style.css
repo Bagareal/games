@@ -212,18 +212,16 @@ a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
   display:flex; flex-direction:column; align-items:center; gap:6px;
   width:100%;
 }
+/* Niente ombra né angoli tondi qui: la tela è più grande del tavolo (attorno
+   c'è l'aria in cui ci sta la stecca) e resta trasparente ai bordi, quindi
+   un'ombra sul riquadro cadrebbe staccata dal tavolo. L'ombra la disegna il
+   codice dentro alla tela, attaccata alle sponde. */
 .table-frame{
   position:relative;
   line-height:0;
-  border-radius:10px;
-  box-shadow:
-    0 0 0 1px rgba(0,0,0,0.7),
-    0 18px 34px rgba(0,0,0,0.6),
-    0 0 60px rgba(120, 150, 255, 0.06);
 }
 #tableCanvas{
   display:block;
-  border-radius:10px;
   touch-action:none;
 }
 
