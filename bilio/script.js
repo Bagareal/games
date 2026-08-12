@@ -35,14 +35,14 @@ const UI_STRINGS = {
     rulesTitle: 'Come si gioca',
     rule1: "Trascina il dito sul panno: la stecca gira intorno alla bianca. Puoi staccare e riprendere quando vuoi, la mira resta dov'è. Più tieni il dito lontano dalla palla, più la mira viene fine.",
     rule2: 'Quando la mira ti piace, dai un tocco secco, senza trascinare: la stecca si accende ed è pronta a caricare. Da quel momento la mira è bloccata e non si sposta più.',
-    rule3: 'Adesso trascina indietro, partendo da dove ti è comodo: la stecca arretra e la barra passa dal verde al rosso. Stacca il dito e il tiro parte. Con un altro tocco secco torni a mirare.',
+    rule3: 'Adesso trascina verso il basso, partendo da dove ti è comodo: più tiri verso di te, più il tiro è forte e più la barra va dal verde al rosso. Si tira sempre in giù, qualunque sia la direzione del colpo. Stacca il dito e il tiro parte; con un altro tocco secco torni a mirare.',
     rule4: "All'inizio le palle sono di tutti e due. La prima che mandi in buca decide: se era piena (dall'1 al 7) le piene sono tue, se era mezza (dal 9 al 15) sono tue le mezze.",
     rule5: 'Finché imbuchi una delle tue, continui a tirare. Se non imbuchi niente, tocca all\'altro.',
     rule6: 'La nera va per ultima: si imbuca solo quando le tue sette sono finite. Mandarla in buca prima fa perdere la partita — tranne sul primo tiro, quando torna sul tavolo e si continua.',
     rule7: "Niente falli: puoi colpire quello che vuoi. L'unica cosa che costa è mandare in buca la bianca — l'avversario la rimette dove vuole lui.",
     rule8: 'La linea di mira ti mostra dove va la bianca, comprese le sponde, e dove partirà la palla che colpisci. Se la vuoi togliere, c\'è l\'interruttore in Impostazioni.',
     hintAim: 'Tocca per caricare',
-    hintCharge: 'Tira indietro da dove vuoi',
+    hintCharge: 'Tira verso di te',
 
     modeTitle: 'Come vuoi giocare?',
     modeFriend: 'Con un amico',
@@ -99,7 +99,7 @@ const UI_STRINGS = {
     toastStripesP2: 'Il Giocatore 2 va sulle mezze',
     toastCueIn: 'Bianca in buca',
     toastRespot: 'La nera torna sul tavolo',
-    toastPlaceCue: 'Metti la bianca dove vuoi',
+    toastPlaceCue: 'Tocca dove vuoi la bianca',
     toastBlackNow: 'Adesso la nera',
 
     winTitle: 'Hai vinto!',
@@ -128,14 +128,14 @@ const UI_STRINGS = {
     rulesTitle: 'How to play',
     rule1: 'Drag your finger across the cloth: the cue swings around the cue ball. You can lift your finger and start again whenever you like, the aim stays where you left it. The further your finger is from the ball, the finer the aim.',
     rule2: 'Once you like the aim, give the cloth a short tap without dragging: the cue lights up, ready to charge. From that moment the aim is locked and cannot move.',
-    rule3: 'Now drag backwards, starting wherever suits you: the cue pulls back and the bar goes from green to red. Lift your finger and the shot goes. Another short tap and you are back to aiming.',
+    rule3: 'Now drag downwards, starting wherever suits you: the further you pull towards yourself, the harder the shot and the further the bar goes from green to red. It is always downwards, whichever way the shot is pointing. Lift your finger and the shot goes; another short tap and you are back to aiming.',
     rule4: 'At the start every ball belongs to both of you. The first one you pot decides: pot a solid (1 to 7) and solids are yours, pot a stripe (9 to 15) and the stripes are.',
     rule5: 'Pot one of yours and you carry on shooting. Pot nothing and it is the other player’s turn.',
     rule6: 'The black goes last: you may only pot it once your seven are gone. Potting it earlier loses the game — except on the very first shot, when it goes back on the table and play continues.',
     rule7: 'No fouls: hit whatever you like. The only thing that costs you is potting the cue ball — your opponent then puts it wherever they want.',
     rule8: 'The aiming line shows where the cue ball goes, cushions included, and which way the ball you hit will set off. You can switch it off in Settings.',
     hintAim: 'Tap to charge',
-    hintCharge: 'Pull back from anywhere',
+    hintCharge: 'Pull towards you',
 
     modeTitle: 'How do you want to play?',
     modeFriend: 'With a friend',
@@ -192,7 +192,7 @@ const UI_STRINGS = {
     toastStripesP2: 'Player 2 takes the stripes',
     toastCueIn: 'Cue ball potted',
     toastRespot: 'The black goes back on the table',
-    toastPlaceCue: 'Put the cue ball where you like',
+    toastPlaceCue: 'Tap where you want the cue ball',
     toastBlackNow: 'The black now',
 
     winTitle: 'You won!',
@@ -221,14 +221,14 @@ const UI_STRINGS = {
     rulesTitle: 'Comment jouer',
     rule1: "Fais glisser le doigt sur le tapis : la queue tourne autour de la blanche. Tu peux lâcher et reprendre quand tu veux, la visée reste où tu l'as laissée. Plus le doigt est loin de la bille, plus la visée est fine.",
     rule2: 'Quand la visée te convient, donne une petite tape sèche, sans glisser : la queue s’allume, prête à charger. À partir de là la visée est bloquée et ne bouge plus.',
-    rule3: 'Maintenant tire vers l’arrière, en partant d’où tu veux : la queue recule et la barre passe du vert au rouge. Lâche le doigt et le coup part. Une autre tape sèche et tu reviens à la visée.',
+    rule3: 'Maintenant fais glisser vers le bas, en partant d’où tu veux : plus tu tires vers toi, plus le coup est fort et plus la barre va du vert au rouge. C’est toujours vers le bas, quelle que soit la direction du coup. Lâche le doigt et le coup part ; une autre tape sèche et tu reviens à la visée.',
     rule4: "Au début les billes sont à tous les deux. La première que tu rentres décide : une pleine (de 1 à 7) et les pleines sont à toi, une rayée (de 9 à 15) et ce sont les rayées.",
     rule5: "Tant que tu rentres une des tiennes, tu continues. Si tu ne rentres rien, c'est à l'autre.",
     rule6: "La noire passe en dernier : on ne la rentre qu'une fois tes sept billes finies. La rentrer avant fait perdre la partie — sauf au tout premier coup, où elle revient sur le tapis et le jeu continue.",
     rule7: "Aucune faute : tu peux frapper ce que tu veux. La seule chose qui coûte, c'est de rentrer la blanche — l'adversaire la repose alors où il veut.",
     rule8: "La ligne de visée montre où va la blanche, bandes comprises, et de quel côté partira la bille touchée. Tu peux l'éteindre dans les Réglages.",
     hintAim: 'Tape pour charger',
-    hintCharge: "Tire en arrière d'où tu veux",
+    hintCharge: 'Tire vers toi',
 
     modeTitle: 'Comment veux-tu jouer ?',
     modeFriend: 'Avec un ami',
@@ -285,7 +285,7 @@ const UI_STRINGS = {
     toastStripesP2: 'Le Joueur 2 prend les rayées',
     toastCueIn: 'Blanche rentrée',
     toastRespot: 'La noire revient sur le tapis',
-    toastPlaceCue: 'Pose la blanche où tu veux',
+    toastPlaceCue: 'Touche où tu veux la blanche',
     toastBlackNow: 'La noire maintenant',
 
     winTitle: 'Tu as gagné !',
@@ -410,7 +410,7 @@ const sprites = {};                   // una tela per palla, disegnata una volta
    alla bianca) e caricare voleva dire per forza smuovere la mira: col dito a
    due centimetri dalla palla, tre millimetri di traballamento erano undici
    gradi di tiro sbagliato. */
-const PULL_DRAG_MAX = 55;             // quanto dito serve per la forza piena
+const PULL_DRAG_MAX = 45;             // quanto dito serve, verso il basso, per la forza piena
 const PULL_VIS_MAX = 14;              // quanto arretra la stecca sullo schermo
 const MIN_DRAG = 5;                   // sotto questo non è un tiro
 const TAP_PX = 10;                    // sotto questo spostamento è un tocco secco
@@ -682,12 +682,17 @@ function render() {
   // la mira, sotto alle palle: così non copre niente
   if (ui.started && !ui.over && showsAim()) drawAim();
 
+  const toPlace = game.ballInHand && !ui.over && ui.phase !== 'rolling';
   for (const b of game.balls) {
     if (b.in) continue;
     if (b.id === 0 && ui.placing && ui.placePos) continue;   // la si sta spostando
     const spr = sprites[b.id];
     if (!spr) continue;
+    // finché è da sistemare la bianca si vede in trasparenza: c'è, ma non è
+    // ancora al suo posto
+    if (b.id === 0 && toPlace) ctx.globalAlpha = 0.62;
     ctx.drawImage(spr, px(b.x) - spr.width / 2, px(b.y) - spr.height / 2);
+    ctx.globalAlpha = 1;
   }
 
   // la bianca in mano, attaccata al dito
@@ -702,7 +707,7 @@ function render() {
     ctx.strokeStyle = okHere ? '#5FD0C5' : '#E0402F';
     ctx.lineWidth = Math.max(1.2, SCALE * 0.35);
     ctx.stroke();
-  } else if (game.ballInHand && ui.phase !== 'rolling' && !ui.over) {
+  } else if (toPlace && !isPcTurn()) {
     // c'è da piazzarla: si segnala girandole intorno un anello
     const cue = game.balls[0];
     ctx.beginPath();
@@ -951,6 +956,12 @@ function finishShot() {
   updateHUD();
   ui.dirty = true;
 
+  /* Con la bianca in buca la palla resta "dentro" e quindi non si disegna: si
+     vedeva solo un anello appoggiato sulla buca, che non vuol dire niente. La
+     si rimette subito sul suo punto di partenza, visibile e trasparente, e da
+     lì la si sposta dove si vuole. */
+  if (game.ballInHand) B.respotCue(game);
+
   if (game.ballInHand && isPcTurn()) { setTimeout(pcPlaceCue, 620); return; }
   if (isPcTurn()) { setTimeout(pcPlay, 700); return; }
   // tocca a chi gioca: il promemoria esce dopo il messaggio del tiro, se c'era
@@ -1039,9 +1050,12 @@ function canvasPoint(e) {
   const rect = els.canvas.getBoundingClientRect();
   const sx = els.canvas.width / rect.width;
   const sy = els.canvas.height / rect.height;
+  // EDGE, non RAIL: attorno al tavolo c'è anche il margine della stecca, e
+  // px() lo somma. Sbagliando qui il dito risultava spostato di otto unità in
+  // diagonale — la bianca si posava più in là di dove si toccava.
   return {
-    x: (e.clientX - rect.left) * sx / SCALE - RAIL,
-    y: (e.clientY - rect.top) * sy / SCALE - RAIL,
+    x: (e.clientX - rect.left) * sx / SCALE - EDGE,
+    y: (e.clientY - rect.top) * sy / SCALE - EDGE,
   };
 }
 function humanCanShoot() {
@@ -1112,11 +1126,15 @@ function onPointerMove(e) {
     if (!d.aimGrab) { d.aimGrab = { ang, base: ui.aim }; return; }
     ui.aim = d.aimGrab.base + angleDiff(ang, d.aimGrab.ang);
   } else {
-    // Della mano conta SOLO lo spostamento lungo l'asse della stecca: quello di
-    // lato viene buttato via, ed è per questo che caricando la mira non si
-    // sposta più di un grado.
-    const bx = -Math.cos(ui.aim), by = -Math.sin(ui.aim);
-    const along = (p.x - d.from.x) * bx + (p.y - d.from.y) * by;
+    /* La forza è QUANTO SI TRASCINA VERSO IL BASSO, e basta: il gesto è sempre
+       lo stesso qualunque sia la direzione del tiro. Prima si contava lo
+       spostamento lungo l'asse della stecca — fisicamente giusto, ma quando la
+       stecca punta in basso il manico sta di sopra e per caricare bisognava
+       trascinare in SU, cioè il verso cambiava a metà partita. Il prezzo è che
+       tirando in giù con la stecca rivolta in basso la si vede arretrare in su:
+       il manico è lì, di lì si tira. Quello che va di lato non conta niente,
+       ed è per questo che caricando la mira non si sposta di un grado. */
+    const along = p.y - d.from.y;
     d.along = Math.max(0, Math.min(PULL_DRAG_MAX, along));
     ui.power = d.along / PULL_DRAG_MAX;
     ui.pull = PULL_VIS_MAX * ui.power;
@@ -1363,8 +1381,9 @@ function restoreGame(saved) {
   };
   g.ballInHand = !!r.ballInHand;
   g.shots = Number(r.shots) || 0;
-  // la bianca in buca senza palla in mano non è uno stato possibile: la si rimette
-  if (g.balls[0].in && !g.ballInHand) B.respotCue(g);
+  // la bianca non resta mai in buca: o si gioca da dov'è, o è in mano e allora
+  // si vede lo stesso, sul punto di partenza, pronta da spostare
+  if (g.balls[0].in) B.respotCue(g);
 
   game = g;
   ui.mode = r.mode;
