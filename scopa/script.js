@@ -31,6 +31,7 @@ const UI_STRINGS = {
     languageSub: "Scegli la lingua dell'interfaccia",
     close: 'Chiudi',
     back: 'Indietro',
+    backToHome: 'Torna in Home',
     play: 'Gioca',
     gotIt: 'Ho capito!',
 
@@ -43,7 +44,7 @@ const UI_STRINGS = {
     rule6: 'A fine mano si contano i punti: un punto a chi ha più di 20 carte, uno a chi ha più denari, uno a chi ha il sette di denari, uno a chi ha la primiera, più un punto per ogni scopa.',
     rule7: "La primiera si conta con la carta migliore di ogni seme: il 7 vale 21, il 6 vale 18, l'asso 16, il 5 vale 15, il 4 vale 14, il 3 vale 13, il 2 vale 12 e le figure 10.",
     rule8: "Vince chi arriva per primo a 11 punti. Se ci arrivate tutti e due nella stessa mano vince chi ne ha di più, e se siete pari si gioca un'altra mano.",
-    rule9: "Tocca una carta della tua mano: le carte che può prendere si illuminano. Se le prese possibili sono più d'una, scegli quella che vuoi fra quelle proposte sopra la mano.",
+    rule9: "Trascina una carta della tua mano sul tavolo, col dito o con il mouse: mentre la trascini si illuminano le carte che può prendere. Se le prese possibili sono più d'una, le combinazioni compaiono sul tavolo e scegli quella che vuoi. Si può giocare anche a tocchi: tocca la carta, poi tocca il tavolo.",
     rule10: 'Nelle impostazioni si possono accendere due aiuti: il rebello, cioè un punto in più a chi ha il dieci di denari, e il conto delle carte non ancora uscite.',
 
     creatorTitle: 'Giocherai contro TheCreator',
@@ -72,9 +73,7 @@ const UI_STRINGS = {
     yourTurn: 'Tocca a te',
     thinking: 'TheCreator sta pensando…',
     chooseTake: 'Scegli la presa',
-
-    discard: 'Butta la carta',
-    takeLabel: 'Prendi',
+    cancelTake: 'Annulla',
     scopaFlash: 'Scopa!',
 
     restartTitle: 'Ricominciare la partita?',
@@ -121,6 +120,7 @@ const UI_STRINGS = {
     languageSub: 'Choose the interface language',
     close: 'Close',
     back: 'Back',
+    backToHome: 'Back to Home',
     play: 'Play',
     gotIt: 'Got it!',
 
@@ -133,7 +133,7 @@ const UI_STRINGS = {
     rule6: 'Points are counted at the end of each hand: one for more than 20 cards, one for most coins, one for the seven of coins, one for the primiera, plus one for every scopa.',
     rule7: 'The primiera is counted with your best card in each suit: a 7 is worth 21, a 6 is 18, an ace 16, a 5 is 15, a 4 is 14, a 3 is 13, a 2 is 12 and the face cards 10.',
     rule8: 'First to 11 points wins. If you both reach it in the same hand the higher score wins, and if you are level you play another hand.',
-    rule9: 'Tap a card in your hand: the table cards it can take light up. If there is more than one possible capture, pick the one you want from those offered above your hand.',
+    rule9: 'Drag a card from your hand onto the table, with your finger or the mouse: the cards it can take light up as you drag. If there is more than one possible capture, the combinations appear on the table and you pick the one you want. Tapping works too: tap the card, then tap the table.',
     rule10: 'Two optional aids can be switched on in the settings: the rebello, an extra point for the ten of coins, and the count of the cards not played yet.',
 
     creatorTitle: "You'll play against TheCreator",
@@ -162,9 +162,7 @@ const UI_STRINGS = {
     yourTurn: 'Your turn',
     thinking: 'TheCreator is thinking…',
     chooseTake: 'Choose your capture',
-
-    discard: 'Lay the card down',
-    takeLabel: 'Take',
+    cancelTake: 'Cancel',
     scopaFlash: 'Scopa!',
 
     restartTitle: 'Restart the game?',
@@ -211,6 +209,7 @@ const UI_STRINGS = {
     languageSub: "Choisis la langue de l'interface",
     close: 'Fermer',
     back: 'Retour',
+    backToHome: "Retour à l'accueil",
     play: 'Jouer',
     gotIt: 'Compris !',
 
@@ -223,7 +222,7 @@ const UI_STRINGS = {
     rule6: "À la fin de chaque main on compte les points : un point pour plus de 20 cartes, un pour le plus de deniers, un pour le sept de deniers, un pour la primiera, plus un point par scopa.",
     rule7: "La primiera se compte avec ta meilleure carte de chaque couleur : le 7 vaut 21, le 6 vaut 18, l'as 16, le 5 vaut 15, le 4 vaut 14, le 3 vaut 13, le 2 vaut 12 et les figures 10.",
     rule8: "Le premier à 11 points gagne. Si vous y arrivez tous les deux dans la même main, c'est le plus haut score qui gagne, et à égalité on joue une main de plus.",
-    rule9: "Touche une carte de ta main : les cartes de la table qu'elle peut prendre s'allument. S'il y a plusieurs prises possibles, choisis celle que tu veux parmi celles proposées au-dessus de ta main.",
+    rule9: "Fais glisser une carte de ta main sur la table, au doigt ou à la souris : les cartes qu'elle peut prendre s'allument pendant que tu la déplaces. S'il y a plusieurs prises possibles, les combinaisons apparaissent sur la table et tu choisis celle que tu veux. Ça marche aussi en touchant : touche la carte, puis touche la table.",
     rule10: "Deux aides facultatives s'allument dans les paramètres : le rebello, un point de plus pour le dix de deniers, et le compte des cartes pas encore sorties.",
 
     creatorTitle: 'Tu joueras contre TheCreator',
@@ -252,9 +251,7 @@ const UI_STRINGS = {
     yourTurn: 'À toi de jouer',
     thinking: 'TheCreator réfléchit…',
     chooseTake: 'Choisis ta prise',
-
-    discard: 'Poser la carte',
-    takeLabel: 'Prendre',
+    cancelTake: 'Annuler',
     scopaFlash: 'Scopa !',
 
     restartTitle: 'Recommencer la partie ?',
@@ -331,7 +328,9 @@ const els = {
   deckCount: document.getElementById('deckCount'),
   flash: document.getElementById('flash'),
   counterStrip: document.getElementById('counterStrip'),
-  actionStrip: document.getElementById('actionStrip'),
+  choicePanel: document.getElementById('choicePanel'),
+  choiceList: document.getElementById('choiceList'),
+  choiceCancelBtn: document.getElementById('choiceCancelBtn'),
 
   restartBtn: document.getElementById('restartBtn'),
   settingsBtn: document.getElementById('settingsBtn'),
@@ -454,9 +453,6 @@ function cardHtml(id, extra) {
     '</div>';
 }
 function backHtml() { return '<div class="pcard back"></div>'; }
-function miniHtml(id) {
-  return '<span class="mini-card s-' + cardSuit(id) + '">' + cardVal(id) + GLYPHS[cardSuit(id)] + '</span>';
-}
 
 // ============================================================
 //  LE REGOLE
@@ -778,7 +774,13 @@ const ui = {
   busy: false,
   selected: null,         // carta scelta dalla mano
   selOptions: [],         // prese possibili con quella carta
-  lastPlayed: null,       // per l'animazione della carta appena posata
+  flying: [],             // carte che in questo momento stanno volando: si
+                          // disegnano al loro posto ma invisibili, e volano le
+                          // loro copie (così niente si riordina a mezz'aria)
+  choiceOpen: false,      // il pannello delle prese è aperto sul panno
+  choiceCard: null,       // carta lasciata sul tavolo, in attesa della scelta
+  choiceOpts: [],
+  choiceFrom: null,       // da dove ripartirà l'animazione dopo la scelta
   rulesFromSettings: false,
   pendingConfirm: null,
   pendingDifficulty: null,
@@ -808,7 +810,8 @@ function startHand() {
   game.turn = other(game.dealer);
   ui.selected = null;
   ui.selOptions = [];
-  ui.lastPlayed = null;
+  ui.flying = [];
+  closeChoice();
   ui.over = false;
   ui.started = true;
   ui.busy = false;
@@ -837,7 +840,7 @@ function layout() {
   const H = els.gameZone.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
 
   const fixed = els.plateTop.offsetHeight + els.plateBottom.offsetHeight +
-    els.counterStrip.offsetHeight + els.actionStrip.offsetHeight + 34;
+    els.counterStrip.offsetHeight + 34;
   // il panno è la parte che conta: gli si tiene da parte lo spazio per due file
   // di carte prima di dire quanto possono essere grandi quelle in mano
   const minFelt = 150;
@@ -894,7 +897,7 @@ function renderTurnPill() {
     els.turnPill.classList.add('hot');
     return;
   }
-  if (ui.selected && ui.selOptions.length > 1) {
+  if (ui.choiceOpen) {
     els.turnPill.textContent = t().chooseTake;
     els.turnPill.classList.add('hot');
     return;
@@ -911,7 +914,7 @@ function renderTable() {
   const html = game.table.map((c, i) => {
     let extra = '';
     if (ui.selected) extra = inPlay.has(i) ? 'take' : 'dim';
-    if (c === ui.lastPlayed) extra += ' landing';
+    if (ui.flying.indexOf(c) !== -1) extra += ' ghost';
     return cardHtml(c, extra.trim());
   }).join('');
   els.tableCards.innerHTML = html;
@@ -926,23 +929,29 @@ function renderHands() {
   els.handBottom.innerHTML = game.hands.you.map(c => {
     let extra = yourTurn ? 'playable' : '';
     if (c === ui.selected) extra += ' selected';
+    if (drag.active && c === drag.card) extra += ' dragging';
+    if (ui.flying.indexOf(c) !== -1) extra += ' ghost';
     return cardHtml(c, extra.trim());
   }).join('');
 }
 
-// Cosa si può fare con la carta scelta: buttarla, oppure una riga per ogni
-// presa possibile. Le prese si vedono per intero, con le carte in miniatura:
-// è così che si impara che il 7 può prendere il 4+3 o il 5+2.
-function renderActions() {
-  if (!game || !ui.selected || ui.busy || game.turn !== 'you') { els.actionStrip.innerHTML = ''; return; }
-  if (!ui.selOptions.length) {
-    els.actionStrip.innerHTML = '<button class="action-btn ghost" data-opt="-1">' + t().discard + '</button>';
-    return;
-  }
-  els.actionStrip.innerHTML = ui.selOptions.map((opt, i) =>
-    '<button class="action-btn" data-opt="' + i + '">' + t().takeLabel +
-    '<span class="mini-row">' + opt.map(k => miniHtml(game.table[k])).join('') + '</span></button>'
+// Le prese possibili, una accanto all'altra sopra al panno, con le carte vere:
+// è così che si impara che il 7 può prendere il 4+3 oppure il 5+2.
+function renderChoice() {
+  if (!ui.choiceOpen || !game) { els.choicePanel.hidden = true; return; }
+  els.choiceList.innerHTML = ui.choiceOpts.map((opt, i) =>
+    '<button class="choice-opt" data-opt="' + i + '">' +
+    opt.map(k => cardHtml(game.table[k])).join('<span class="plus">+</span>') +
+    '</button>'
   ).join('');
+  els.choicePanel.hidden = false;
+  // Le carte della scelta si rimpiccioliscono finché tutto ci sta dentro al
+  // panno: su un telefono basso, con quattro prese possibili, a misura piena il
+  // pulsante "annulla" finiva sotto al bordo e bisognava scorrere per trovarlo.
+  for (let w = 34; w >= 18; w -= 4) {
+    els.choicePanel.style.setProperty('--choice-cw', w + 'px');
+    if (els.choicePanel.scrollHeight <= els.choicePanel.clientHeight) break;
+  }
 }
 
 // Le carte non ancora uscite, valore per valore: aiuto facoltativo, si accende
@@ -966,7 +975,7 @@ function render() {
   renderTable();
   renderHands();
   renderCounter();
-  renderActions();
+  renderChoice();
   layout();
 }
 
@@ -980,42 +989,309 @@ function flash(text) {
 function wait(ms) { return new Promise(res => setTimeout(res, ms)); }
 
 // ============================================================
-//  IL GIRO DI GIOCO
+//  LE CARTE CHE SI MUOVONO
 // ============================================================
-function selectCard(card) {
-  if (ui.selected === card) { ui.selected = null; ui.selOptions = []; }
-  else {
-    ui.selected = card;
-    ui.selOptions = captureOptions(cardVal(card), game.table);
-  }
-  render();
+// Una carta non appare e non sparisce mai sul posto: parte da dove sta e
+// arriva dove va, e nel frattempo la carta vera resta ferma e invisibile al
+// suo posto. Quello che si vede viaggiare è una copia appoggiata sopra alla
+// pagina: così il tavolo non si riordina a metà movimento.
+
+function reducedMotion() {
+  return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-async function doPlay(player, play) {
+function boxOf(el) {
+  const r = el.getBoundingClientRect();
+  return { left: r.left, top: r.top, width: r.width, height: r.height };
+}
+
+// il mazzetto delle carte prese: il numero sulla targa, quello che sta per
+// crescere. È lì che le carte prese devono andare a finire.
+function pileBox(player) {
+  const el = player === 'you' ? els.botCards : els.topCards;
+  const r = el.getBoundingClientRect();
+  const w = 24;
+  return { left: r.left + r.width / 2 - w / 2, top: r.top + r.height / 2 - w * 0.75, width: w, height: w * 1.5 };
+}
+
+// se il tavolo è vuoto non c'è nessuna carta a cui puntare: si punta al centro
+function feltBox(width) {
+  const r = els.felt.getBoundingClientRect();
+  return { left: r.left + r.width / 2 - width / 2, top: r.top + r.height / 2 - width * 0.75, width: width, height: width * 1.5 };
+}
+
+function makeFlyer(cardId, from, reveal) {
+  const el = document.createElement('div');
+  el.className = 'flyer' + (reveal ? ' reveal' : '');
+  el.style.setProperty('--cw', from.width + 'px');
+  el.style.left = from.left + 'px';
+  el.style.top = from.top + 'px';
+  el.innerHTML = '<div class="flyer-inner">' + cardHtml(cardId) + '</div>';
+  document.body.appendChild(el);
+  void el.offsetWidth;             // il punto di partenza va "fissato" prima
+  return el;
+}
+
+// muove una copia da `from` a `to`: la copia resta ancorata al punto di
+// partenza e ci si sposta sopra, così un secondo viaggio riparte da dove il
+// primo si è fermato senza saltare
+function flyTo(el, from, to, ms, fade) {
+  const scale = to.width / from.width;
+  el.style.transition = 'transform ' + ms + 'ms cubic-bezier(0.25, 0.7, 0.35, 1)' +
+    (fade ? ', opacity ' + ms + 'ms ease-in' : '');
+  el.style.transform = 'translate(' + (to.left - from.left) + 'px, ' + (to.top - from.top) + 'px) scale(' + scale + ')';
+  if (fade) el.style.opacity = '0.15';
+}
+
+// ============================================================
+//  IL GIRO DI GIOCO
+// ============================================================
+function setSelection(card) {
+  ui.selected = card;
+  ui.selOptions = card ? captureOptions(cardVal(card), game.table) : [];
+  render();
+}
+function selectCard(card) {
+  setSelection(ui.selected === card ? null : card);
+}
+
+function handCardEl(player, card) {
+  if (player === 'you') return els.handBottom.querySelector('[data-card="' + card + '"]');
+  return els.handTop.firstElementChild;
+}
+
+// Una carta lasciata sul tavolo: se prende in un modo solo si prende e basta,
+// se non prende niente resta lì, e solo quando i modi sono più d'uno si sceglie.
+function resolvePlay(card, fromBox) {
+  if (!canPlayNow() || game.hands.you.indexOf(card) === -1) return;
+  const opts = captureOptions(cardVal(card), game.table);
+  if (opts.length > 1) { openChoice(card, opts, fromBox); return; }
+  doPlay('you', { card: card, take: opts.length ? opts[0] : null }, fromBox);
+}
+
+function openChoice(card, opts, fromBox) {
+  ui.choiceOpen = true;
+  ui.choiceCard = card;
+  ui.choiceOpts = opts;
+  ui.choiceFrom = fromBox || null;
+  ui.selected = card;
+  ui.selOptions = opts;
+  render();
+}
+function closeChoice() {
+  ui.choiceOpen = false;
+  ui.choiceCard = null;
+  ui.choiceOpts = [];
+  ui.choiceFrom = null;
+  els.choicePanel.hidden = true;
+}
+
+// Il viaggio di una giocata, uguale per te e per il computer:
+// - la carta parte dalla mano e scende sul tavolo;
+// - se prende, si porta via le carte prese verso il mazzetto;
+// - se non prende, resta dov'è arrivata.
+async function doPlay(player, play, fromBox) {
   ui.busy = true;
+  closeChoice();
   ui.selected = null;
   ui.selOptions = [];
   // la mano si ridisegna subito, non dopo l'animazione: altrimenti per un
   // attimo le carte sembrano ancora da toccare mentre il tocco è già chiuso
   renderHands();
-  renderActions();
 
-  // le carte prese svaniscono sul posto prima di finire nel mazzetto
+  const slow = !reducedMotion();
+  const srcEl = handCardEl(player, play.card);
+  const from = fromBox || (srcEl ? boxOf(srcEl) : feltBox(60));
+  ui.flying = [play.card];
+  if (srcEl) srcEl.classList.add('ghost');
+
+  let res;
   if (play.take) {
-    const nodes = els.tableCards.querySelectorAll('.pcard');
-    for (const i of play.take) if (nodes[i]) nodes[i].classList.add('leaving');
-    await wait(220);
+    // dove sono adesso le carte che sta per prendere, prima che il tavolo cambi
+    const takeEls = [];
+    const takenIds = [];
+    for (const i of play.take) {
+      const el = els.tableCards.children[i];
+      if (el) { takeEls.push(el); takenIds.push(game.table[i]); }
+    }
+    const takeBoxes = takeEls.map(boxOf);
+    const landing = takeBoxes[0] || feltBox(from.width);
+    ui.flying = [play.card].concat(takenIds);
+
+    // 1. la carta scende sul tavolo, sopra la prima carta che prende
+    const played = makeFlyer(play.card, from, player === 'pc');
+    flyTo(played, from, landing, slow ? 300 : 0);
+    if (slow) await wait(300);
+
+    // 2. la carta giocata e quelle prese se ne vanno insieme nel mazzetto
+    for (const el of takeEls) el.classList.add('ghost');
+    const dest = pileBox(player);
+    const others = takeBoxes.map((b, k) => makeFlyer(takenIds[k], b, false));
+    flyTo(played, from, dest, slow ? 340 : 0, true);
+    others.forEach((el, k) => flyTo(el, takeBoxes[k], dest, slow ? 340 : 0, true));
+    if (slow) await wait(340);
+    for (const el of others) el.remove();
+    played.remove();
+
+    res = applyPlay(game, player, play);
+    ui.flying = [];
+    render();
+  } else {
+    // la carta resta sul tavolo: si mette subito al suo posto — invisibile —
+    // e la copia ci vola sopra, così atterra proprio dove starà
+    res = applyPlay(game, player, play);
+    render();
+    const destEl = els.tableCards.querySelector('[data-card="' + play.card + '"]');
+    const dest = destEl ? boxOf(destEl) : feltBox(from.width);
+    const played = makeFlyer(play.card, from, player === 'pc');
+    flyTo(played, from, dest, slow ? 300 : 0);
+    if (slow) await wait(300);
+    played.remove();
+    ui.flying = [];
+    renderTable();
+    renderHands();
   }
 
-  const res = applyPlay(game, player, play);
-  ui.lastPlayed = play.take ? null : play.card;
-  render();
   if (res.scopa) { flash(t().scopaFlash); await wait(700); }
-  else await wait(260);
-  ui.lastPlayed = null;
+  else if (slow) await wait(160);
 
   ui.busy = false;
   afterPlay(player);
+}
+
+// ============================================================
+//  IL TRASCINAMENTO
+// ============================================================
+// Si gioca prendendo la carta col dito (o col mouse) e portandola sul panno.
+// Chi preferisce toccare può ancora farlo: un tocco senza spostamento sceglie
+// la carta, e un tocco sul panno la gioca. Un modo solo di scrivere le regole,
+// due modi di usarle.
+const drag = {
+  card: null,
+  active: false,
+  pointerId: null,
+  startX: 0, startY: 0,
+  grabX: 0, grabY: 0,
+  lift: 0,
+  ghost: null,
+  blockClickUntil: 0,
+};
+
+function canPlayNow() {
+  return ui.started && !ui.over && !ui.busy && !ui.choiceOpen && game && game.turn === 'you';
+}
+
+function onHandDown(e) {
+  if (!canPlayNow()) return;
+  if (e.button > 0) return;
+  if (drag.card) return;           // un dito alla volta: il secondo si ignora
+  const el = e.target.closest('.pcard');
+  if (!el || !el.dataset.card) return;
+  drag.card = el.dataset.card;
+  drag.active = false;
+  drag.pointerId = e.pointerId;
+  drag.startX = e.clientX;
+  drag.startY = e.clientY;
+  const r = el.getBoundingClientRect();
+  drag.grabX = e.clientX - r.left;
+  drag.grabY = e.clientY - r.top;
+  drag.w = r.width;
+  drag.h = r.height;
+  // col dito la carta si alza sopra la mano, altrimenti resta nascosta sotto
+  drag.lift = e.pointerType === 'touch' ? r.height * 0.55 : 0;
+  // La presa del puntatore si tiene sulla mano, non sulla carta: appena si
+  // sceglie una carta la mano viene ridisegnata da capo, e col dito la presa
+  // starebbe su un elemento che non esiste più — il trascinamento si
+  // fermerebbe da solo dopo il primo movimento.
+  try { els.handBottom.setPointerCapture(e.pointerId); } catch (err) { /* niente presa, si va lo stesso */ }
+}
+
+function startDrag() {
+  drag.active = true;
+  setSelection(drag.card);          // le prese possibili si illuminano subito
+  const g = document.createElement('div');
+  g.className = 'drag-ghost';
+  g.style.setProperty('--cw', drag.w + 'px');
+  g.innerHTML = cardHtml(drag.card);
+  document.body.appendChild(g);
+  drag.ghost = g;
+}
+
+function moveGhost(x, y) {
+  if (!drag.ghost) return;
+  drag.ghost.style.transform =
+    'translate(' + (x - drag.grabX) + 'px, ' + (y - drag.grabY - drag.lift) + 'px)';
+}
+
+function overFelt(x, y) {
+  const r = els.felt.getBoundingClientRect();
+  return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+}
+
+function onHandMove(e) {
+  if (!drag.card || drag.pointerId !== e.pointerId) return;
+  if (!drag.active) {
+    if (Math.abs(e.clientX - drag.startX) + Math.abs(e.clientY - drag.startY) < 8) return;
+    startDrag();
+  }
+  e.preventDefault();
+  moveGhost(e.clientX, e.clientY);
+  els.felt.classList.toggle('drop-hot', overFelt(e.clientX, e.clientY - drag.lift));
+}
+
+function onHandUp(e) {
+  if (!drag.card || drag.pointerId !== e.pointerId) return;
+  const card = drag.card;
+  const wasDragging = drag.active;
+  const ghost = drag.ghost;
+  releasePointer(e.pointerId);
+  els.felt.classList.remove('drop-hot');
+  drag.card = null;
+  drag.active = false;
+  drag.ghost = null;
+  drag.pointerId = null;
+
+  // nessuno spostamento: era un tocco, e il tocco sceglie la carta
+  if (!wasDragging) { if (card) selectCard(card); return; }
+
+  drag.blockClickUntil = performance.now() + 400;
+  if (overFelt(e.clientX, e.clientY - drag.lift)) {
+    const box = boxOf(ghost);
+    ghost.remove();
+    resolvePlay(card, box);
+  } else {
+    // fuori dal panno non si gioca niente: la carta torna in mano
+    returnGhost(ghost, card);
+    setSelection(null);
+  }
+}
+
+function onHandCancel(e) {
+  if (!drag.card || drag.pointerId !== e.pointerId) return;
+  const ghost = drag.ghost;
+  const card = drag.card;
+  releasePointer(e.pointerId);
+  els.felt.classList.remove('drop-hot');
+  drag.card = null; drag.active = false; drag.ghost = null; drag.pointerId = null;
+  if (ghost) returnGhost(ghost, card);
+  setSelection(null);
+}
+
+function releasePointer(id) {
+  try { if (els.handBottom.hasPointerCapture(id)) els.handBottom.releasePointerCapture(id); }
+  catch (err) { /* il puntatore se n'era già andato */ }
+}
+
+// la carta lasciata fuori dal panno non svanisce a mezz'aria: torna al suo
+// posto nella mano, e solo allora la carta vera si riaccende
+function returnGhost(ghost, card) {
+  if (!ghost) return;
+  const home = card ? els.handBottom.querySelector('[data-card="' + card + '"]') : null;
+  if (!home || reducedMotion()) { ghost.remove(); return; }
+  const to = boxOf(home);
+  ghost.style.transition = 'transform 0.18s ease-out';
+  ghost.style.transform = 'translate(' + to.left + 'px, ' + to.top + 'px)';
+  setTimeout(() => ghost.remove(), 200);
 }
 
 function afterPlay(player) {
@@ -1369,30 +1645,36 @@ async function init() {
   // è l'unico momento in cui si è sicuri di non perdere la mano in corso
   document.addEventListener('visibilitychange', () => { if (document.hidden) saveGame(); });
 
-  // la tua mano
-  els.handBottom.addEventListener('click', (e) => {
-    if (!ui.started || ui.over || ui.busy || game.turn !== 'you') return;
-    const el = e.target.closest('.pcard');
-    if (!el || !el.dataset.card) return;
-    selectCard(el.dataset.card);
+  // la tua mano: si prende una carta e la si porta sul panno. Il movimento e il
+  // rilascio si ascoltano sulla finestra, non sulla mano: la carta si trascina
+  // via dalla mano, e chi ascolta deve continuare a sentire anche quando il
+  // dito è dall'altra parte dello schermo
+  els.handBottom.addEventListener('pointerdown', onHandDown);
+  window.addEventListener('pointermove', onHandMove, { passive: false });
+  window.addEventListener('pointerup', onHandUp);
+  window.addEventListener('pointercancel', onHandCancel);
+  // il panno: con una carta già scelta col tocco, toccare il tavolo la gioca —
+  // esattamente come lasciarcela cadere sopra
+  els.felt.addEventListener('click', () => {
+    if (!canPlayNow() || !ui.selected) return;
+    if (performance.now() < drag.blockClickUntil) return;
+    const el = els.handBottom.querySelector('[data-card="' + ui.selected + '"]');
+    resolvePlay(ui.selected, el ? boxOf(el) : null);
   });
-  // il tavolo: toccare una carta illuminata gioca la presa, se non ce n'è più
-  // d'una che la contiene (altrimenti si sceglie dalla striscia dei bottoni)
-  els.tableCards.addEventListener('click', (e) => {
-    if (!ui.started || ui.over || ui.busy || game.turn !== 'you' || !ui.selected) return;
-    const el = e.target.closest('.pcard');
-    if (!el) return;
-    const i = Array.prototype.indexOf.call(els.tableCards.children, el);
-    if (i < 0) return;
-    const matching = ui.selOptions.filter(o => o.indexOf(i) !== -1);
-    if (matching.length === 1) doPlay('you', { card: ui.selected, take: matching[0] });
-  });
-  els.actionStrip.addEventListener('click', (e) => {
-    if (!ui.started || ui.over || ui.busy || game.turn !== 'you' || !ui.selected) return;
-    const btn = e.target.closest('.action-btn');
-    if (!btn) return;
+  // la scelta della presa, quando i modi di prendere sono più d'uno
+  els.choiceList.addEventListener('click', (e) => {
+    const btn = e.target.closest('.choice-opt');
+    if (!btn || !ui.choiceOpen || ui.busy) return;
     const i = +btn.dataset.opt;
-    doPlay('you', { card: ui.selected, take: i < 0 ? null : ui.selOptions[i] });
+    const take = ui.choiceOpts[i];
+    const card = ui.choiceCard;
+    const from = ui.choiceFrom;
+    if (!take) return;
+    doPlay('you', { card: card, take: take }, from);
+  });
+  els.choiceCancelBtn.addEventListener('click', () => {
+    closeChoice();
+    setSelection(null);
   });
 
   // istruzioni → difficoltà → sfottò → si gioca

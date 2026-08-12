@@ -347,7 +347,7 @@ a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
 .pcard.back::after{ border-color: rgba(242,230,206,0.35); }
 
 /* stati */
-.pcard.playable{ cursor:pointer; }
+.pcard.playable{ cursor: grab; touch-action:none; }
 .pcard.selected{
   transform: translateY(calc(var(--cw, 60px) * -0.16));
   box-shadow: 0 8px 14px rgba(0,0,0,0.45), 0 0 0 2px var(--gold-hot);
@@ -364,15 +364,53 @@ a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
 }
 /* con una carta scelta, quelle che non c'entrano si spengono un po' */
 .pcard.dim{ opacity:0.58; }
-.pcard.landing{ animation: landing 0.32s ease-out; }
-@keyframes landing{
-  0%{ transform: translateY(calc(var(--cw, 60px) * -0.9)) scale(1.06); opacity:0.2; }
-  100%{ transform: translateY(0) scale(1); opacity:1; }
-}
-.pcard.leaving{ opacity:0; transform: scale(0.72); }
+/* la carta che in questo momento sta volando: il posto resta occupato (così il
+   tavolo e la mano non ballano) ma la carta non si vede, perché quella che si
+   vede è la copia che vola */
+.pcard.ghost{ visibility:hidden; }
+/* la carta che si sta trascinando: resta al suo posto, spenta, mentre il dito
+   porta in giro la sua copia */
+.pcard.dragging{ opacity:0.28; box-shadow:none; transform:none; }
 @media (prefers-reduced-motion: reduce){
   .pcard.take{ animation:none; }
-  .pcard.landing{ animation:none; }
+}
+
+/* ---------- le carte che si muovono ---------- */
+/* Una copia della carta, appoggiata sopra alla pagina, che va da un punto
+   all'altro: dalla mano al tavolo quando si gioca, dal tavolo al mazzetto
+   quando si prende. Le carte vere non si muovono mai, così niente scatta e
+   niente si riordina a metà movimento. */
+.flyer{
+  position:fixed; z-index:70;
+  pointer-events:none;
+  transform-origin: top left;
+  will-change: transform, opacity;
+}
+.flyer .pcard{ box-shadow: 0 10px 22px rgba(0,0,0,0.5); }
+/* la carta del computer parte coperta e si scopre mentre parte */
+.flyer-inner{ transform-origin: center; }
+.flyer.reveal .flyer-inner{ animation: revealCard 0.22s ease-out; }
+@keyframes revealCard{
+  0%{ transform: scaleX(0.05); }
+  100%{ transform: scaleX(1); }
+}
+/* la carta attaccata al dito (o al puntatore) mentre la si trascina */
+.drag-ghost{
+  position:fixed; left:0; top:0; z-index:70;
+  pointer-events:none;
+  transform-origin: top left;
+  will-change: transform;
+}
+.drag-ghost .pcard{
+  box-shadow: 0 14px 26px rgba(0,0,0,0.55), 0 0 0 2px var(--gold-hot);
+}
+/* il panno si accende quando la carta trascinata ci arriva sopra */
+.felt.drop-hot{
+  border-color: var(--gold-hot);
+  box-shadow: inset 0 0 26px rgba(0,0,0,0.42), inset 0 0 0 2px rgba(255,216,119,0.55), 0 6px 16px rgba(0,0,0,0.35);
+}
+@media (prefers-reduced-motion: reduce){
+  .flyer.reveal .flyer-inner{ animation:none; }
 }
 
 /* ---------- carte non ancora uscite (aiuto facoltativo) ---------- */
@@ -393,47 +431,63 @@ a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
 .counter-cell span{ font-size:9px; color: var(--text-dim); margin-top:2px; font-variant-numeric: tabular-nums; }
 .counter-cell.gone{ opacity:0.38; }
 
-/* ---------- cosa fare con la carta scelta ---------- */
-.action-strip{
-  display:flex; gap:6px; justify-content:center; flex-wrap:wrap;
-  min-height:0;
+/* ---------- la scelta della presa, sopra al panno ---------- */
+/* Compare solo quando con quella carta si può prendere in più modi: copre il
+   panno, mostra ogni combinazione con le carte vere e aspetta. Sta dentro al
+   panno e non in mezzo alla pagina, così si sceglie guardando il tavolo. */
+.choice{
+  position:absolute; inset:0; z-index:4;
+  /* quanto sono grandi le carte dentro alla scelta: la misura buona la trova il
+     codice, provando finché tutto ci sta dentro al panno */
+  --choice-cw: 34px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:6px;
+  padding:8px;
+  background: rgba(5, 24, 20, 0.86);
+  border-radius:12px;
+  overflow-y:auto;
 }
-.action-strip:empty{ display:none; }
-.action-btn{
-  display:flex; align-items:center; gap:6px;
+.choice[hidden]{ display:none; }
+.choice-title{
+  margin:0;
+  font-family:'Bitter', serif;
+  font-weight:700; font-size:13px; letter-spacing:1px;
+  color: var(--gold-hot);
+  text-transform:uppercase;
+}
+.choice-list{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:center;
+  gap:6px;
+}
+.choice-opt{
+  display:flex; align-items:center; gap:5px;
+  padding:5px 7px;
+  border-radius:9px;
+  border:1px solid var(--gold);
+  background: rgba(224,180,74,0.14);
+  cursor:pointer;
+  /* le carte dentro alla scelta sono piccole ma vere, non numeri: si impara
+     guardando che il 7 prende il 4 e il 3 */
+  --cw: var(--choice-cw, 34px);
+}
+.choice-opt:active{ transform: translateY(1px); }
+.choice-opt .pcard{ pointer-events:none; }
+.choice-opt .plus{
+  font-family:'Bitter', serif;
+  font-weight:700; font-size:14px;
+  color: var(--gold-hot);
+}
+.choice-cancel{
   font-family:'Nunito Sans', sans-serif;
   font-weight:700; font-size:12px;
-  color: var(--night);
-  background: linear-gradient(180deg, #F0CB6A, var(--gold));
-  border:1px solid #F3D88C;
+  color: var(--text);
+  background: rgba(120,170,225,0.12);
+  border:1px solid var(--cobalt-soft);
   border-radius:8px;
-  padding:5px 10px;
+  padding:6px 14px;
   cursor:pointer;
 }
-.action-btn:active{ transform: translateY(1px); }
-.action-btn.ghost{
-  color: var(--text);
-  background: rgba(120,170,225,0.10);
-  border-color: var(--cobalt-soft);
-}
-.action-btn .mini-row{ display:flex; gap:3px; }
-/* le carte in miniatura dentro al bottone della presa */
-.mini-card{
-  display:inline-flex; align-items:center; justify-content:center;
-  min-width:19px; height:25px;
-  border-radius:3px;
-  background: var(--card-face);
-  border:1px solid var(--card-line);
-  font-family:'Bitter', serif;
-  font-weight:700; font-size:12px;
-  color: var(--suit);
-  padding:0 2px;
-}
-.mini-card.s-d{ --suit: #A8761A; }
-.mini-card.s-c{ --suit: #B04524; }
-.mini-card.s-s{ --suit: #1D4E89; }
-.mini-card.s-b{ --suit: #5B7A2C; }
-.mini-card svg{ width:9px; height:9px; margin-left:1px; }
+.choice-cancel:active{ transform: translateY(1px); }
 
 /* ---------- overlay e pannelli ---------- */
 .overlay{
@@ -512,6 +566,17 @@ a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
 }
 .secondary-btn:active{ transform: translateY(1px); }
 .secondary-btn[hidden]{ display:none; }
+/* la via d'uscita dai pannelli da cui non si torna indietro: piccola, sotto ai
+   pulsanti, come negli altri giochi del sito */
+.home-link{
+  display:inline-block; margin-top:12px;
+  font-family:'Nunito Sans', sans-serif;
+  font-weight:700; font-size:13px;
+  color: var(--gold);
+  text-decoration:none;
+  opacity:0.85;
+}
+.home-link:active{ opacity:1; }
 
 .difficulty-list{ display:flex; flex-direction:column; gap:8px; }
 .difficulty-option{

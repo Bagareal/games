@@ -101,14 +101,19 @@
         </div>
         <div class="table-cards" id="tableCards"></div>
         <div class="flash" id="flash"></div>
+
+        <!-- quando la carta lasciata sul tavolo può prendere in più modi, le
+             combinazioni si scelgono qui, sopra al panno e con le carte vere:
+             una striscia di bottoncini sotto la mano era troppo piccola -->
+        <div class="choice" id="choicePanel" hidden>
+          <p class="choice-title" data-i18n="chooseTake">Scegli la presa</p>
+          <div class="choice-list" id="choiceList"></div>
+          <button class="choice-cancel" id="choiceCancelBtn" data-i18n="cancelTake">Annulla</button>
+        </div>
       </div>
 
       <!-- carte già uscite: aiuto facoltativo, si accende dalle impostazioni -->
       <div class="counter-strip" id="counterStrip" hidden></div>
-
-      <!-- cosa fare con la carta scelta: "butta" quando non prende niente,
-           oppure una riga per ogni presa possibile quando ce n'è più d'una -->
-      <div class="action-strip" id="actionStrip"></div>
 
       <div class="seat bottom" id="seatBottom">
         <div class="hand hand-bottom" id="handBottom"></div>
@@ -163,7 +168,7 @@
       </div>
       <div class="rule-row">
         <span class="rule-icon">9</span>
-        <p data-i18n="rule9">Tocca una carta della tua mano: le carte che può prendere si illuminano. Se le prese possibili sono più d'una, scegli quella che vuoi fra quelle proposte sopra la mano.</p>
+        <p data-i18n="rule9">Trascina una carta della tua mano sul tavolo, col dito o con il mouse: mentre la trascini si illuminano le carte che può prendere. Se le prese possibili sono più d'una, le combinazioni compaiono sul tavolo e scegli quella che vuoi. Si può giocare anche a tocchi: tocca la carta, poi tocca il tavolo.</p>
       </div>
       <div class="rule-row">
         <span class="rule-icon">10</span>
@@ -186,6 +191,7 @@
         <button class="difficulty-option" data-difficulty="master" data-i18n="diffMaster">Master</button>
       </div>
       <button class="secondary-btn" id="difficultyBackBtn" data-i18n="back" hidden>Indietro</button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
     </div>
   </div>
 
