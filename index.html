@@ -245,8 +245,8 @@
     transform-origin: left center;
   }
   .game-icon.tris{ background: radial-gradient(circle at 32% 28%, #7E2B22, #3F0F0C); }
-  /* un pannello di mosaico in miniatura: nove lastre di pietra chiara con la
-     croce blu e il cerchio dorato, i colori veri del gioco */
+  /* un pannello di pietra in miniatura: nove lastre chiare con la croce blu e
+     il cerchio rosso, i colori veri del gioco */
   .tris-icon{
     display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr);
     gap:2.5px; width:32px; height:32px;
@@ -254,7 +254,7 @@
   .tris-icon i{ display:block; position:relative; background:#E8DCC2; border-radius:1.5px; }
   .tris-icon i.x::before, .tris-icon i.x::after{
     content:''; position:absolute; left:50%; top:50%;
-    width:1.8px; height:82%; border-radius:1px; background:#2A5D8F;
+    width:1.8px; height:82%; border-radius:1px; background:#23568C;
   }
   .tris-icon i.x::before{ transform: translate(-50%,-50%) rotate(45deg); }
   .tris-icon i.x::after{ transform: translate(-50%,-50%) rotate(-45deg); }
@@ -262,7 +262,7 @@
      con un bordo più spesso o un inset più largo diventa un puntino pieno */
   .tris-icon i.o::after{
     content:''; position:absolute; inset:1px;
-    border:1.6px solid #C8892C; border-radius:50%;
+    border:1.6px solid #C5352A; border-radius:50%;
   }
   .game-icon.scopa{ background: radial-gradient(circle at 32% 28%, #1D4E89, #0B1E33); }
   /* due carte aperte a ventaglio sul panno verde: la moneta d'oro su una e la

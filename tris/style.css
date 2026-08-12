@@ -1,11 +1,11 @@
-/* ============ TRIS — identità grafica: mosaico su intonaco rosso ============
+/* ============ TRIS — identità grafica: pietra su intonaco rosso ============
    Ogni gioco del sito ha una grafica propria: qui niente ardesia e gesso (è di
    Kakumal), niente noce e ottone (è della Dama), niente cobalto e panno verde
    (è della Scopa), niente carta di quaderno (è di Sudopoku), niente neon (è di
-   Blokky). Il Tris è un pannello di mosaico appeso a una parete di intonaco
-   rosso: pietra chiara di travertino, fughe scure, e i due segni posati una
-   tessera alla volta — la croce in pasta di vetro blu, il cerchio in tessere
-   dorate. Il rosso è di questo gioco e di nessun altro sul sito. */
+   Blokky). Il Tris è un pannello di pietra appeso a una parete di intonaco
+   rosso: lastre chiare di travertino, fughe scure, e i due segni tirati sopra
+   con un tratto pieno — la croce blu, il cerchio rosso. Il rosso della parete è
+   di questo gioco e di nessun altro sul sito. */
 :root{
   --wall-deep: #3F0F0C;
   --wall: #5E1C16;
@@ -14,12 +14,10 @@
   --stone: #E8DCC2;        /* il travertino delle caselle */
   --stone-2: #D6C6A4;
   --stone-edge: #B9A57E;
-  --grout: #2E1A14;        /* la fuga fra le tessere */
+  --grout: #2E1A14;        /* la fuga fra una lastra e l'altra */
 
-  --blue: #2A5D8F;         /* la croce: pasta di vetro blu */
-  --blue-deep: #1B3F63;
-  --gold: #C8892C;         /* il cerchio: tessere dorate */
-  --gold-deep: #8F5D17;
+  --mark-x: #23568C;       /* la croce */
+  --mark-o: #C5352A;       /* il cerchio */
   --gold-hot: #F0B44E;     /* SOLO per quello che risponde al tocco e per la vittoria */
 
   --text: #F5E7D2;
@@ -166,6 +164,10 @@ a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
 /* nella targa il segno è lo stesso disegno delle caselle, in piccolo: qui però
    sta nel flusso, non incollato sopra a una casella (.mark è position:absolute) */
 .plate-mark svg{ position:static; display:block; width:100%; height:100%; }
+/* sulla targa il fondo è scuro, non è la pietra chiara: gli stessi due colori
+   lì sopra si spengono, e allora si schiariscono quanto basta per leggerli */
+.plate-mark .mark-x .stroke{ stroke:#6AA0D8; }
+.plate-mark .mark-o .stroke{ stroke:#E8695C; }
 .plate-name{
   font-family:'Cinzel', serif;
   font-weight:600; font-size:14px;
@@ -184,7 +186,7 @@ a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- il pannello di mosaico ---------- */
+/* ---------- il pannello di pietra ---------- */
 .game-zone{
   position:relative;
   /* base 0, non auto: l'altezza di questa zona è "quello che avanza" e basta, e
@@ -242,8 +244,8 @@ a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
 /* casella libera: al passaggio del mouse si schiarisce appena. Sul telefono non
    succede niente, ed è giusto così: lì il dito è già il segnale */
 .cell.free:hover .stone{ background: linear-gradient(160deg, #F6EEDD 0%, #E4D6B6 100%); }
-/* le tre caselle vincenti si accendono appena: sopra ci passa il filo d'oro, e
-   se anche la pietra fosse dorata non si distinguerebbe più niente */
+/* le tre caselle vincenti si accendono appena: la pietra si schiarisce e prende
+   un filo d'oro intorno, mentre sopra ci passa la riga di chi ha vinto */
 .cell.win .stone{
   background: linear-gradient(160deg, #FBF2DE 0%, #F3E4BE 100%);
   box-shadow: inset 0 0 0 1px var(--gold-hot), 0 0 14px rgba(240,180,78,0.4);
@@ -252,25 +254,51 @@ a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
   position:absolute; inset:0;
   width:100%; height:100%;
   pointer-events:none;
+  /* un'ombra appena accennata, che stacca il segno dalla pietra */
+  filter: drop-shadow(0 1px 1px rgba(46,26,20,0.28));
 }
-/* le tessere si posano una alla volta, come le posa un mosaicista: ogni tessera
-   ha il suo ritardo, scritto dal codice. Si animano solo opacity e transform,
-   che non costano un ridisegno. */
-.tes{
-  transform-box: fill-box;
-  transform-origin: 50% 50%;
-  opacity:0;
-  animation: layTes 0.16s ease-out forwards;
+/* i due segni: tratto pieno, punte tonde. Si scoprono poco alla volta, come se
+   li stessero tirando adesso: il tratteggio è lungo quanto tutto il tratto, e
+   si scosta fino a sparire. Si anima una proprietà sola, e solo nella casella
+   appena giocata.
+   Il tratteggio vive DENTRO l'animazione, e la regola qui sotto non ne sa
+   niente: da fermo il segno è pieno e basta. Scritto al contrario — segno
+   nascosto di suo, animazione che lo scopre — bastava che l'animazione non
+   partisse per lasciare la casella vuota. */
+.mark .stroke{
+  fill:none;
+  stroke-width:12;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  animation: drawStroke 0.2s ease-out backwards;
 }
-@keyframes layTes{
-  from{ opacity:0; transform: scale(0.45); }
-  to{ opacity:1; transform: scale(1); }
+.mark-x .stroke{ stroke: var(--mark-x); }
+.mark-o .stroke{ stroke: var(--mark-o); }
+/* `pathLength="100"` sul disegno fa misurare ogni tratto in centesimi: il
+   tratteggio qui sotto vale uguale per la retta della croce, per il giro del
+   cerchio e per la riga vincente, che sono lunghi in modo diverso */
+@keyframes drawStroke{
+  from{ stroke-dasharray:100; stroke-dashoffset:100; }
+  to{ stroke-dasharray:100; stroke-dashoffset:0; }
 }
-/* al ridisegno (cambio di misura, riapertura) le tessere ci sono già: niente
-   animazione, o il mosaico si rifarebbe da capo a ogni rotazione dello schermo */
-.mark.settled .tes{ opacity:1; animation:none; }
+/* al ridisegno (cambio di misura, riapertura) i segni ci sono già: niente
+   animazione, o si rifarebbero da capo a ogni rotazione dello schermo */
+.mark.settled .stroke{ animation:none; }
 @media (prefers-reduced-motion: reduce){
-  .tes{ opacity:1; animation:none; }
+  .mark .stroke{ animation:none; }
+}
+
+/* la riga vincente: stesso tratto dei segni, con sotto un fondo color pietra */
+.win-stroke{
+  fill:none;
+  stroke-linecap:round;
+  animation: drawStroke 0.3s ease-out 0.12s backwards;
+}
+.win-stroke.casing{ stroke: var(--stone); }
+.win-stroke.win-x{ stroke: var(--mark-x); }
+.win-stroke.win-o{ stroke: var(--mark-o); }
+@media (prefers-reduced-motion: reduce){
+  .win-stroke{ animation:none; }
 }
 
 /* ---------- overlay e pannelli ---------- */

@@ -511,116 +511,77 @@ function positionCells() {
   });
 }
 
-// ---------- I segni, tessera per tessera ----------
-// Croce e cerchio non sono due lettere scritte sopra alla pietra: sono due
-// disegni di mosaico, posati su una griglia di 5×5 tessere dentro alla casella.
-// Ogni tessera ha la sua inclinazione e la sua sfumatura, prese da un numero
-// finto-casuale che dipende solo da dove sta: così il mosaico sembra fatto a
-// mano ma resta identico a ogni ridisegno (giro dello schermo compreso).
-const TES = 13.4;      // lato della tessera, sulle 100 unità della casella
-const TES_STEP = 16.9; // passo fra una tessera e l'altra (tessera + fuga)
-const SHADES_X = ['#2A5D8F', '#24537F', '#31699C', '#1F4C77'];
-const SHADES_O = ['#C8892C', '#B87A22', '#D89B3E', '#A96D1C'];
+// ---------- I due segni ----------
+// Croce e cerchio sono due tratti pieni, disegnati come li farebbe una mano
+// sulla pietra: la croce in due colpi, il cerchio in un giro solo. Le due
+// diagonali e il tondo stanno tutti sulle 100 unità della casella, così il
+// segno vale a qualunque misura della griglia.
+const PATH_X = ['M28,28 L72,72', 'M72,28 L28,72'];
+// il tondo in due mezzi archi: un cerchio unico, che si può disegnare partendo
+// da sopra e girando, invece di comparire tutto insieme
+const PATH_O = ['M50,28 a22,22 0 1,1 0,44 a22,22 0 1,1 0,-44'];
 
-// La croce: nove tessere sulle due diagonali della griglia 5×5.
-const PATTERN_X = [[0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [4, 0], [3, 1], [1, 3], [0, 4]].map(([c, r]) => ({
-  cx: 50 + (c - 2) * TES_STEP,
-  cy: 50 + (r - 2) * TES_STEP,
-  rot: 0,
-}));
-// Il cerchio: dodici tessere su un giro vero, non sulla griglia. Messe sulle
-// caselle del bordo veniva un anello quadrato con gli angoli tagliati; su un
-// cerchio, e girate ognuna secondo la sua tangente, si legge come un tondo.
-const PATTERN_O = Array.from({ length: 12 }, (_, k) => {
-  const a = (k * 30 - 90) * Math.PI / 180;
-  return {
-    cx: 50 + Math.cos(a) * TES_STEP * 2,
-    cy: 50 + Math.sin(a) * TES_STEP * 2,
-    rot: (k * 30 - 90) + 90,
-  };
-});
-
-function noise(seed) {
-  const x = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
-  return x - Math.floor(x);
-}
-// Il mosaico di una casella. `animate` a false vuol dire "il mosaico c'era già"
-// (ridisegno dopo un cambio di misura): le tessere compaiono e basta, invece di
-// rifarsi da capo a ogni rotazione dello schermo.
-function markSvg(side, seed, animate) {
-  const pattern = side === BOTTOM ? PATTERN_X : PATTERN_O;
-  const shades = side === BOTTOM ? SHADES_X : SHADES_O;
-  let out = `<svg class="mark${animate ? '' : ' settled'}" viewBox="0 0 100 100" aria-hidden="true">`;
-  pattern.forEach((t, n) => {
-    // l'inclinazione e la sfumatura di ogni tessera vengono da un numero
-    // finto-casuale che dipende solo da dove sta: fatto a mano, ma sempre uguale
-    const s = seed * 97 + n * 13;
-    const rot = t.rot + (noise(s) - 0.5) * 15;
-    const cx = t.cx + (noise(s + 1) - 0.5) * 1.6;
-    const cy = t.cy + (noise(s + 2) - 0.5) * 1.6;
-    const fill = shades[Math.floor(noise(s + 3) * shades.length) % shades.length];
-    out += `<g transform="rotate(${rot.toFixed(2)} ${cx.toFixed(2)} ${cy.toFixed(2)})">`
-      + `<rect class="tes" x="${(cx - TES / 2).toFixed(2)}" y="${(cy - TES / 2).toFixed(2)}"`
-      + ` width="${TES}" height="${TES}" rx="1.6"`
-      + ` fill="${fill}" stroke="rgba(0,0,0,0.28)" stroke-width="0.7"`
-      + ` style="animation-delay:${animate ? n * 28 : 0}ms"/></g>`;
+// Il segno di una casella. `animate` a false vuol dire "il segno c'era già"
+// (ridisegno dopo un cambio di misura): compare finito, invece di rifarsi da
+// capo a ogni rotazione dello schermo.
+function markSvg(side, animate) {
+  const paths = side === BOTTOM ? PATH_X : PATH_O;
+  const kind = side === BOTTOM ? 'x' : 'o';
+  let out = `<svg class="mark mark-${kind}${animate ? '' : ' settled'}" viewBox="0 0 100 100" aria-hidden="true">`;
+  paths.forEach((d, n) => {
+    // `pathLength="100"` fa misurare ogni tratto in centesimi: il tratteggio
+    // che lo scopre poco alla volta è sempre lungo uguale, curva o retta
+    out += `<path class="stroke" d="${d}" pathLength="100"`
+      + ` style="animation-delay:${animate ? n * 150 : 0}ms"/>`;
   });
   return out + '</svg>';
 }
 
-// `lastPlaced` è la casella appena giocata: solo lì il mosaico si posa davanti
-// agli occhi, le altre sono già a posto.
+// `lastPlaced` è la casella appena giocata: solo lì il segno si disegna davanti
+// agli occhi, gli altri sono già a posto.
 function renderBoard(lastPlaced) {
   els.boardCells.querySelectorAll('.cell').forEach(el => {
     const i = +el.dataset.i;
     const v = state.board[i];
     const old = el.querySelector('.mark');
     if (old) old.remove();
-    if (v !== 0) el.insertAdjacentHTML('beforeend', markSvg(v, i + 1, i === lastPlaced));
+    if (v !== 0) el.insertAdjacentHTML('beforeend', markSvg(v, i === lastPlaced));
     el.classList.toggle('free', v === 0 && state.started && !state.over && !state.busy);
     el.classList.toggle('win', !!(state.winLine && state.winLine.includes(i)));
   });
   renderWinLine();
 }
 
-// La riga vincente: un filo di tessere dorate posato sopra al mosaico, dal
-// centro della prima casella al centro dell'ultima.
+// La riga vincente: un tratto solo, del colore di chi ha vinto, dal centro
+// della prima casella al centro dell'ultima.
 function renderWinLine() {
   els.boardLine.innerHTML = '';
   if (!state.winLine) return;
   const cell = metrics.cell;
   const c0 = state.winLine[0];
   const c2 = state.winLine[2];
-  const x0 = xOf(c0) + cell / 2;
-  const y0 = yOf(c0) + cell / 2;
-  const x1 = xOf(c2) + cell / 2;
-  const y1 = yOf(c2) + cell / 2;
-  const len = Math.hypot(x1 - x0, y1 - y0);
-  const ang = Math.atan2(y1 - y0, x1 - x0);
-  const deg = ang * 180 / Math.PI;
-  // tessere piccole e chiare: il filo passa in mezzo ai due segni, e se fosse
-  // grosso come le loro tessere li renderebbe illeggibili proprio alla fine
-  const size = cell * 0.105;
-  const step = size * 1.55;
-  const extra = cell * 0.22;                       // sborda un po' dai due segni
-  const total = len + extra * 2;
-  const n = Math.max(2, Math.round(total / step));
-  let out = '';
-  for (let k = 0; k <= n; k++) {
-    const d = -extra + (total * k) / n;
-    const cx = x0 + Math.cos(ang) * d;
-    const cy = y0 + Math.sin(ang) * d;
-    const rot = deg + (noise(k * 7.3) - 0.5) * 18;
-    out += `<g transform="rotate(${rot.toFixed(2)} ${cx.toFixed(2)} ${cy.toFixed(2)})">`
-      + `<rect class="tes" x="${(cx - size / 2).toFixed(2)}" y="${(cy - size / 2).toFixed(2)}"`
-      + ` width="${size.toFixed(2)}" height="${size.toFixed(2)}" rx="${(size * 0.16).toFixed(2)}"`
-      + ` fill="#FFD98A" stroke="rgba(46,26,20,0.8)" stroke-width="${(size * 0.13).toFixed(2)}"`
-      + ` style="animation-delay:${140 + k * 34}ms"/></g>`;
-  }
-  els.boardLine.innerHTML = out;
+  const ang = Math.atan2(yOf(c2) - yOf(c0), xOf(c2) - xOf(c0));
+  const extra = cell * 0.26;                       // sborda un po' dai due segni
+  const x0 = xOf(c0) + cell / 2 - Math.cos(ang) * extra;
+  const y0 = yOf(c0) + cell / 2 - Math.sin(ang) * extra;
+  const x1 = xOf(c2) + cell / 2 + Math.cos(ang) * extra;
+  const y1 = yOf(c2) + cell / 2 + Math.sin(ang) * extra;
+  const w = cell * 0.085;
+  const kind = state.board[c0] === BOTTOM ? 'x' : 'o';
+  // il tratto è un <path> e non un <line>: `pathLength`, che serve a scoprirlo
+  // poco alla volta, sulle forme semplici non lo rispettano tutti i browser
+  // (qui in Firefox la riga restava invisibile), sui path sì
+  const d = `M${x0.toFixed(1)},${y0.toFixed(1)} L${x1.toFixed(1)},${y1.toFixed(1)}`;
+  const pos = ` d="${d}" pathLength="100"`;
+  // sotto al tratto colorato ne passa uno color pietra, un filo più largo: la
+  // riga vincente è dello stesso colore del segno che ha vinto, e senza questo
+  // fondo si confonderebbe con le tre croci (o i tre cerchi) che attraversa
+  els.boardLine.innerHTML =
+    `<path class="win-stroke casing"${pos} stroke-width="${(w * 2).toFixed(1)}"/>` +
+    `<path class="win-stroke win-${kind}"${pos} stroke-width="${w.toFixed(1)}"/>`;
 }
 
-function markFor(side) { return markSvg(side, side === BOTTOM ? 3 : 11, false); }
+function markFor(side) { return markSvg(side, false); }
 
 function playerName(side) {
   if (state.mode === 'friend') return side === BOTTOM ? t().player1 : t().player2;
@@ -680,8 +641,8 @@ function place(i) {
     renderBoard(i);
     updateHUD();
     state.session[mover] += 1;
-    // il pannello di fine partita aspetta che il mosaico e il filo d'oro
-    // finiscano di posarsi: chiudere sopra all'animazione la nasconderebbe
+    // il pannello di fine partita aspetta che il segno e la riga vincente
+    // finiscano di disegnarsi: chiudere sopra all'animazione la nasconderebbe
     setTimeout(() => finishGame(mover), 900);
     return;
   }
