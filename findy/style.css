@@ -440,3 +440,48 @@ a.icon-btn:active{ transform: scale(0.94); }
 @media (min-width: 1200px){
   #app{ max-width: 680px; }
 }
+
+/* ============ modalità scura ============
+   Si accende dall'interruttore in Impostazioni (che si vede solo su computer) e
+   se la ricorda in `ffr-theme`, il file è shared/theme.js. È lo stesso gioco:
+   il lilla resta il colore di Findy e gli evidenziatori restano i suoi sei, solo
+   che la carta chiara diventa notte e le lettere si schiariscono. Tutto quello
+   che cambia sta qui dentro, in un blocco solo. */
+html[data-ffr-theme="dark"]{
+  --paper: #171331;
+  --paper-deep: #0C0A1D;
+  --ink: #E8E3FA;
+  --ink-soft: rgba(232, 227, 250, 0.60);
+  --ink-faint: rgba(232, 227, 250, 0.16);
+  --violet: #8B6BF0;
+  --violet-wash: rgba(139, 107, 240, 0.14);
+  --tile: #1E1940;
+  --tile-line: rgba(190, 168, 255, 0.16);
+}
+/* la luce sulla carta diventa un chiarore lilla, appena accennato */
+html[data-ffr-theme="dark"] .bg-wash{
+  background:
+    radial-gradient(60% 24% at 18% 12%, rgba(150,120,255,0.16) 0%, rgba(255,255,255,0) 100%),
+    radial-gradient(50% 20% at 82% 78%, rgba(120,100,220,0.12) 0%, rgba(255,255,255,0) 100%);
+}
+/* le superfici bianche scritte a mano diventano quelle del gioco al buio */
+html[data-ffr-theme="dark"] .icon-btn,
+html[data-ffr-theme="dark"] .word-chip,
+html[data-ffr-theme="dark"] .hint-btn{ background: var(--tile); }
+html[data-ffr-theme="dark"] .card{ background: #221C46; }
+html[data-ffr-theme="dark"] .overlay{ background: rgba(5, 3, 14, 0.62); }
+/* il lilla cupo va bene come fondo di un pulsante, ma come testo su fondo scuro
+   non si legge: dove faceva da scritta, al buio schiarisce */
+html[data-ffr-theme="dark"] .card h2,
+html[data-ffr-theme="dark"] .secondary-btn,
+html[data-ffr-theme="dark"] .hint-btn,
+html[data-ffr-theme="dark"] .cell.on{ color: #C3B0FF; }
+html[data-ffr-theme="dark"] .language-option.active,
+html[data-ffr-theme="dark"] .leaderboard-row.is-me{ background: rgba(139, 107, 240, 0.22); }
+/* le passate di evidenziatore: sulla carta il colore si moltiplica (scurisce),
+   al buio deve fare il contrario, o sparirebbero. Due parole che si incrociano
+   continuano a vedersi tutte e due. */
+html[data-ffr-theme="dark"] .bands{ mix-blend-mode: screen; }
+/* la parola trovata: al buio il colore pieno dietro alla scritta la
+   cancellerebbe, resta la riga sopra e il bordo del suo evidenziatore */
+html[data-ffr-theme="dark"] .word-chip.found{ background: transparent; opacity:0.7; }

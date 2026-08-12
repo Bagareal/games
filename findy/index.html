@@ -42,6 +42,7 @@
 <meta name="theme-color" content="#F3F0FA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="../shared/theme.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -110,6 +111,9 @@
     <div class="card">
       <h2><span class="ffr-ico ffr-ico-lead" data-ico="gear"></span><span data-i18n="settingsTitle">Impostazioni</span></h2>
       <div class="menu-list">
+        <!-- la modalità scura: la riga si vede solo su computer, e a metterci
+             dentro la levetta ci pensa shared/theme.js -->
+        <button class="menu-row" data-ffr-theme-toggle hidden><span class="ffr-ico ffr-ico-lead" data-ico="moon"></span><span data-i18n="darkMode">Modalità scura</span></button>
         <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
         <button class="menu-row" id="openTutorialBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="commands">Istruzioni</span></button>
         <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>

@@ -77,6 +77,8 @@
     "asteroid": ["0 0 24 24", "<path fill=\"currentColor\" fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M11 2.2 5.6 4.8 2.6 9.9l.8 5.9 4.6 4.6 6.2 1 5.2-3.2 2-5.6L19 6.8l-4.4-3.6zM7.3 9a1.7 1.7 0 1 0 3.4 0 1.7 1.7 0 1 0-3.4 0zm5 4.5a2.2 2.2 0 1 0 4.4 0 2.2 2.2 0 1 0-4.4 0zm-5 2a1.2 1.2 0 1 0 2.4 0 1.2 1.2 0 1 0-2.4 0z\"/>"],
     "spread-shot": ["0 0 24 24", "<g fill=\"currentColor\"><rect x=\"11\" y=\"3\" width=\"2\" height=\"9\" rx=\"1\"/><rect x=\"4.6\" y=\"4.4\" width=\"2\" height=\"9\" rx=\"1\" transform=\"rotate(-24 5.6 8.9)\" opacity=\".8\"/><rect x=\"17.4\" y=\"4.4\" width=\"2\" height=\"9\" rx=\"1\" transform=\"rotate(24 18.4 8.9)\" opacity=\".8\"/><path d=\"M12 15.5c-3 0-5.5 1.6-6.6 3.9a.9.9 0 0 0 .8 1.3h11.6a.9.9 0 0 0 .8-1.3c-1.1-2.3-3.6-3.9-6.6-3.9z\" opacity=\".5\"/></g>"],
     "shockwave": ["0 0 24 24", "<g fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"2.2\" fill=\"currentColor\" stroke=\"none\"/><circle cx=\"12\" cy=\"12\" r=\"6\" opacity=\".7\"/><circle cx=\"12\" cy=\"12\" r=\"10\" opacity=\".35\"/></g>"],
+    // la luna: la riga della modalita' scura nelle impostazioni
+    "moon": ["0 0 24 24", "<path fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M20.5 13.2A8.7 8.7 0 0 1 10.8 3.5a8.7 8.7 0 1 0 9.7 9.7z\"/>"],
   };
 
   // ---- icone che tengono i colori loro: nome -> file ----
