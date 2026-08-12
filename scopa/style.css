@@ -645,6 +645,9 @@ a.icon-btn{ background:none; border:none; font-size:36px; line-height:0; }
 
 /* conto della mano */
 .score-table{ display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+/* `hidden` da solo non basterebbe: la riga qui sopra dà un display, e una regola
+   nostra vince su quella del browser */
+.score-table[hidden], .match-line[hidden]{ display:none; }
 .score-head, .score-row{
   display:grid; grid-template-columns: 1fr auto auto;
   gap:8px; align-items:center;

@@ -359,6 +359,8 @@ const els = {
   endIcon: document.getElementById('endIcon'),
   endTitle: document.getElementById('endTitle'),
   endSub: document.getElementById('endSub'),
+  endScoreTable: document.getElementById('endScoreTable'),
+  endMatchLine: document.getElementById('endMatchLine'),
   playAgainBtn: document.getElementById('playAgainBtn'),
   changeDifficultyBtn: document.getElementById('changeDifficultyBtn'),
 
@@ -784,7 +786,6 @@ const ui = {
   rulesFromSettings: false,
   pendingConfirm: null,
   pendingDifficulty: null,
-  pendingEnd: false,      // la mano appena finita chiude anche la partita
 };
 
 function newGame(difficulty) {
@@ -1328,7 +1329,8 @@ function endHand() {
   showHandEnd(pts, left.length > 0 ? game.last : null);
 }
 
-function showHandEnd(pts, lastTaker) {
+// Il conto della mano: la stessa tabella sia a metà partita sia alla fine.
+function handTableHtml(pts) {
   const nameYou = playerName('you');
   const namePc = playerName('pc');
   let html = '<div class="score-head"><span class="label"></span><span class="val">' +
@@ -1344,22 +1346,32 @@ function showHandEnd(pts, lastTaker) {
   }
   html += '<div class="score-row total"><span class="label">' + t().rowTotal + '</span>' +
     '<span class="val">' + pts.total.you + '</span><span class="val">' + pts.total.pc + '</span></div>';
-  els.scoreTable.innerHTML = html;
+  return html;
+}
 
+function showHandEnd(pts, lastTaker) {
+  const html = handTableHtml(pts);
   const note = lastTaker === 'you' ? t().lastTrickYou : (lastTaker === 'pc' ? t().lastTrickPc : '');
-  els.matchLine.textContent = (note ? note + ' ' : '') + t().matchLine(game.score.you, game.score.pc);
+  const line = (note ? note + ' ' : '') + t().matchLine(game.score.you, game.score.pc);
 
   // si continua finché uno dei due non arriva a 11; a pari punti si gioca
   // un'altra mano, come vuole la regola
   const done = (game.score.you >= TARGET || game.score.pc >= TARGET) && game.score.you !== game.score.pc;
+  // all'ultima mano il conto e l'esito stanno nello stesso pannello: prima
+  // erano due, e il secondo si apriva su un "continua" che non diceva niente
+  // di nuovo — il conto era già lì e la partita era già decisa
+  if (done) {
+    finishGame(game.score.you > game.score.pc ? 'you' : 'pc', html, line);
+    return;
+  }
+  els.scoreTable.innerHTML = html;
+  els.matchLine.textContent = line;
   els.nextHandBtn.textContent = t().nextHand;
   showOnly(els.handEndOverlay);
-  ui.pendingEnd = done;
 }
 
-function nextHandOrEnd() {
+function nextHand() {
   hideAllOverlays();
-  if (ui.pendingEnd) { finishGame(game.score.you > game.score.pc ? 'you' : 'pc'); return; }
   game.dealer = other(game.dealer);
   game.handNo += 1;
   startHand();
@@ -1372,7 +1384,9 @@ function setEndIcon(kind) {
   window.FFR.icons(els.endIcon);
 }
 
-function finishGame(winner) {
+// `tableHtml` e `matchLine` sono il conto dell'ultima mano: arrivano da
+// showHandEnd e finiscono dentro a questo stesso pannello.
+function finishGame(winner, tableHtml, matchLine) {
   ui.over = true;
   ui.busy = false;
   render();
@@ -1388,6 +1402,10 @@ function finishGame(winner) {
     els.endTitle.textContent = t().youLose;
     els.endSub.textContent = t().loseSub(diffLabel);
   }
+  els.endScoreTable.innerHTML = tableHtml || '';
+  els.endScoreTable.hidden = !tableHtml;
+  els.endMatchLine.textContent = matchLine || '';
+  els.endMatchLine.hidden = !matchLine;
   saveGame();
   showOnly(els.endOverlay);
 }
@@ -1708,7 +1726,7 @@ async function init() {
   els.confirmNoBtn.addEventListener('click', () => { ui.pendingConfirm = null; els.confirmOverlay.classList.remove('show'); });
   els.confirmYesBtn.addEventListener('click', runConfirm);
 
-  els.nextHandBtn.addEventListener('click', nextHandOrEnd);
+  els.nextHandBtn.addEventListener('click', nextHand);
   els.playAgainBtn.addEventListener('click', () => startWith(game.difficulty));
   els.changeDifficultyBtn.addEventListener('click', () => showOnly(els.difficultyOverlay));
 
