@@ -195,6 +195,16 @@
         desc: "Trois signes alignés pour gagner : en ligne, en colonne ou en diagonale. Contre l'ordinateur à trois niveaux, ou à deux sur le même appareil. Gratuit, sans publicité.",
       },
     },
+    troll: {
+      en: {
+        title: 'Troll — get the square from point A to point B | Free For Real',
+        desc: 'Screens full of invisible traps: take the glowing square from point A to point B. You die, you learn, you try again. Free, no ads, in your browser.',
+      },
+      fr: {
+        title: 'Troll — amène le carré du point A au point B | Free For Real',
+        desc: "Des tableaux pleins de pièges invisibles : amène le carré lumineux du point A au point B. Tu meurs, tu apprends, tu recommences. Gratuit, sans publicité.",
+      },
+    },
     findy: {
       en: {
         title: 'Findy — word search: find the hidden words | Free For Real',

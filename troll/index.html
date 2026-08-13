@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Troll — porta il quadrato dal punto A al punto B | Free For Real</title>
+<meta name="description" content="Quadri pieni di trappole invisibili: porta il quadrato luminoso dal punto A al punto B. Muori, impari, riprovi. Gratis, senza pubblicità, nel browser.">
+<!-- SEO in tre lingue senza triplicare i file: la stessa pagina risponde a tre
+     indirizzi — questo, ?lang=en e ?lang=fr — che i tag hreflang qui sotto
+     legano fra loro. Qui c'è l'italiano, scritto per esteso perché è quello che
+     legge chi non esegue il JavaScript (le anteprime dei link di WhatsApp,
+     Telegram, Facebook, X). Inglese e francese li mette shared/seo.js. -->
+<link rel="canonical" href="https://freeforreal.app/troll/">
+<link rel="alternate" hreflang="it" href="https://freeforreal.app/troll/">
+<link rel="alternate" hreflang="en" href="https://freeforreal.app/troll/?lang=en">
+<link rel="alternate" hreflang="fr" href="https://freeforreal.app/troll/?lang=fr">
+<link rel="alternate" hreflang="x-default" href="https://freeforreal.app/troll/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Free For Real">
+<meta property="og:url" content="https://freeforreal.app/troll/">
+<meta property="og:title" content="Troll — porta il quadrato dal punto A al punto B | Free For Real">
+<meta property="og:description" content="Quadri pieni di trappole invisibili: porta il quadrato luminoso dal punto A al punto B. Muori, impari, riprovi. Gratis, senza pubblicità, nel browser.">
+<meta property="og:image" content="https://freeforreal.app/icons/og/troll.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Troll — freeforreal.app">
+<meta property="og:locale" content="it_IT">
+<meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Troll — porta il quadrato dal punto A al punto B | Free For Real">
+<meta name="twitter:description" content="Quadri pieni di trappole invisibili: porta il quadrato luminoso dal punto A al punto B. Muori, impari, riprovi. Gratis, senza pubblicità, nel browser.">
+<meta name="twitter:image" content="https://freeforreal.app/icons/og/troll.png">
+<script type="application/ld+json" id="ld-json">{"@context":"https://schema.org","@type":"VideoGame","name":"Troll","url":"https://freeforreal.app/troll/","image":"https://freeforreal.app/icons/og/troll.png","description":"Quadri pieni di trappole invisibili: porta il quadrato luminoso dal punto A al punto B. Muori, impari, riprovi. Gratis, senza pubblicità, nel browser.","inLanguage":"it","genre":"Platform","playMode":["SinglePlayer"],"gamePlatform":"Web browser","applicationCategory":"GameApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR","availability":"https://schema.org/InStock"},"publisher":{"@type":"Organization","name":"Free For Real","url":"https://freeforreal.app/"}}</script>
+<script src="../shared/seo.js" data-page="troll"></script>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="../icons/joystick.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="../icons/favicon-16.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<meta name="theme-color" content="#05070C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Tutta la pagina sta dentro #stage. Su telefono e tablet tenuti in verticale
+     #stage viene costruito orizzontale e girato di 90 gradi via software: chi
+     gira il telefono in mano se lo ritrova dritto anche con il blocco rotazione
+     acceso, che da JavaScript non si può togliere. Su computer non si gira mai.
+     Le misure le prende layout() da window.innerWidth/innerHeight: qui non si
+     usano vw/vh, che sui telefoni contano anche la barra degli indirizzi. -->
+<div id="stage">
+
+  <div id="loadingScreen">
+    <div class="loading-name">TROLL</div>
+    <div class="spinner"></div>
+  </div>
+
+  <div class="topbar" id="topbar">
+    <a class="icon-btn" href="../" aria-label="Home"><span class="ffr-ico" data-ico="back"></span></a>
+    <div class="hud">
+      <span class="hud-name">TROLL</span>
+      <span class="hud-level"><span data-i18n="levelWord">Livello</span>&nbsp;<span id="levelValue">1</span></span>
+    </div>
+    <div class="icon-group">
+      <button class="icon-btn" id="restartBtn" aria-label="Ricomincia il livello"><span class="ffr-ico" data-ico="refresh"></span></button>
+      <button class="icon-btn" id="settingsBtn" aria-label="Impostazioni"><span class="ffr-ico" data-ico="gear"></span></button>
+    </div>
+  </div>
+
+  <div class="game-zone" id="gameZone">
+    <canvas id="gameCanvas"></canvas>
+    <!-- I comandi del dito sono tre zone invisibili sopra al campo: due strisce
+         a sinistra per muoversi, metà schermo a destra per saltare. Sono
+         elementi veri e non conti sulle coordinate del tocco, così funzionano
+         identici anche quando #stage è girato: al resto pensa il browser. -->
+    <div class="pads" id="pads" aria-hidden="true">
+      <div class="pad" data-pad="left"></div>
+      <div class="pad" data-pad="right"></div>
+      <div class="pad pad-jump" data-pad="jump"></div>
+    </div>
+    <div id="turnHint" class="turn-hint hidden" data-i18n="turnDevice">Gira il telefono</div>
+  </div>
+
+  <!-- impostazioni: lingua / istruzioni / classifica -->
+  <div class="overlay" id="settingsOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="gear"></span><span data-i18n="settingsTitle">Impostazioni</span></h2>
+      <div class="menu-list">
+        <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
+        <button class="menu-row" id="openHowBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="howMenuLabel">Come si gioca</span></button>
+        <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+      </div>
+      <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <!-- Le istruzioni vere sono dipinte dentro al primo quadro, come nei vecchi
+       cabinati: niente pannello al primo avvio. Questo serve solo a chi torna
+       dopo un mese al livello 20 e non si ricorda più i comandi. -->
+  <div class="overlay" id="howOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="howTitle">Come si gioca</span></h2>
+      <div class="how-row">
+        <span class="how-icon"><span class="ffr-ico" data-ico="arrow-lr"></span></span>
+        <p data-i18n="howMove">Al computer: A e D per muoverti, Spazio per saltare. Tieni premuto lo spazio e salti più in alto.</p>
+      </div>
+      <div class="how-row">
+        <span class="how-icon"><span class="ffr-ico" data-ico="touch"></span></span>
+        <p data-i18n="howTouch">Col dito: la metà sinistra dello schermo ti muove (a sinistra o a destra a seconda di dove tocchi), la metà destra fa saltare.</p>
+      </div>
+      <div class="how-row">
+        <span class="how-icon"><span class="ffr-ico" data-ico="target"></span></span>
+        <p data-i18n="howGoal">Porta il quadrato dal punto A al punto B. Non ci sono vite e non c'è tempo: se muori, il quadro ricomincia.</p>
+      </div>
+      <div class="how-row">
+        <span class="how-icon"><span class="ffr-ico" data-ico="asteroid"></span></span>
+        <p data-i18n="howTraps">Il gioco bara. Ci sono trappole che non si vedono, ma stanno sempre nello stesso posto: ogni morte ti insegna dov'erano.</p>
+      </div>
+      <button class="secondary-btn" id="closeHowBtn" data-i18n="close">Chiudi</button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <div class="overlay" id="languageOverlay">
+    <div class="card">
+      <h2><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageTitle">Lingua</span></h2>
+      <p data-i18n="languageSub">Scegli la lingua dell'interfaccia</p>
+      <div class="language-list" id="languageList"></div>
+      <button class="secondary-btn" id="closeLanguageBtn" data-i18n="close">Chiudi</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="leaderboardOverlay">
+    <div class="card">
+      <div class="crown-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
+      <h2 data-i18n="leaderboardTitle">Classifica</h2>
+      <p data-i18n="leaderboardSub">Vince chi è arrivato più avanti</p>
+      <div class="leaderboard-list" id="leaderboardList"></div>
+      <button class="secondary-btn" id="closeLeaderboardBtn" data-i18n="close">Chiudi</button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <!-- fine dei quadri disponibili in questa anteprima: da qui non si va avanti,
+       quindi niente X (data-no-x), solo i pulsanti -->
+  <div class="overlay" id="endOverlay" data-no-x>
+    <div class="card">
+      <div class="crown-icon"><span class="ffr-ico" data-ico="trophy"></span></div>
+      <h2 data-i18n="endTitle">Fine dei quadri</h2>
+      <p id="endSub" data-i18n="endBody">Per ora i quadri finiscono qui. Gli altri stanno arrivando.</p>
+      <button class="primary-btn" id="replayBtn" data-i18n="replayLast">Rigioca l'ultimo quadro</button>
+      <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+</div>
+
+<script src="../shared/icons.js"></script>
+<script>window.FFR_AUTH_HEADLESS = true;</script>
+<script src="../shared/auth.js"></script>
+<script src="script.js"></script>
+<script src="../shared/modal-x.js"></script>
+</body>
+</html>
