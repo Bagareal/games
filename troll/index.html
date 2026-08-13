@@ -71,15 +71,18 @@
     </div>
   </div>
 
-  <!-- Su telefono e tablet i comandi sono pulsanti veri, fuori dal campo: le
-       frecce a sinistra, il salto a destra, un pollice per parte. Sono elementi
-       della pagina, non conti sulle coordinate del tocco, quindi funzionano
-       identici anche quando #stage è girato: al resto pensa il browser.
+  <!-- Su telefono e tablet i comandi stanno fuori dal campo: la leva a
+       sinistra, il salto a destra, un pollice per parte. Una leva sola invece
+       di due frecce, che si mangiavano il doppio dello spazio. Il tasto è un
+       elemento della pagina e funziona da solo anche a palco girato; la leva
+       invece deve sapere dov'è il dito, e la conversione delle coordinate la
+       fa stickDelta() in script.js.
        Su computer spariscono del tutto: lì si gioca con A, D e Spazio. -->
   <div class="game-zone" id="gameZone">
     <div class="pad-col" id="padLeft">
-      <button class="gamepad-btn" data-pad="left" aria-label="Vai a sinistra"><span class="ffr-ico" data-ico="arrow-left"></span></button>
-      <button class="gamepad-btn" data-pad="right" aria-label="Vai a destra"><span class="ffr-ico" data-ico="arrow-right"></span></button>
+      <div class="stick" id="stick" role="button" aria-label="Muovi a sinistra o a destra">
+        <div class="stick-knob" id="stickKnob"></div>
+      </div>
     </div>
     <div class="field-wrap">
       <canvas id="gameCanvas"></canvas>
@@ -98,6 +101,7 @@
         <button class="menu-row" id="openLanguageBtn"><span class="ffr-ico ffr-ico-lead" data-ico="languages"></span><span data-i18n="languageMenuLabel">Lingua</span></button>
         <button class="menu-row" id="openHowBtn"><span class="ffr-ico ffr-ico-lead" data-ico="question"></span><span data-i18n="howMenuLabel">Come si gioca</span></button>
         <button class="menu-row" id="openLeaderboardBtn"><span class="ffr-ico ffr-ico-lead" data-ico="trophy"></span><span data-i18n="leaderboardMenuLabel">Classifica</span></button>
+        <button class="menu-row" id="openResetBtn"><span class="ffr-ico ffr-ico-lead" data-ico="eraser"></span><span data-i18n="resetMenuLabel">Ricomincia da zero</span></button>
       </div>
       <button class="secondary-btn" id="closeSettingsBtn" data-i18n="close">Chiudi</button>
       <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
@@ -116,7 +120,7 @@
       </div>
       <div class="how-row">
         <span class="how-icon"><span class="ffr-ico" data-ico="touch"></span></span>
-        <p data-i18n="howTouch">Col dito: le frecce a sinistra del campo per muoverti, il tasto a destra per saltare. Tienilo premuto e salti più in alto.</p>
+        <p data-i18n="howTouch">Col dito: la leva a sinistra del campo per muoverti, il tasto a destra per saltare. Tienilo premuto e salti più in alto.</p>
       </div>
       <div class="how-row">
         <span class="how-icon"><span class="ffr-ico" data-ico="target"></span></span>
@@ -128,6 +132,17 @@
       </div>
       <button class="secondary-btn" id="closeHowBtn" data-i18n="close">Chiudi</button>
       <a class="home-link" href="../" data-i18n="backToHome">Torna in Home</a>
+    </div>
+  </div>
+
+  <!-- ricominciare da zero butta via i quadri fatti e riporta la classifica al
+       primo: si chiede prima, come per ogni cosa che non si può disfare -->
+  <div class="overlay" id="resetOverlay">
+    <div class="card">
+      <h2 data-i18n="resetTitle">Ricominciare da zero?</h2>
+      <p data-i18n="resetBody">Torni al primo quadro e i tentativi ripartono da zero, anche in classifica. Non si può tornare indietro.</p>
+      <button class="primary-btn" id="confirmResetBtn" data-i18n="resetYes">Sì, ricomincia da zero</button>
+      <button class="secondary-btn" id="cancelResetBtn" data-i18n="resetNo">No, lascia stare</button>
     </div>
   </div>
 

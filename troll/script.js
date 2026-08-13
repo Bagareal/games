@@ -29,7 +29,7 @@ const UI_STRINGS = {
     howMenuLabel: 'Come si gioca',
     howTitle: 'Come si gioca',
     howMove: 'Al computer: A e D per muoverti, Spazio per saltare. Tieni premuto lo spazio e salti più in alto.',
-    howTouch: 'Col dito: le frecce a sinistra del campo per muoverti, il tasto a destra per saltare. Tienilo premuto e salti più in alto.',
+    howTouch: 'Col dito: la leva a sinistra del campo per muoverti, il tasto a destra per saltare. Tienilo premuto e salti più in alto.',
     howGoal: "Porta il quadrato dal punto A al punto B. Non ci sono vite e non c'è tempo: se muori, il quadro ricomincia.",
     howTraps: 'Il gioco bara. Ci sono trappole che non si vedono, ma stanno sempre nello stesso posto: ogni morte ti insegna dov\'erano.',
     leaderboardMenuLabel: 'Classifica',
@@ -37,12 +37,17 @@ const UI_STRINGS = {
     leaderboardSub: 'Vince chi è arrivato più avanti',
     leaderboardEmpty: 'Nessun punteggio ancora: gioca da loggato per essere il primo!',
     turnDevice: 'Gira il telefono',
+    resetMenuLabel: 'Ricomincia da zero',
+    resetTitle: 'Ricominciare da zero?',
+    resetBody: 'Torni al primo quadro e i tentativi ripartono da zero, anche in classifica. Non si può tornare indietro.',
+    resetYes: 'Sì, ricomincia da zero',
+    resetNo: 'No, lascia stare',
     endTitle: 'Fine dei quadri',
     endBody: 'Per ora i quadri finiscono qui. Gli altri stanno arrivando.',
     replayLast: "Rigioca l'ultimo quadro",
     // scritte dipinte dentro al primo quadro, al posto del solito pannello
     hintMove: 'A e D per muoverti',
-    hintMoveTouch: 'le frecce per muoverti',
+    hintMoveTouch: 'la leva per muoverti',
     hintJump: 'SPAZIO per saltare',
     hintJumpTouch: 'il tasto a destra per saltare',
     hintHold: 'tieni premuto: salti più in alto',
@@ -59,7 +64,7 @@ const UI_STRINGS = {
     howMenuLabel: 'How to play',
     howTitle: 'How to play',
     howMove: 'On a computer: A and D to move, Space to jump. Hold Space down to jump higher.',
-    howTouch: 'With your finger: the arrows on the left of the field move you, the button on the right jumps. Hold it down to jump higher.',
+    howTouch: 'With your finger: the stick on the left of the field moves you, the button on the right jumps. Hold it down to jump higher.',
     howGoal: 'Take the square from point A to point B. No lives and no clock: if you die, the screen starts over.',
     howTraps: 'The game cheats. Some traps are invisible, but they are always in the same spot: every death teaches you where they were.',
     leaderboardMenuLabel: 'Leaderboard',
@@ -67,11 +72,16 @@ const UI_STRINGS = {
     leaderboardSub: 'Whoever got the furthest wins',
     leaderboardEmpty: 'No scores yet: play while signed in to be the first!',
     turnDevice: 'Turn your phone',
+    resetMenuLabel: 'Start over from scratch',
+    resetTitle: 'Start over from scratch?',
+    resetBody: 'You go back to the first screen and your attempts reset to zero, on the leaderboard too. There is no undo.',
+    resetYes: 'Yes, start over',
+    resetNo: 'No, leave it',
     endTitle: 'End of the screens',
     endBody: 'The screens stop here for now. The rest are on their way.',
     replayLast: 'Replay the last screen',
     hintMove: 'A and D to move',
-    hintMoveTouch: 'the arrows move you',
+    hintMoveTouch: 'the stick moves you',
     hintJump: 'SPACE to jump',
     hintJumpTouch: 'the button on the right jumps',
     hintHold: 'hold it down: you jump higher',
@@ -88,7 +98,7 @@ const UI_STRINGS = {
     howMenuLabel: 'Comment jouer',
     howTitle: 'Comment jouer',
     howMove: "Sur ordinateur : A et D pour te déplacer, Espace pour sauter. Garde Espace enfoncé et tu sautes plus haut.",
-    howTouch: "Au doigt : les flèches à gauche du terrain te déplacent, le bouton à droite fait sauter. Garde-le enfoncé et tu sautes plus haut.",
+    howTouch: "Au doigt : le manche à gauche du terrain te déplace, le bouton à droite fait sauter. Garde-le enfoncé et tu sautes plus haut.",
     howGoal: "Amène le carré du point A au point B. Pas de vies et pas de chrono : si tu meurs, le tableau recommence.",
     howTraps: "Le jeu triche. Certains pièges sont invisibles, mais ils sont toujours au même endroit : chaque mort t'apprend où ils étaient.",
     leaderboardMenuLabel: 'Classement',
@@ -96,11 +106,16 @@ const UI_STRINGS = {
     leaderboardSub: 'Celui qui est allé le plus loin gagne',
     leaderboardEmpty: 'Aucun score pour le moment : joue en étant connecté pour être le premier !',
     turnDevice: 'Tourne ton téléphone',
+    resetMenuLabel: 'Tout recommencer',
+    resetTitle: 'Tout recommencer ?',
+    resetBody: "Tu reviens au premier tableau et tes essais repartent de zéro, au classement aussi. On ne peut pas revenir en arrière.",
+    resetYes: 'Oui, je recommence',
+    resetNo: 'Non, laisse tomber',
     endTitle: 'Fin des tableaux',
     endBody: "Les tableaux s'arrêtent là pour l'instant. Les autres arrivent.",
     replayLast: 'Rejouer le dernier tableau',
     hintMove: 'A et D pour te déplacer',
-    hintMoveTouch: 'les flèches te déplacent',
+    hintMoveTouch: 'le manche te déplace',
     hintJump: 'ESPACE pour sauter',
     hintJumpTouch: 'le bouton à droite fait sauter',
     hintHold: 'garde enfoncé : tu sautes plus haut',
@@ -147,6 +162,7 @@ const CRUMBLE_MS = 180; // quanto regge un pavimento che collassa
 const SPIN_RATE = 9;    // giri al secondo del quadrato, in radianti
 const DEATH_MS = 560;   // tanto quanto basta a vedere uscire la spina
 const SPIKE_OUT_MS = 130;
+const GOAL_SLIDE_MS = 420;  // quanto ci mette l'arrivo a scappare, a vista
 const WIN_MS = 620;
 
 // ---------- I quadri ----------
@@ -194,69 +210,69 @@ const LEVELS = [
       '######################..################',
     ],
   },
-  // Il muro si attraversa in alto, all'altezza del camminamento: da terra
-  // sembra pieno e la strada bassa e' un vicolo cieco.
+  // Il muro bugiardo: pieno a vedersi, si passa in fondo. E la voragine a
+  // destra non e' una voragine.
   {
     rows: [
       '', '', '', '', '', '',
-      '........................#...............',
-      '........................#...............',
-      '........................#...............',
-      '........................#...............',
-      '........................#...............',
-      '........................g...............',
-      '..................#############.........',
-      '................#.......#...............',
-      '........................#...............',
-      '..............#.........#...............',
-      '........................#...............',
-      '............#...........#...............',
-      '..A.....................#......^^.....B.',
+      '......................#.................',
+      '......................#.................',
+      '......................#.................',
+      '......................#.................',
+      '......................#.................',
+      '......................#.................',
+      '......................#.................',
+      '....................#.#.................',
+      '......................#.................',
+      '..................#...#.................',
+      '......................#.................',
+      '................#.....#.................',
+      '..A.........m.........g...............B.',
+      '#############################mmmmm######',
+      '#############################.....######',
+      '#############################.....######',
+    ],
+  },
+  // La scala invisibile. Il passaggio dentro alla torre sta a mezz'aria e non
+  // a terra: a terra ce l'ha gia' il quadro prima, e due volte lo stesso
+  // trucco nello stesso posto non vale.
+  {
+    rows: [
+      '', '', '', '', '',
+      '........................##..............',
+      '........................##............B.',
+      '........................##...........###',
+      '........................##..............',
+      '........................##.........mm...',
+      '........................##..............',
+      '........................##.......mm.....',
+      '........................##..............',
+      '..................#.....##.....mm.......',
+      '................x.......##..............',
+      '................#.......gg...mm.........',
+      '........................gg..............',
+      '..............#.........##.##...........',
+      '..A.....................##..............',
       '########################################',
       '########################################',
       '########################################',
     ],
   },
-  // Una scala che non c'e', in aria sopra il vuoto: si vede solo il primo
-  // gradino. La mensola bassa a destra e' l'invito sbagliato.
+  // Lo specchio: il primo portale gira i comandi, il secondo te li ridà.
+  // In mezzo, l'arrivo che scappa.
   {
     rows: [
-      '', '', '', '',
-      '...................................B....',
-      '..................................###...',
-      '........................................',
-      '...............................mm.......',
-      '........................................',
-      '............................mm..........',
-      '........................................',
-      '.........................mm.............',
-      '........................................',
-      '......................mm................',
-      '........................................',
-      '...................mm...................',
-      '........................................',
-      '................##...xx.................',
-      '..A..................##.................',
-      '###############.........................',
-      '###############.........................',
-      '###############.........................',
+      '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+      '.............s..................s.......',
+      '.............s..................s.......',
+      '.............s..................s.......',
+      '.............s..................s.......',
+      '..A..........s...............B..s...x...',
+      '########################..##############',
+      '########################..##############',
+      '########################..##############',
     ],
-  },
-  // Solo lo specchio: il portale e' largo due, dentro i comandi sono ancora
-  // quelli veri e si girano quando ne sei uscito dall'altra parte.
-  {
-    rows: [
-      '', '', '', '', '', '', '', '', '', '', '', '', '',
-      '............ss..........................',
-      '............ss..........................',
-      '............ss..........................',
-      '............ss..........................',
-      '............ss..........................',
-      '..A.........ss......x................B..',
-      '##########################..############',
-      '##########################..############',
-      '##########################..############',
-    ],
+    fleeTo: [38, 18],
   },
 ];
 
@@ -274,6 +290,10 @@ const state = {
   grid: null,          // copia del quadro, modificabile durante il tentativo
   spawn: { x: 0, y: 0 },
   goal: { col: 0, row: 0 },
+  goalHome: { col: 0, row: 0 },
+  fleeTo: null,
+  fled: false,
+  goalSlide: null,     // { fromX, fromY, at } — l'arrivo che scivola via a vista
   inverted: false,
   portals: [],         // { c0, c1, side } — le strisce specchio del quadro
   crumbling: [],       // { idx, at }
@@ -294,6 +314,7 @@ const isTouch = (navigator.maxTouchPoints || 0) > 0 || 'ontouchstart' in window;
 
 let ctx = null, statCtx = null, statCanvas = null, glowSprite = null;
 let scale = 1;
+let stickRadius = 42;
 
 // ---------- Il palco: misure e rotazione ----------
 // Su telefono e tablet tenuti in verticale il gioco viene costruito orizzontale
@@ -304,6 +325,7 @@ function layout() {
   const w = Math.round(window.innerWidth);
   const h = Math.round(window.innerHeight);
   const rotate = isTouch && h > w;
+  state.rotated = rotate;
   const sw = rotate ? h : w;
   const sh = rotate ? w : h;
 
@@ -317,12 +339,15 @@ function layout() {
   const zoneH = Math.max(40, sh - els.topbar.offsetHeight);
   let leftW = 0, rightW = 0;
   if (isTouch) {
-    // 84 è già un bersaglio comodo per un pollice: più grandi si mangiavano
-    // quasi metà della larghezza, e quella serve al campo
-    const btn = Math.round(Math.min(Math.max(zoneH * 0.26, 48), 84));
+    // Una leva sola invece di due frecce, e più piccole di prima: i comandi
+    // stanno ai lati ma il campo deve restare il pezzo grosso dello schermo.
+    const btn = Math.round(Math.min(Math.max(zoneH * 0.19, 40), 58));
+    const stick = Math.round(Math.min(Math.max(zoneH * 0.28, 58), 86));
     els.stage.style.setProperty('--btn', btn + 'px');
-    leftW = btn * 2 + 26;    // due frecce affiancate, più spazio fra e ai lati
-    rightW = btn + 16;
+    els.stage.style.setProperty('--stick', stick + 'px');
+    stickRadius = stick / 2;
+    leftW = stick + 18;
+    rightW = btn + 18;
     els.padLeft.style.width = leftW + 'px';
     els.padRight.style.width = rightW + 'px';
   }
@@ -368,20 +393,21 @@ function startLevel(n) {
   // A e B non sono mattonelle: si leggono, si tolgono dal disegno e diventano
   // punto di partenza e traguardo
   state.spawn = { x: TILE, y: VH - 4 * TILE };
-  state.goal = { col: COLS - 2, row: ROWS - 4 };
+  state.goalHome = { col: COLS - 2, row: ROWS - 4 };
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       if (grid[r][c] === 'A') {
         state.spawn = { x: c * TILE + (TILE - PSIZE) / 2, y: r * TILE + (TILE - PSIZE) };
         grid[r][c] = '.';
       } else if (grid[r][c] === 'B') {
-        state.goal = { col: c, row: r };
+        state.goalHome = { col: c, row: r };
         grid[r][c] = '.';
       }
     }
   }
   state.baseGrid = grid;
   state.basePortals = findPortals(grid);
+  state.fleeTo = def.fleeTo || null;
   state.hints = def.hints || null;
   state.titleAt = performance.now();
   resetAttempt(false);
@@ -396,6 +422,9 @@ function resetAttempt(counts) {
     state.totalAttempts += 1;
   }
   state.grid = state.baseGrid.map(row => row.slice());
+  state.goal = { col: state.goalHome.col, row: state.goalHome.row };
+  state.fled = false;
+  state.goalSlide = null;
   state.inverted = false;
   state.portals = state.basePortals.map(p => ({
     c0: p.c0, c1: p.c1,
@@ -545,9 +574,17 @@ function updateWorld(now, dt) {
     }
   });
 
-  // giro del quadrato: solo in aria e solo se si sta spostando
-  if (!p.onGround && p.vx !== 0) state.spin += Math.sign(p.vx) * SPIN_RATE * dt;
-  else if (p.onGround) state.spin += (0 - state.spin) * Math.min(1, dt * 14);
+  // Giro del quadrato: solo in aria e solo mentre si sta spostando. A terra si
+  // incastra sul quarto di giro più vicino, di scatto — srotolandosi piano
+  // sembrava che girasse anche di corsa, che non e' quello che deve fare.
+  if (!p.onGround && p.vx !== 0) {
+    state.spin += Math.sign(p.vx) * SPIN_RATE * dt;
+  } else if (p.onGround && state.spin !== 0) {
+    const quarter = Math.PI / 2;
+    const target = Math.round(state.spin / quarter) * quarter;
+    state.spin += (target - state.spin) * Math.min(1, dt * 26);
+    if (Math.abs(target - state.spin) < 0.02) state.spin = target % (Math.PI * 2);
+  }
 
   // spine e vuoto
   const hit = overlapsKind(p.x, p.y, DEADLY);
@@ -556,7 +593,15 @@ function updateWorld(now, dt) {
   // traguardo
   const gx = state.goal.col * TILE, gy = state.goal.row * TILE;
   if (p.x + PSIZE > gx + 2 && p.x < gx + TILE - 2 && p.y + PSIZE > gy + 2 && p.y < gy + TILE - 2) {
-    win(now);
+    if (state.fleeTo && !state.fled) {
+      // scivola via davanti agli occhi invece di teletrasportarsi: se sparisce
+      // e ricompare altrove non capisci se hai sbagliato tu o se ti ha fregato
+      state.fled = true;
+      state.goalSlide = { fromX: gx, fromY: gy, at: now };
+      state.goal = { col: state.fleeTo[0], row: state.fleeTo[1] };
+    } else {
+      win(now);
+    }
   }
 
   // scia
@@ -640,11 +685,13 @@ function drawStatic() {
       } else if (ch === '^') {
         drawSpike(g, x, y, 1);
       } else if (ch === 's') {
+        // il bordo solo dove il portale finisce davvero: disegnandolo attorno
+        // a ogni mattonella, un portale largo due sembrava due portali
         g.fillStyle = 'rgba(139,92,246,0.22)';
         g.fillRect(x, y, TILE, TILE);
         g.fillStyle = 'rgba(139,92,246,0.55)';
-        g.fillRect(x, y, 2, TILE);
-        g.fillRect(x + TILE - 2, y, 2, TILE);
+        if (tileAt(c - 1, r) !== 's') g.fillRect(x, y, 2, TILE);
+        if (tileAt(c + 1, r) !== 's') g.fillRect(x + TILE - 2, y, 2, TILE);
       }
     }
   }
@@ -691,7 +738,23 @@ function draw(now) {
 
   // traguardo: pulsa, così si vede da lontano dove bisogna arrivare
   const pulse = 0.55 + 0.45 * Math.sin(now / 260);
-  const gx = state.goal.col * TILE, gy = state.goal.row * TILE;
+  let gx = state.goal.col * TILE, gy = state.goal.row * TILE;
+  if (state.goalSlide) {
+    const k = (now - state.goalSlide.at) / GOAL_SLIDE_MS;
+    if (k >= 1) state.goalSlide = null;
+    else {
+      const e = 1 - Math.pow(1 - k, 3);
+      const sx = state.goalSlide.fromX + (gx - state.goalSlide.fromX) * e;
+      const sy = state.goalSlide.fromY + (gy - state.goalSlide.fromY) * e;
+      ctx.save();   // la scia che lascia scappando
+      ctx.globalAlpha = 0.3 * (1 - k);
+      ctx.fillStyle = '#B6FF3D';
+      ctx.fillRect(state.goalSlide.fromX + 4, state.goalSlide.fromY + 6,
+                   sx - state.goalSlide.fromX, TILE - 12);
+      ctx.restore();
+      gx = sx; gy = sy;
+    }
+  }
   ctx.save();
   ctx.globalAlpha = 0.35 + 0.3 * pulse;
   ctx.fillStyle = '#B6FF3D';
@@ -813,8 +876,10 @@ function bindInput() {
     else if (k === 'Space' || k === 'KeyW' || k === 'ArrowUp') held.jump = false;
   });
 
-  // I pulsanti sono elementi veri: il browser sa già dove sono anche quando il
-  // palco è girato, quindi qui non si converte nessuna coordinata.
+  bindStick();
+
+  // Il tasto del salto è un elemento vero: il browser sa già dov'è anche
+  // quando il palco è girato, quindi qui non si converte nessuna coordinata.
   document.querySelectorAll('.gamepad-btn').forEach(btn => {
     const kind = btn.dataset.pad;
     btn.addEventListener('pointerdown', e => {
@@ -837,7 +902,54 @@ function bindInput() {
   window.addEventListener('blur', () => {
     held.left = held.right = held.jump = false;
     padPointers.clear();
+    releaseStick();
   });
+}
+
+// La leva è l'unico comando che ha bisogno di sapere dove sta il dito, e
+// quando il palco è girato di 90 gradi lo schermo e il gioco non sono più
+// d'accordo su cosa vuol dire "a destra". Il conto è tutto qui dentro.
+let stickId = null;
+function stickDelta(e) {
+  const rect = els.stick.getBoundingClientRect();
+  let dx = e.clientX - (rect.left + rect.width / 2);
+  let dy = e.clientY - (rect.top + rect.height / 2);
+  if (state.rotated) { const t = dx; dx = dy; dy = -t; }
+  return { dx, dy };
+}
+function applyStick(e) {
+  const { dx, dy } = stickDelta(e);
+  const dead = stickRadius * 0.22;
+  held.left = dx < -dead;
+  held.right = dx > dead;
+  const max = stickRadius * 0.55;
+  const kx = Math.max(-max, Math.min(max, dx));
+  const ky = Math.max(-max, Math.min(max, dy));
+  els.stickKnob.style.transform = 'translate(' + kx + 'px,' + ky + 'px)';
+}
+function releaseStick() {
+  stickId = null;
+  held.left = held.right = false;
+  els.stick.classList.remove('grabbed');
+  els.stickKnob.style.transform = '';
+}
+function bindStick() {
+  els.stick.addEventListener('pointerdown', e => {
+    stickId = e.pointerId;
+    try { els.stick.setPointerCapture(e.pointerId); } catch (err) { /* ignora */ }
+    els.stick.classList.add('grabbed');
+    applyStick(e);
+    e.preventDefault();
+  });
+  els.stick.addEventListener('pointermove', e => {
+    if (e.pointerId !== stickId) return;
+    applyStick(e);
+    e.preventDefault();
+  });
+  const up = e => { if (e.pointerId === stickId) releaseStick(); };
+  els.stick.addEventListener('pointerup', up);
+  els.stick.addEventListener('pointercancel', up);
+  els.stick.addEventListener('contextmenu', e => e.preventDefault());
 }
 
 // ---------- Pannelli ----------
@@ -908,6 +1020,19 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+// Ricominciare da zero: butta via i quadri fatti e riporta anche la classifica
+// al primo. saveProgress riscrive il punteggio com'è, quindi il cloud scende
+// insieme al dispositivo invece di rimettere in piedi il progresso vecchio.
+function resetEverything() {
+  els.resetOverlay.classList.remove('show');
+  state.maxLevel = 1;
+  state.attempts = {};
+  state.totalAttempts = 0;
+  startLevel(1);
+  acc = 0;
+  state.running = true;
+}
+
 // ---------- Progresso ----------
 // Si salva a inizio quadro e quando la pagina si nasconde: mai durante il
 // caricamento, così un'apertura andata storta non cancella niente.
@@ -932,6 +1057,8 @@ async function init() {
   els.canvas = document.getElementById('gameCanvas');
   els.padLeft = document.getElementById('padLeft');
   els.padRight = document.getElementById('padRight');
+  els.stick = document.getElementById('stick');
+  els.stickKnob = document.getElementById('stickKnob');
   els.levelValue = document.getElementById('levelValue');
   els.turnHint = document.getElementById('turnHint');
   els.loading = document.getElementById('loadingScreen');
@@ -942,6 +1069,7 @@ async function init() {
   els.endOverlay = document.getElementById('endOverlay');
   els.languageList = document.getElementById('languageList');
   els.leaderboardList = document.getElementById('leaderboardList');
+  els.resetOverlay = document.getElementById('resetOverlay');
 
   els.stage.classList.toggle('touch', isTouch);
   ctx = els.canvas.getContext('2d');
@@ -971,6 +1099,9 @@ async function init() {
   document.getElementById('openHowBtn').addEventListener('click', () => openPanel(els.howOverlay));
   document.getElementById('closeHowBtn').addEventListener('click', () => closePanel(els.howOverlay, true));
   document.getElementById('openLeaderboardBtn').addEventListener('click', openLeaderboard);
+  document.getElementById('openResetBtn').addEventListener('click', () => openPanel(els.resetOverlay));
+  document.getElementById('cancelResetBtn').addEventListener('click', () => closePanel(els.resetOverlay, true));
+  document.getElementById('confirmResetBtn').addEventListener('click', resetEverything);
   document.getElementById('closeLeaderboardBtn').addEventListener('click', () => closePanel(els.leaderboardOverlay, true));
   els.languageList.addEventListener('click', e => {
     const btn = e.target.closest('.language-option');
