@@ -71,18 +71,23 @@
     </div>
   </div>
 
+  <!-- Su telefono e tablet i comandi sono pulsanti veri, fuori dal campo: le
+       frecce a sinistra, il salto a destra, un pollice per parte. Sono elementi
+       della pagina, non conti sulle coordinate del tocco, quindi funzionano
+       identici anche quando #stage è girato: al resto pensa il browser.
+       Su computer spariscono del tutto: lì si gioca con A, D e Spazio. -->
   <div class="game-zone" id="gameZone">
-    <canvas id="gameCanvas"></canvas>
-    <!-- I comandi del dito sono tre zone invisibili sopra al campo: due strisce
-         a sinistra per muoversi, metà schermo a destra per saltare. Sono
-         elementi veri e non conti sulle coordinate del tocco, così funzionano
-         identici anche quando #stage è girato: al resto pensa il browser. -->
-    <div class="pads" id="pads" aria-hidden="true">
-      <div class="pad" data-pad="left"></div>
-      <div class="pad" data-pad="right"></div>
-      <div class="pad pad-jump" data-pad="jump"></div>
+    <div class="pad-col" id="padLeft">
+      <button class="gamepad-btn" data-pad="left" aria-label="Vai a sinistra"><span class="ffr-ico" data-ico="arrow-left"></span></button>
+      <button class="gamepad-btn" data-pad="right" aria-label="Vai a destra"><span class="ffr-ico" data-ico="arrow-right"></span></button>
     </div>
-    <div id="turnHint" class="turn-hint hidden" data-i18n="turnDevice">Gira il telefono</div>
+    <div class="field-wrap">
+      <canvas id="gameCanvas"></canvas>
+      <div id="turnHint" class="turn-hint hidden" data-i18n="turnDevice">Gira il telefono</div>
+    </div>
+    <div class="pad-col" id="padRight">
+      <button class="gamepad-btn gamepad-jump" data-pad="jump" aria-label="Salta"><span class="ffr-ico" data-ico="arrow-up"></span></button>
+    </div>
   </div>
 
   <!-- impostazioni: lingua / istruzioni / classifica -->
@@ -111,7 +116,7 @@
       </div>
       <div class="how-row">
         <span class="how-icon"><span class="ffr-ico" data-ico="touch"></span></span>
-        <p data-i18n="howTouch">Col dito: la metà sinistra dello schermo ti muove (a sinistra o a destra a seconda di dove tocchi), la metà destra fa saltare.</p>
+        <p data-i18n="howTouch">Col dito: le frecce a sinistra del campo per muoverti, il tasto a destra per saltare. Tienilo premuto e salti più in alto.</p>
       </div>
       <div class="how-row">
         <span class="how-icon"><span class="ffr-ico" data-ico="target"></span></span>

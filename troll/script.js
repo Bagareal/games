@@ -29,7 +29,7 @@ const UI_STRINGS = {
     howMenuLabel: 'Come si gioca',
     howTitle: 'Come si gioca',
     howMove: 'Al computer: A e D per muoverti, Spazio per saltare. Tieni premuto lo spazio e salti più in alto.',
-    howTouch: 'Col dito: la metà sinistra dello schermo ti muove (a sinistra o a destra a seconda di dove tocchi), la metà destra fa saltare.',
+    howTouch: 'Col dito: le frecce a sinistra del campo per muoverti, il tasto a destra per saltare. Tienilo premuto e salti più in alto.',
     howGoal: "Porta il quadrato dal punto A al punto B. Non ci sono vite e non c'è tempo: se muori, il quadro ricomincia.",
     howTraps: 'Il gioco bara. Ci sono trappole che non si vedono, ma stanno sempre nello stesso posto: ogni morte ti insegna dov\'erano.',
     leaderboardMenuLabel: 'Classifica',
@@ -42,9 +42,9 @@ const UI_STRINGS = {
     replayLast: "Rigioca l'ultimo quadro",
     // scritte dipinte dentro al primo quadro, al posto del solito pannello
     hintMove: 'A e D per muoverti',
-    hintMoveTouch: 'metà sinistra: ti muovi',
+    hintMoveTouch: 'le frecce per muoverti',
     hintJump: 'SPAZIO per saltare',
-    hintJumpTouch: 'metà destra: salti',
+    hintJumpTouch: 'il tasto a destra per saltare',
     hintHold: 'tieni premuto: salti più in alto',
     hintAlmost: 'sei quasi arrivato',
   },
@@ -59,7 +59,7 @@ const UI_STRINGS = {
     howMenuLabel: 'How to play',
     howTitle: 'How to play',
     howMove: 'On a computer: A and D to move, Space to jump. Hold Space down to jump higher.',
-    howTouch: 'With your finger: the left half of the screen moves you (left or right depending on where you touch), the right half jumps.',
+    howTouch: 'With your finger: the arrows on the left of the field move you, the button on the right jumps. Hold it down to jump higher.',
     howGoal: 'Take the square from point A to point B. No lives and no clock: if you die, the screen starts over.',
     howTraps: 'The game cheats. Some traps are invisible, but they are always in the same spot: every death teaches you where they were.',
     leaderboardMenuLabel: 'Leaderboard',
@@ -71,9 +71,9 @@ const UI_STRINGS = {
     endBody: 'The screens stop here for now. The rest are on their way.',
     replayLast: 'Replay the last screen',
     hintMove: 'A and D to move',
-    hintMoveTouch: 'left half: you move',
+    hintMoveTouch: 'the arrows move you',
     hintJump: 'SPACE to jump',
-    hintJumpTouch: 'right half: you jump',
+    hintJumpTouch: 'the button on the right jumps',
     hintHold: 'hold it down: you jump higher',
     hintAlmost: 'you are almost there',
   },
@@ -88,7 +88,7 @@ const UI_STRINGS = {
     howMenuLabel: 'Comment jouer',
     howTitle: 'Comment jouer',
     howMove: "Sur ordinateur : A et D pour te déplacer, Espace pour sauter. Garde Espace enfoncé et tu sautes plus haut.",
-    howTouch: "Au doigt : la moitié gauche de l'écran te déplace (à gauche ou à droite selon l'endroit touché), la moitié droite fait sauter.",
+    howTouch: "Au doigt : les flèches à gauche du terrain te déplacent, le bouton à droite fait sauter. Garde-le enfoncé et tu sautes plus haut.",
     howGoal: "Amène le carré du point A au point B. Pas de vies et pas de chrono : si tu meurs, le tableau recommence.",
     howTraps: "Le jeu triche. Certains pièges sont invisibles, mais ils sont toujours au même endroit : chaque mort t'apprend où ils étaient.",
     leaderboardMenuLabel: 'Classement',
@@ -100,9 +100,9 @@ const UI_STRINGS = {
     endBody: "Les tableaux s'arrêtent là pour l'instant. Les autres arrivent.",
     replayLast: 'Rejouer le dernier tableau',
     hintMove: 'A et D pour te déplacer',
-    hintMoveTouch: 'moitié gauche : tu bouges',
+    hintMoveTouch: 'les flèches te déplacent',
     hintJump: 'ESPACE pour sauter',
-    hintJumpTouch: 'moitié droite : tu sautes',
+    hintJumpTouch: 'le bouton à droite fait sauter',
     hintHold: 'garde enfoncé : tu sautes plus haut',
     hintAlmost: 'tu y es presque',
   },
@@ -144,8 +144,9 @@ const COYOTE = 0.09;    // si può saltare per un soffio dopo essere usciti dal 
 const BUFFER = 0.11;    // salto premuto poco prima di atterrare: parte lo stesso
 const STEP = 1 / 240;   // passo fisso: la fisica non cambia col fotogramma
 const CRUMBLE_MS = 180; // quanto regge un pavimento che collassa
-const VANISH_TILES = 3; // da quanto lontano si sfila la mattonella vigliacca
-const DEATH_MS = 420;
+const SPIN_RATE = 9;    // giri al secondo del quadrato, in radianti
+const DEATH_MS = 560;   // tanto quanto basta a vedere uscire la spina
+const SPIKE_OUT_MS = 130;
 const WIN_MS = 620;
 
 // ---------- I quadri ----------
@@ -157,11 +158,9 @@ const WIN_MS = 620;
 //   m  solido invisibile  g  sembra solido ma ci si passa attraverso
 //   ^  spina visibile     x  spina invisibile
 //   c  collassa dopo che ci sali
-//   v  sparisce quando le salti incontro
-//   s  banda specchio: attraversandola i comandi si invertono
+//   s  portale specchio: uscendone dall'altra parte i comandi si invertono
 //   A  partenza           B  arrivo
 //
-// fleeTo: [colonna, riga] — l'arrivo che scappa la prima volta che lo tocchi.
 // hints: le scritte dipinte sul fondo (solo il primo quadro, che è il manuale).
 //
 //          0123456789012345678901234567890123456789
@@ -195,68 +194,75 @@ const LEVELS = [
       '######################..################',
     ],
   },
+  // Il muro si attraversa in alto, all'altezza del camminamento: da terra
+  // sembra pieno e la strada bassa e' un vicolo cieco.
   {
     rows: [
       '', '', '', '', '', '',
-      '......................#.................',
-      '......................#.................',
-      '......................#.................',
-      '......................#.................',
-      '......................#.................',
-      '......................#.................',
-      '......................#.................',
-      '....................#.#.................',
-      '......................#.................',
-      '..................#...#.................',
-      '......................#.................',
-      '................#.....#.................',
-      '..A.........m.........g...............B.',
-      '#############################mmmmm######',
-      '#############################.....######',
-      '#############################.....######',
-    ],
-  },
-  {
-    rows: [
-      '', '', '', '', '',
-      '........................##..............',
-      '........................##............B.',
-      '........................##...........###',
-      '........................##..............',
-      '........................##.........mm...',
-      '........................##..............',
-      '........................##.......mm.....',
-      '........................##..............',
-      '..................#.....##.....mm.......',
-      '................x.......##..............',
-      '................#.......##...mm.........',
-      '........................##..............',
-      '..............#.........##.##...........',
-      '..A.....................gg..............',
+      '........................#...............',
+      '........................#...............',
+      '........................#...............',
+      '........................#...............',
+      '........................#...............',
+      '........................g...............',
+      '..................#############.........',
+      '................#.......#...............',
+      '........................#...............',
+      '..............#.........#...............',
+      '........................#...............',
+      '............#...........#...............',
+      '..A.....................#......^^.....B.',
       '########################################',
       '########################################',
       '########################################',
     ],
   },
+  // Una scala che non c'e', in aria sopra il vuoto: si vede solo il primo
+  // gradino. La mensola bassa a destra e' l'invito sbagliato.
   {
     rows: [
-      '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-      '.............s..................s.......',
-      '.............s..................s.......',
-      '.............s..................s.......',
-      '.............s..................s.......',
-      '..A..........s...............B..s...x...',
-      '########################..##############',
-      '########################..##############',
-      '########################..##############',
+      '', '', '', '',
+      '...................................B....',
+      '..................................###...',
+      '........................................',
+      '...............................mm.......',
+      '........................................',
+      '............................mm..........',
+      '........................................',
+      '.........................mm.............',
+      '........................................',
+      '......................mm................',
+      '........................................',
+      '...................mm...................',
+      '........................................',
+      '................##...xx.................',
+      '..A..................##.................',
+      '###############.........................',
+      '###############.........................',
+      '###############.........................',
     ],
-    fleeTo: [38, 18],
+  },
+  // Solo lo specchio: il portale e' largo due, dentro i comandi sono ancora
+  // quelli veri e si girano quando ne sei uscito dall'altra parte.
+  {
+    rows: [
+      '', '', '', '', '', '', '', '', '', '', '', '', '',
+      '............ss..........................',
+      '............ss..........................',
+      '............ss..........................',
+      '............ss..........................',
+      '............ss..........................',
+      '..A.........ss......x................B..',
+      '##########################..############',
+      '##########################..############',
+      '##########################..############',
+    ],
   },
 ];
 
-const SOLID = '#mcv';
+const SOLID = '#mc';
 const DEADLY = '^x';
-const LOOKS_SOLID = '#gcv';
+const LOOKS_SOLID = '#gc';
 
 // ---------- Stato ----------
 const els = {};
@@ -268,11 +274,12 @@ const state = {
   grid: null,          // copia del quadro, modificabile durante il tentativo
   spawn: { x: 0, y: 0 },
   goal: { col: 0, row: 0 },
-  fled: false,
   inverted: false,
-  inBand: false,
+  portals: [],         // { c0, c1, side } — le strisce specchio del quadro
   crumbling: [],       // { idx, at }
   player: { x: 0, y: 0, vx: 0, vy: 0, onGround: false, coyote: 0, buffer: 0 },
+  spin: 0,             // giro del quadrato: solo nel salto con direzione
+  killer: null,        // la spina che ti ha appena ucciso, da mostrare a morte
   trail: [],
   particles: [],
   phase: 'play',       // 'play' | 'dead' | 'won'
@@ -304,9 +311,22 @@ function layout() {
   els.stage.style.height = sh + 'px';
   els.stage.style.transform = rotate ? 'translateX(' + w + 'px) rotate(90deg)' : 'none';
 
-  // il campo prende quello che resta sotto la barra, tenendo le proporzioni
-  const zoneW = sw;
+  // Su telefono e tablet i pulsanti si prendono il loro spazio ai due lati e
+  // il campo si stringe: sono fuori dall'area di gioco, non sopra, così il
+  // pollice non copre mai quello che stai guardando.
   const zoneH = Math.max(40, sh - els.topbar.offsetHeight);
+  let leftW = 0, rightW = 0;
+  if (isTouch) {
+    // 84 è già un bersaglio comodo per un pollice: più grandi si mangiavano
+    // quasi metà della larghezza, e quella serve al campo
+    const btn = Math.round(Math.min(Math.max(zoneH * 0.26, 48), 84));
+    els.stage.style.setProperty('--btn', btn + 'px');
+    leftW = btn * 2 + 26;    // due frecce affiancate, più spazio fra e ai lati
+    rightW = btn + 16;
+    els.padLeft.style.width = leftW + 'px';
+    els.padRight.style.width = rightW + 'px';
+  }
+  const zoneW = Math.max(120, sw - leftW - rightW);
   const k = Math.min(zoneW / VW, zoneH / VH);
   const cssW = Math.max(80, Math.floor(VW * k));
   const cssH = Math.max(44, Math.floor(VH * k));
@@ -361,7 +381,7 @@ function startLevel(n) {
     }
   }
   state.baseGrid = grid;
-  state.fleeTo = def.fleeTo || null;
+  state.basePortals = findPortals(grid);
   state.hints = def.hints || null;
   state.titleAt = performance.now();
   resetAttempt(false);
@@ -376,18 +396,16 @@ function resetAttempt(counts) {
     state.totalAttempts += 1;
   }
   state.grid = state.baseGrid.map(row => row.slice());
-  const def = LEVELS[state.level - 1];
-  if (def && def.fleeTo) {
-    // l'arrivo torna dov'era: scappa a ogni tentativo, sempre nello stesso modo
-    const g = firstGoalOf(def);
-    if (g) state.goal = g;
-  }
-  state.fled = false;
   state.inverted = false;
-  state.inBand = false;
+  state.portals = state.basePortals.map(p => ({
+    c0: p.c0, c1: p.c1,
+    side: (state.spawn.x + PSIZE / 2) < p.c0 * TILE ? -1 : 1,
+  }));
   state.crumbling = [];
   state.trail = [];
   state.particles = [];
+  state.killer = null;
+  state.spin = 0;
   state.player = {
     x: state.spawn.x, y: state.spawn.y,
     vx: 0, vy: 0, onGround: false, coyote: 0, buffer: 0,
@@ -396,14 +414,22 @@ function resetAttempt(counts) {
   state.dirty = true;
 }
 
-function firstGoalOf(def) {
-  const raw = def.rows;
-  for (let r = 0; r < ROWS; r++) {
-    const line = raw[r] || '';
-    const c = line.indexOf('B');
-    if (c !== -1) return { col: c, row: r };
+// Le colonne attaccate che contengono una banda specchio sono un portale solo:
+// serve a sapere da che parte del portale ti trovi, non se lo stai toccando.
+function findPortals(grid) {
+  const cols = [];
+  for (let c = 0; c < COLS; c++) {
+    for (let r = 0; r < ROWS; r++) {
+      if (grid[r][c] === 's') { cols.push(c); break; }
+    }
   }
-  return null;
+  const out = [];
+  cols.forEach(c => {
+    const last = out[out.length - 1];
+    if (last && c === last.c1 + 1) last.c1 = c;
+    else out.push({ c0: c, c1: c });
+  });
+  return out;
 }
 
 // ---------- Griglia ----------
@@ -493,7 +519,7 @@ function touchFloor(c, r) {
   }
 }
 
-function updateWorld(now) {
+function updateWorld(now, dt) {
   const p = state.player;
 
   // pavimenti che collassano
@@ -505,36 +531,32 @@ function updateWorld(now) {
     state.dirty = true;
   }
 
-  // la mattonella vigliacca si sfila mentre sei in aria a tiro
-  if (!p.onGround) {
-    const pc = (p.x + PSIZE / 2) / TILE;
-    for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-        if (state.grid[r][c] === 'v' && Math.abs(c - pc) <= VANISH_TILES) {
-          state.grid[r][c] = '.';
-          state.dirty = true;
-        }
-      }
+  // Il portale gira i comandi quando ne sei USCITO dall'altra parte, non
+  // quando lo tocchi: toccandolo si veniva respinti indietro, si usciva dalla
+  // parte da cui si era entrati e il giro si annullava — un muro invalicabile.
+  const cx = p.x + PSIZE / 2;
+  state.portals.forEach(portal => {
+    let side = 0;
+    if (cx < portal.c0 * TILE) side = -1;
+    else if (cx > (portal.c1 + 1) * TILE) side = 1;
+    if (side !== 0 && side !== portal.side) {
+      portal.side = side;
+      state.inverted = !state.inverted;
     }
-  }
+  });
 
-  // banda specchio: si inverte entrandoci, non a ogni fotogramma passato dentro
-  const inBand = !!overlapsKind(p.x, p.y, 's');
-  if (inBand && !state.inBand) state.inverted = !state.inverted;
-  state.inBand = inBand;
+  // giro del quadrato: solo in aria e solo se si sta spostando
+  if (!p.onGround && p.vx !== 0) state.spin += Math.sign(p.vx) * SPIN_RATE * dt;
+  else if (p.onGround) state.spin += (0 - state.spin) * Math.min(1, dt * 14);
 
   // spine e vuoto
-  if (overlapsKind(p.x, p.y, DEADLY) || p.y > VH + TILE) { die(now); return; }
+  const hit = overlapsKind(p.x, p.y, DEADLY);
+  if (hit || p.y > VH + TILE) { die(now, hit); return; }
 
   // traguardo
   const gx = state.goal.col * TILE, gy = state.goal.row * TILE;
   if (p.x + PSIZE > gx + 2 && p.x < gx + TILE - 2 && p.y + PSIZE > gy + 2 && p.y < gy + TILE - 2) {
-    if (state.fleeTo && !state.fled) {
-      state.fled = true;
-      state.goal = { col: state.fleeTo[0], row: state.fleeTo[1] };
-    } else {
-      win(now);
-    }
+    win(now);
   }
 
   // scia
@@ -542,10 +564,13 @@ function updateWorld(now) {
   if (state.trail.length > 7) state.trail.shift();
 }
 
-function die(now) {
+function die(now, hit) {
   if (state.phase !== 'play') return;
   state.phase = 'dead';
   state.phaseAt = now;
+  // La spina che ti ha ucciso esce dal terreno mentre muori e poi rientra:
+  // invisibile sì, ma almeno vedi dov'era. Al tentativo dopo torna nascosta.
+  state.killer = (hit && tileAt(hit.c, hit.r) === 'x') ? hit : null;
   const p = state.player;
   state.particles = [];
   for (let i = 0; i < 16; i++) {
@@ -613,13 +638,7 @@ function drawStatic() {
           g.fillRect(x, y, TILE, 2);
         }
       } else if (ch === '^') {
-        g.fillStyle = '#FF2D78';
-        g.beginPath();
-        g.moveTo(x + 1, y + TILE);
-        g.lineTo(x + TILE / 2, y + 3);
-        g.lineTo(x + TILE - 1, y + TILE);
-        g.closePath();
-        g.fill();
+        drawSpike(g, x, y, 1);
       } else if (ch === 's') {
         g.fillStyle = 'rgba(139,92,246,0.22)';
         g.fillRect(x, y, TILE, TILE);
@@ -630,6 +649,24 @@ function drawStatic() {
     }
   }
   state.dirty = false;
+}
+
+// out va da 0 (dentro al terreno, invisibile) a 1 (fuori tutta)
+function drawSpike(g, x, y, out) {
+  if (out <= 0) return;
+  g.save();
+  g.beginPath();
+  g.rect(x, y, TILE, TILE);
+  g.clip();
+  const dy = TILE * (1 - out);
+  g.fillStyle = '#FF2D78';
+  g.beginPath();
+  g.moveTo(x + 1, y + TILE + dy);
+  g.lineTo(x + TILE / 2, y + 3 + dy);
+  g.lineTo(x + TILE - 1, y + TILE + dy);
+  g.closePath();
+  g.fill();
+  g.restore();
 }
 
 function drawHints(g) {
@@ -674,11 +711,22 @@ function draw(now) {
     });
     ctx.globalAlpha = 1;
     ctx.drawImage(glowSprite, p.x + PSIZE / 2 - 24, p.y + PSIZE / 2 - 24, 48, 48);
+    ctx.save();
+    ctx.translate(p.x + PSIZE / 2, p.y + PSIZE / 2);
+    ctx.rotate(state.spin);
     ctx.fillStyle = state.inverted ? '#C9A6FF' : '#38F2E6';
-    ctx.fillRect(p.x, p.y, PSIZE, PSIZE);
+    ctx.fillRect(-PSIZE / 2, -PSIZE / 2, PSIZE, PSIZE);
     ctx.fillStyle = 'rgba(255,255,255,0.85)';
-    ctx.fillRect(p.x + 2, p.y + 2, PSIZE - 4, 3);
+    ctx.fillRect(-PSIZE / 2 + 2, -PSIZE / 2 + 2, PSIZE - 4, 3);
+    ctx.restore();
   } else {
+    // la spina esce, resta fuori un attimo e rientra: il tempo di vederla
+    if (state.killer) {
+      const age = now - state.phaseAt;
+      const out = age < SPIKE_OUT_MS ? age / SPIKE_OUT_MS
+        : (age > DEATH_MS - SPIKE_OUT_MS ? Math.max(0, (DEATH_MS - age) / SPIKE_OUT_MS) : 1);
+      drawSpike(ctx, state.killer.c * TILE, state.killer.r * TILE, out);
+    }
     ctx.fillStyle = '#38F2E6';
     state.particles.forEach(q => ctx.fillRect(q.x, q.y, q.s, q.s));
   }
@@ -717,7 +765,7 @@ function loop(now) {
     acc += dt;
     let guard = 0;
     while (acc >= STEP && guard++ < 60) { stepPhysics(STEP); acc -= STEP; }
-    updateWorld(now);
+    updateWorld(now, dt);
   } else if (state.phase === 'dead') {
     state.particles.forEach(q => {
       q.vy += GRAVITY * dt * 0.6;
@@ -765,12 +813,12 @@ function bindInput() {
     else if (k === 'Space' || k === 'KeyW' || k === 'ArrowUp') held.jump = false;
   });
 
-  // Le zone del dito sono elementi veri: il browser sa già dove sono anche
-  // quando il palco è girato, quindi qui non si converte nessuna coordinata.
-  els.pads.querySelectorAll('.pad').forEach(pad => {
-    const kind = pad.dataset.pad;
-    pad.addEventListener('pointerdown', e => {
-      pad.setPointerCapture(e.pointerId);
+  // I pulsanti sono elementi veri: il browser sa già dove sono anche quando il
+  // palco è girato, quindi qui non si converte nessuna coordinata.
+  document.querySelectorAll('.gamepad-btn').forEach(btn => {
+    const kind = btn.dataset.pad;
+    btn.addEventListener('pointerdown', e => {
+      try { btn.setPointerCapture(e.pointerId); } catch (err) { /* ignora */ }
       padPointers.set(e.pointerId, kind);
       held[kind] = true;
       if (kind === 'jump') state.player.buffer = BUFFER;
@@ -782,8 +830,9 @@ function bindInput() {
       padPointers.delete(e.pointerId);
       if (![...padPointers.values()].includes(kind2)) held[kind2] = false;
     };
-    pad.addEventListener('pointerup', release);
-    pad.addEventListener('pointercancel', release);
+    btn.addEventListener('pointerup', release);
+    btn.addEventListener('pointercancel', release);
+    btn.addEventListener('contextmenu', e => e.preventDefault());
   });
   window.addEventListener('blur', () => {
     held.left = held.right = held.jump = false;
@@ -881,7 +930,8 @@ async function init() {
   els.stage = document.getElementById('stage');
   els.topbar = document.getElementById('topbar');
   els.canvas = document.getElementById('gameCanvas');
-  els.pads = document.getElementById('pads');
+  els.padLeft = document.getElementById('padLeft');
+  els.padRight = document.getElementById('padRight');
   els.levelValue = document.getElementById('levelValue');
   els.turnHint = document.getElementById('turnHint');
   els.loading = document.getElementById('loadingScreen');
@@ -893,6 +943,7 @@ async function init() {
   els.languageList = document.getElementById('languageList');
   els.leaderboardList = document.getElementById('leaderboardList');
 
+  els.stage.classList.toggle('touch', isTouch);
   ctx = els.canvas.getContext('2d');
   statCanvas = document.createElement('canvas');
   statCtx = statCanvas.getContext('2d');

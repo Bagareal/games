@@ -78,13 +78,40 @@ a.icon-btn{ background:none; font-size:32px; width:32px; height:32px; }
   background:
     radial-gradient(120% 90% at 50% 40%, var(--bg-far) 0%, var(--bg) 70%);
 }
+.field-wrap{ position:relative; flex:0 0 auto; }
 #gameCanvas{ display:block; }
 
-/* le tre zone del dito: invisibili, sopra al campo, sotto ai pannelli */
-.pads{ position:absolute; inset:0; display:flex; touch-action:none; z-index:5; }
-.pad{ flex:0 0 25%; height:100%; }
-.pad-jump{ flex:0 0 50%; }
-@media (hover:hover) and (pointer:fine){ .pads{ display:none; } }
+/* la consolina: pulsanti veri, fuori dal campo. Le misure le scrive layout()
+   in script.js — qui c'è solo l'aspetto. */
+/* Chi mostra i pulsanti e chi gli riserva lo spazio devono essere la stessa
+   cosa: se lo decidesse una @media e le misure le facesse il JavaScript, su un
+   portatile con lo schermo tattile i due potrebbero non essere d'accordo e
+   resterebbe una fascia vuota ai lati. Decide isTouch, in script.js. */
+.pad-col{ display:none; }
+#stage.touch .pad-col{
+  flex:0 0 auto; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  gap:10px; padding:0 8px;
+  touch-action:none;
+}
+.gamepad-btn{
+  width:var(--btn, 72px); height:var(--btn, 72px);
+  display:flex; align-items:center; justify-content:center;
+  padding:0; margin:0;
+  font-size:calc(var(--btn, 72px) * 0.5); line-height:0;
+  color:var(--player);
+  background:rgba(56,242,230,0.07);
+  border:1px solid rgba(56,242,230,0.22);
+  border-radius:16px;
+  cursor:pointer;
+  touch-action:none; -webkit-user-select:none; user-select:none;
+}
+.gamepad-btn:active{
+  background:rgba(56,242,230,0.22);
+  box-shadow:0 0 18px rgba(56,242,230,0.3);
+  transform:scale(0.96);
+}
+.gamepad-jump{ border-radius:50%; }
 
 .turn-hint{
   position:absolute; left:50%; top:14px; transform:translateX(-50%);
